@@ -15,7 +15,7 @@ extends Node
 
 ## Every check this suite makes; a script error aborts a section part-way, and only the
 ## total can see the checks that never ran.
-const CHECKS := 25
+const CHECKS := 26
 
 const ZEE_COUNT := 27
 
@@ -36,6 +36,7 @@ func _ready() -> void:
 	_firing()
 	_throwing()
 	_uninstall()
+	_exiting()
 
 	print("")
 	print("%d sections entered, %d finished, %d checks, %d failed" % [
@@ -226,6 +227,21 @@ func _uninstall() -> void:
 	_check("its weapons leave zee's catalogue", not ZeeWeaponPack.table().has(ZedWeaponIds.UZI) and ZeeWeaponPack.table().size() == ZEE_COUNT)
 	_check("and its art leaves zee's table", ZeeWeaponArtTable.get_art(ZedWeaponIds.UZI) == null)
 	_check("and it says so", not ZedWeaponPack.installed())
+	_end()
+
+
+## A process that installs the pack and quits without uninstalling it exits cleanly. Run as a
+## second process because the failure is the engine aborting AFTER every check has passed.
+func _exiting() -> void:
+	_begin("exiting")
+	var output: Array = []
+	var code := OS.execute(OS.get_executable_path(), [
+		"--headless", "--path", ProjectSettings.globalize_path("res://"),
+		"--script", "res://tools/exit_check.gd",
+	], output, true)
+	var said := "\n".join(output)
+	_check("a process left with the pack installed exits cleanly (exit %d)" % code,
+		code == 0 and said.contains("installed:"))
 	_end()
 
 

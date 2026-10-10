@@ -45,10 +45,13 @@ static func sec_ticks(seconds: float) -> int:
 ## [b]Before the first rig is set up.[/b] A rig builds its catalogue once, in `setup()`, so a
 ## rig built before this ran carries zee's weapons only, for as long as it lives.
 static func install() -> void:
-	ZeeWeaponPack.add_source(SOURCE, func(types: Dictionary) -> Array[DotWeaponDef]:
-		return weapons(types))
-	ZeeWeaponArtTable.add_source(SOURCE, func() -> Array[ZeeWeaponArt]:
-		return art())
+	# [b]A static method, never a lambda.[/b] zee keeps these in a static variable, which the
+	# engine clears after it has freed the scripts at exit; a lambda held there outlives the
+	# script it was written in and the process aborts on the way out (`double free or
+	# corruption`, exit 134, after every check has passed). Found by dot-server-deploy's
+	# zombiezone_client; `tools/exit_check.gd` and the suite's "exiting" section hold it.
+	ZeeWeaponPack.add_source(SOURCE, Callable(ZedWeaponPack, &"weapons"))
+	ZeeWeaponArtTable.add_source(SOURCE, Callable(ZedWeaponPack, &"art"))
 
 	for id: StringName in SOUNDS:
 		ZeeWeaponSound.set_class(id, SOUNDS[id])
