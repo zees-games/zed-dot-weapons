@@ -15,7 +15,7 @@ extends Node
 
 ## Every check this suite makes; a script error aborts a section part-way, and only the
 ## total can see the checks that never ran.
-const CHECKS := 24
+const CHECKS := 25
 
 const ZEE_COUNT := 27
 
@@ -132,6 +132,14 @@ func _art() -> void:
 	var models := ZedWeaponPack.validate_models()
 	_check("every model is on disk: %s" % ("" if models.ok else models.error.message), models.ok)
 	_check("zee's art table validates with this pack's in it", ZeeWeaponArtTable.validate().ok)
+
+	# A mounted pack has no `res://assets/…`, so a model that names a file by that path loads
+	# without it (tools/bake_food.gd says why the Food Kit's had to be baked).
+	var leaning: Array[String] = []
+	for art in ZedWeaponPack.art():
+		for dep in ResourceLoader.get_dependencies(art.model_path):
+			leaning.append("%s -> %s" % [art.id, dep])
+	_check("no model leans on another file: %s" % ", ".join(leaning), leaning.is_empty())
 
 	var muzzle := ZeeModelCache.muzzle_distance(ZedWeaponPack.WEAPONS_DIR + "sniperSand.glb", ZedWeaponPack.GUN_FORWARD)
 	# Half the rifle's 1.04 m: the model is centred along its length, so the far end is there.
