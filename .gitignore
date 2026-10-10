@@ -1,0 +1,39 @@
+# Godot 4
+.godot/
+.import/
+/android/
+
+# The dot-* addons and zee-dot-weapons are separate repositories and are linked in, never
+# committed. bootstrap.sh derives this project's dependencies from the lines below.
+/addons/dot_core
+/addons/dot_combat
+/addons/dot_weapon
+/addons/dot_net
+/addons/dot_player
+/addons/dot_player_controller
+/addons/dot_player_char
+/addons/dot_physics
+/addons/zee_weapons
+
+# zee-dot-weapons' own art, linked in so the range and the rack can draw zee's arms and
+# weapons beside this pack's. Never committed: it is zee's.
+/assets/arms
+/assets/blaster-kit
+/assets/melee
+
+# Exports
+build/
+export.cfg
+export_presets.cfg
+*.translation
+
+# Screenshots are evidence for a review, not assets.
+/screenshots/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+/.scratch/
