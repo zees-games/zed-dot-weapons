@@ -1,4 +1,4 @@
-This is a weapons pack to demonstrate the capabilities of the [**Dot collection**](https://moddingcommunity.com/co/4-dot-assets) built on-top of [Godot 4](https://godotengine.org/) and [TMC's gaming platform](https://moddingcommunity.com/play). It is a second pack on top of [zee-dot-weapons](https://github.com/gamemann/zee-dot-weapons): fourteen more weapons with a real-world look (pistols, an Uzi, shotguns, a hunting rifle, a machine gun, launchers and a flamethrower) and the throwables a zombie game needs (a molotov, a pipe bomb and a bile jar). It was made for [game-zombie-zone](https://github.com/gamemann/game-zombie-zone), and any game on zee-dot-weapons can carry both packs at once.
+This is a weapons pack to demonstrate the capabilities of the [**Dot collection**](https://moddingcommunity.com/co/4-dot-assets) built on-top of [Godot 4](https://godotengine.org/) and [TMC's gaming platform](https://moddingcommunity.com/play). It is a second pack on top of [zee-dot-weapons](https://github.com/zees-games/zee-dot-weapons): fourteen more weapons with a real-world look (pistols, an Uzi, shotguns, a hunting rifle, a machine gun, launchers and a flamethrower) and the throwables a zombie game needs (a molotov, a pipe bomb and a bile jar). It was made for [game-zombie-zone](https://github.com/zees-games/game-zombie-zone), and any game on zee-dot-weapons can carry both packs at once.
 
 **This pack and the assets under it are COMPLETELY OPEN SOURCE**. You are free to use, modify, and distribute them under the terms of the MIT license, and the art it ships is CC0, which asks for even less. The only thing not open source is the back-end web infrastructure. So if you opt into using your own authentication backend instead of integrating with TMC, you will need to build and integrate your own back-end infrastructure.
 
@@ -37,7 +37,7 @@ That adds the fourteen weapons to zee-dot-weapons' catalogue, their models to it
 The models are under `assets/`. A game that vendors them (because it is delivered as a pack) copies `assets/weapon-pack` and `assets/food-kit` next to zee's art, and zee's `ZeeModelCache.set_asset_root` finds them the same way.
 
 ## Requirements
-Godot **4.7**, [zee-dot-weapons](https://github.com/gamemann/zee-dot-weapons) (with its `add_source` support), and what it needs: [dot-core](https://github.com/modcommunity/dot-core), [dot-combat](https://github.com/modcommunity/dot-combat) and [dot-weapon](https://github.com/modcommunity/dot-weapon).
+Godot **4.7**, [zee-dot-weapons](https://github.com/zees-games/zee-dot-weapons) (with its `add_source` support), and what it needs: [dot-core](https://github.com/modcommunity/dot-core), [dot-combat](https://github.com/modcommunity/dot-combat) and [dot-weapon](https://github.com/modcommunity/dot-weapon).
 
 ## Running it
 | Command | What it does |
