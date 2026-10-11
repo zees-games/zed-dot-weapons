@@ -1,6 +1,6 @@
 # zed-dot-weapons
 
-A second weapons pack, on top of zee-dot-weapons. Read `../../CLAUDE.md` and `../zee-dot-weapons/CLAUDE.md` first: everything about how a weapon is drawn, held, heard, replicated and rolled back is zee's, and this repository only adds content to it. Its `origin` is `git@github.com:gamemann/zed-dot-weapons.git`, on Christian's account like zee. Built 2026-10-10 for game-zombie-zone, which asked for "a separate addon pack, so the server can carry two weapon packs".
+A second weapons pack, on top of zee-dot-weapons. Read `../../CLAUDE.md` and `../zee-dot-weapons/CLAUDE.md` first: everything about how a weapon is drawn, held, heard, replicated and rolled back is zee's, and this repository only adds content to it. Its `origin` is `git@github.com:zees-games/zed-dot-weapons.git`, in Christian's `zees-games` organisation like zee. Built 2026-10-10 for game-zombie-zone, which asked for "a separate addon pack, so the server can carry two weapon packs".
 
 ## The one idea: content, through zee's seam
 
