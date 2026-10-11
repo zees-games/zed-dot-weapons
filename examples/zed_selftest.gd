@@ -15,7 +15,7 @@ extends Node
 
 ## Every check this suite makes; a script error aborts a section part-way, and only the
 ## total can see the checks that never ran.
-const CHECKS := 28
+const CHECKS := 30
 
 const ZEE_COUNT := 27
 
@@ -33,6 +33,7 @@ func _ready() -> void:
 	_install()
 	_documents()
 	_art()
+	_sights()
 	_firing()
 	_throwing()
 	_uninstall()
@@ -158,6 +159,44 @@ func _art() -> void:
 		muzzle_dir.is_equal_approx(zee_turn * Vector3.FORWARD))
 	_check("and canted the same way, top toward the crosshair (%s)" % (held * Vector3.UP),
 		(held * Vector3.UP).is_equal_approx(zee_turn * Vector3.UP) and (held * Vector3.UP).x < 0.0)
+	_end()
+
+
+## zee's view model measures an iron sight on every unscoped gun and, aimed, holds its line
+## through the screen's centre. These guns point +Z and stand on their base, so a line found
+## on the wrong side or end of the model shows up here as a sight off the axis.
+func _sights() -> void:
+	_begin("sights")
+	var view := ZeeViewModel.new()
+	view.show_arms = false
+	add_child(view)
+	var sighted := 0
+	var worst := 0.0
+	var worst_id := &""
+	for art in ZedWeaponPack.art():
+		if not art.aim_enabled or art.aim_scoped:
+			continue
+		view.equip(art)
+		view.aim(true)
+		for _i in range(30):
+			view._process(0.02)
+		var points := view.sight_points()
+		if points.is_empty():
+			continue
+		sighted += 1
+		var rear: Vector3 = points.rear
+		var front: Vector3 = points.front
+		var off := maxf(Vector2(rear.x, rear.y).length(), Vector2(front.x, front.y).length())
+		# The front sight is further out than the rear, or the gun is held backwards.
+		if front.z >= rear.z:
+			off += 1.0
+		if off > worst:
+			worst = off
+			worst_id = art.id
+	_check("every unscoped gun has a measured iron sight (%d)" % sighted, sighted == 10)
+	_check("and its line runs through the screen's centre when aimed (worst %.4f m, %s)" % [worst, worst_id],
+		worst < 0.002)
+	view.queue_free()
 	_end()
 
 
