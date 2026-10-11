@@ -387,6 +387,7 @@ static func bile_jar(t: Dictionary = {}) -> DotWeaponDef:
 
 static func _gun(id: StringName, name: String, slot: int, fire: DotWeaponDef.Fire, interval: int) -> DotWeaponDef:
 	var def := DotWeaponDef.new()
+	def.authored_tick_rate = TICK_RATE
 	def.id = id
 	def.display_name = name
 	def.behaviour_path = HITSCAN
@@ -432,6 +433,7 @@ static func _explosive(t: Dictionary, direct: float, speed: float, gravity: floa
 
 static func _thrown(t: Dictionary, id: StringName, name: String, pool: StringName, tag: StringName) -> DotWeaponDef:
 	var def := DotWeaponDef.new()
+	def.authored_tick_rate = TICK_RATE
 	def.id = id
 	def.display_name = name
 	def.behaviour_path = THROWN

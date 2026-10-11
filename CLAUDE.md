@@ -10,6 +10,10 @@ A second copy of zee's rig, view model and effects for fourteen more weapons wou
 
 **The sources are static methods, not lambdas.** zee keeps them in a static variable that the engine clears after it has freed the scripts at exit, and the first version's lambdas outlived their script: every process that installed the pack aborted on the way out (`double free or corruption`, exit 134) with every check passed. dot-server-deploy's zombiezone_client found it by its exit code; the suite's "exiting" section runs `tools/exit_check.gd` as a second process and fails with a lambda put back.
 
+## Ticks at 64 Hz, and every row says so
+
+Every duration is in ticks at `ZedWeaponPack.TICK_RATE` (64), and both builders (`_gun`, `_thrown`) set `DotWeaponDef.authored_tick_rate` to it, so dot-weapon's arsenal scales each row to the rate a server runs at (zee's [design](../zee-dot-weapons/docs/design.md#durations-are-ticks)). A builder added without it fires at another speed off 64 Hz; the suite's "the documents" section counts the stamped rows.
+
 ## What a throwable does is the game's
 
 dot-weapon spawns nothing; a thrown weapon's use is a `DotWeaponSpawn` handed to the game. The molotov, pipe bomb and bile jar say what they are with tags (`ZedWeaponIds.TAG_MOLOTOV`, `TAG_PIPE_BOMB`, `TAG_BILE`) and the flamethrower with `TAG_INCENDIARY`, so a game that has fire, a lure and bile can do the right thing with a pack it has never heard of. game-zombie-zone's `ZzGame._throw` is the reference.

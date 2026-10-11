@@ -15,7 +15,7 @@ extends Node
 
 ## Every check this suite makes; a script error aborts a section part-way, and only the
 ## total can see the checks that never ran.
-const CHECKS := 30
+const CHECKS := 31
 
 const ZEE_COUNT := 27
 
@@ -119,6 +119,15 @@ func _documents() -> void:
 		if ZeeWeaponSound.class_for(id, DotWeaponOutcome.KIND_SHOT) == ZedWeaponPack.SOUNDS[id] and ZeeWeaponSound.RECIPES.has(ZedWeaponPack.SOUNDS[id]):
 			classes += 1
 	_check("every gun sounds like a class zee can bake", classes == ZedWeaponPack.SOUNDS.size())
+
+	# Written in 64 Hz ticks like zee's, and saying so: dot-weapon scales a row to the
+	# arsenal's rate only when the row names its own, so an unstamped row fires twice as
+	# fast on a 128 Hz server.
+	var stamped := 0
+	for def in ZedWeaponPack.weapons():
+		if def.authored_tick_rate == ZedWeaponPack.TICK_RATE:
+			stamped += 1
+	_check("every row says it was written at %d Hz" % ZedWeaponPack.TICK_RATE, stamped == ZedWeaponIds.all().size())
 	_end()
 
 
