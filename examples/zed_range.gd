@@ -9,6 +9,7 @@ extends Node
 ## godot --path . res://examples/zed_range.tscn -- --seconds 3 --weapon sniper
 ## godot --path . res://examples/zed_range.tscn -- --weapon smg --fire   # trigger held
 ## ... -- --weapon smg --fire --capture /tmp/smg   # frames 1-14 after the first shot
+## ... -- --weapon rifle --sheet /tmp/rifle          # the contact sheet's frames, then quit
 ## [/codeblock]
 ##
 ## WASD to move, space to jump, ctrl to crouch, mouse to look, left click to fire, right
@@ -57,6 +58,10 @@ var _auto_fire: bool = false
 ## Whether a `--capture` sequence has started.
 var _capturing: bool = false
 
+## Whether `--sheet` is running: the range stops simulating and driving the view itself,
+## and [method _run_sheet] steps the view model by hand.
+var _sheet: bool = false
+
 ## Every shot's impact, drawn as a short-lived marker so a hit is visible.
 var _markers: Array[Node3D] = []
 
@@ -81,6 +86,9 @@ func _ready() -> void:
 	print("1-5 slots · wheel cycles · LMB fire · RMB bash · R reload · F1 state")
 
 	_equip_requested()
+
+	if _argument("--sheet") != "":
+		_run_sheet(_argument("--sheet"))
 
 
 # --- Wiring -----------------------------------------------------------------
@@ -151,6 +159,9 @@ func _equip_requested() -> void:
 # --- The frame --------------------------------------------------------------
 
 func _process(_delta: float) -> void:
+	if _sheet:
+		return
+
 	_input.sample()
 
 	var state := _controller.render_state()
@@ -182,6 +193,9 @@ func _process(_delta: float) -> void:
 
 
 func _physics_process(_delta: float) -> void:
+	if _sheet:
+		return
+
 	_tick += 1
 
 	var state := _controller.render_state()
@@ -511,6 +525,168 @@ func _capture_shot() -> void:
 		print("captured %s (%s)" % [path, error_string(err)])
 
 	get_tree().quit()
+
+
+# --- The contact sheet -----------------------------------------------------
+
+## The frames of one weapon's contact sheet, in order: a label and what to do before it.
+##
+## [b]Why a sheet and not a screenshot.[/b] A view model is motion, and one frame of it at
+## rest says nothing about the reload, the kick or the sway, which are where every
+## complaint about this pack's hands came from (a reload that pointed the gun at the sky,
+## a kick nobody could see). Eighteen frames on one image are a review a person can do in
+## a glance, and the same sixteen every time, so a before and an after can be laid side by
+## side.
+const SHEET_FRAMES := [
+	["hip", "rest"], ["aimed", "aim"],
+	["fire 1", "fire:1"], ["fire 2", "fire:2"], ["fire 4", "fire:4"],
+	["fire 8", "fire:8"], ["fire 14", "fire:14"],
+	["reload 0%", "reload:0.0"], ["reload 25%", "reload:0.25"],
+	["reload 50%", "reload:0.5"], ["reload 75%", "reload:0.75"],
+	["reload 90%", "reload:0.9"],
+	["walking", "walk"], ["turning right", "turn"],
+	["draw 30%", "deploy:0.3"], ["draw 70%", "deploy:0.7"],
+	["in shade", "shade"], ["aimed, fire 4", "aimfire:4"],
+]
+
+## The fixed step the sheet advances the view model by: 60 frames a second, so "fire 4"
+## is 67 ms after the shot on any machine and under any renderer.
+const SHEET_STEP := 1.0 / 60.0
+
+
+## Renders [constant SHEET_FRAMES] to `<prefix>_NN.png` and quits.
+##
+## [b]The view model is stepped by hand.[/b] Its own `_process` is switched off and
+## [method ZeeViewModel.advance] is called with [constant SHEET_STEP], so what a frame shows
+## depends on the number of steps and not on how fast a software renderer happens to draw.
+## The range stops simulating too: the rig would otherwise push its own reload and deploy
+## fractions over the ones the sheet sets.
+func _run_sheet(prefix: String) -> void:
+	_sheet = true
+	_view.set_process(false)
+	# Read at a quarter of the size on the tiled sheet, so the label is drawn large.
+	_readout.add_theme_font_size_override("font_size", 52)
+	_crosshair.add_theme_font_size_override("font_size", 48)
+
+	var def := _rig.current_def()
+	var recoil := Vector2(0.5, 0.1)
+	if def != null and def.tuning != null and "recoil_pitch" in def.tuning:
+		recoil = Vector2(def.tuning.get("recoil_pitch"), def.tuning.get("recoil_yaw"))
+
+	# `--hold "x,y,z,pitch,yaw,roll,scale"` re-equips the weapon with that first-person
+	# placement instead of the table's: the knob for tuning a hold without an edit and a
+	# re-import per guess. The numbers that look right then go into ZeeWeaponArtTable.
+	var hold := _argument("--hold")
+	if hold != "" and def != null:
+		var art: ZeeWeaponArt = ZeeWeaponArtTable.get_art(def.id).duplicate(true)
+		var v := hold.split_floats(",")
+		if v.size() >= 3:
+			art.view_offset = Vector3(v[0], v[1], v[2])
+		if v.size() >= 6:
+			art.view_rotation = Vector3(v[3], v[4], v[5])
+		if v.size() >= 7:
+			art.view_scale = v[6]
+		_view.equip(art)
+
+	# `--frames 0,2,9` renders only those frames of the sheet.
+	var only := _argument("--frames").split_floats(",") if _argument("--frames") != "" else PackedFloat64Array()
+
+	# A second to let the art load and the first frames settle.
+	for i in range(30):
+		await RenderingServer.frame_post_draw
+
+	var roof: Node3D = null
+	for n in range(SHEET_FRAMES.size()):
+		if not only.is_empty() and not only.has(float(n)):
+			continue
+		var label: String = SHEET_FRAMES[n][0]
+		var step: String = SHEET_FRAMES[n][1]
+		_sheet_reset()
+		var parts := step.split(":")
+		var arg := parts[1].to_float() if parts.size() > 1 else 0.0
+
+		match parts[0]:
+			"rest":
+				_sheet_steps(30)
+			"aim":
+				_view.aim(true)
+				_sheet_steps(40)
+			"fire":
+				_sheet_steps(10)
+				_view.on_fired(recoil)
+				_sheet_steps(int(arg))
+			"reload":
+				_view.on_reload(arg)
+				_sheet_steps(2)
+			"walk":
+				# A quarter of a stride past a footfall, where the bob is furthest out.
+				for i in range(27):
+					_view.drive(Vector2.ZERO, 5.0, true)
+					_view.advance(SHEET_STEP)
+			"turn":
+				# 180 degrees a second to the right, for a fifth of a second.
+				for i in range(12):
+					_view.drive(Vector2(-3.0 * float(i + 1), 0.0), 0.0, true)
+					_view.advance(SHEET_STEP)
+			"deploy":
+				_view.on_deploy(arg)
+				_sheet_steps(2)
+			"shade":
+				# A roof between the sun and the player: the view model must look exactly as
+				# it does in the open, because the world's shadow map is not its business.
+				roof = _sheet_roof()
+				_sheet_steps(30)
+			"aimfire":
+				_view.aim(true)
+				_sheet_steps(40)
+				_view.on_fired(recoil)
+				_sheet_steps(int(arg))
+
+		var weapon := String(def.id) if def != null else "?"
+		_readout.text = "%s  ·  %s" % [weapon, label]
+		await RenderingServer.frame_post_draw
+		await RenderingServer.frame_post_draw
+		var path := "%s_%02d.png" % [prefix, n]
+		var err := get_viewport().get_texture().get_image().save_png(path)
+		if err != OK:
+			printerr("could not save %s: %s" % [path, error_string(err)])
+		if roof != null:
+			roof.queue_free()
+			roof = null
+
+	print("sheet: %d frames at %s_NN.png" % [SHEET_FRAMES.size(), prefix])
+	get_tree().quit()
+
+
+## A slab over the player on the sun's side, so the player stands in its shadow.
+func _sheet_roof() -> Node3D:
+	var sun := get_node_or_null("Sun") as DirectionalLight3D
+	var toward := sun.global_transform.basis.z.normalized() if sun != null else Vector3.UP
+	var body := StaticBody3D.new()
+	var mesh := MeshInstance3D.new()
+	var box := BoxMesh.new()
+	box.size = Vector3(5.0, 0.2, 5.0)
+	mesh.mesh = box
+	mesh.material_override = _material(Color(0.3, 0.3, 0.32))
+	body.add_child(mesh)
+	$World.add_child(body)
+	body.global_position = _camera.global_position + toward * 3.0
+	return body
+
+
+## Back to rest between frames, so each one shows only what its own step did.
+func _sheet_reset() -> void:
+	_view.on_reset()
+	_view.aim(false)
+	_view.on_reload(0.0)
+	_view.on_deploy(1.0)
+	_view.drive(Vector2.ZERO, 0.0, true)
+	_sheet_steps(1)
+
+
+func _sheet_steps(count: int) -> void:
+	for i in range(count):
+		_view.advance(SHEET_STEP)
 
 
 ## Quits after `--seconds N`, so a screenshot sweep can open this without a person.

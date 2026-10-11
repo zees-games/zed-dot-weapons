@@ -18,7 +18,8 @@ dot-weapon spawns nothing; a thrown weapon's use is a `DotWeaponSpawn` handed to
 
 ## Three things the renders found, that no check can
 
-- **Every gun pointed backwards.** Kenney's Weapon Pack lies along Z with each model centred along its length, so the measured muzzle is the same distance out at either end and the suite's muzzle check passes both ways. The rack (`tools/screenshot.sh --rack`) put the red muzzle pips on the shotguns' wooden stocks and the rifle's scope end. The models point +Z, like zee's blasters (`GUN_FORWARD`).
+- **Every gun pointed backwards.** Kenney's Weapon Pack lies along Z with each model centred along its length, so the measured muzzle is the same distance out at either end and the suite's muzzle check passes both ways. The rack (`tools/screenshot.sh --rack`) put the red muzzle pips on the shotguns' wooden stocks and the rifle's scope end. The models point **+Z**, the opposite of zee's blasters (`GUN_FORWARD`). The rack cannot prove an axis (zee's blasters passed it reversed for years); a Blender side render with a marker on +Z did: the marker is on the muzzle of the pistol, uzi, shotgun, hunting rifle, machine gun and rocket launcher. [history](docs/history.md)
+- **zee's hold is written for -Z, so it is turned before it is used** (`ZedWeaponPack.hold_rotation`: pitch and roll change sign, yaw does not). Every gun takes zee's pose offset, cant, aim place and per-pose reload keys; zee's numbers written straight across tip the gun's left side up. The lift by half the height goes through the hold's basis, at the hip and at the aim. The suite's "held on zee's hold" checks fail with the signs undone. [history](docs/history.md)
 - **The models stand on their base**, origin at the middle of the bottom face, unlike zee's centred blasters, so each gun is lowered by half its measured height in both views (scaled with the model, zee's third trap). Real size, too: the pistol is 0.3 m and the rifle 1.04 m against zee's toy blasters, so the pose scale is zee's times `REAL_SCALE` (1.45).
 - **A bottle turned the way zee turns a grenade is drawn as its own base**, a dark hexagon behind the hand. zee maps a grenade's +Y onto the view's forward, which for something round is invisible. The throwables here are said to face forward already, so they are held standing up.
 
@@ -33,9 +34,12 @@ godot --headless --path . --import
 find . -name '*.gd' -not -path './.godot/*' -not -path './addons/dot_*' -not -path './addons/zee_weapons/*' | while read f; do
     godot --headless --path . --check-only --script "res://${f#./}"
 done
-timeout 120 godot --headless --path . res://examples/zed_selftest.tscn   # 8 sections, 26 checks
+timeout 120 godot --headless --path . res://examples/zed_selftest.tscn   # 8 sections, 28 checks
 tools/screenshot.sh --rack                                                # and look at it
 tools/screenshot.sh molotov
+tools/screenshot.sh --sheet service_pistol pump_shotgun hunting_rifle molotov   # zee's 18-frame contact sheet, per weapon
 ```
+
+Review every change to a gun's hold on the contact sheet (`--sheet`, the same frames as zee's, so the two packs' sheets can be laid side by side). `examples/zed_range.gd` is zee's range with `ZedWeaponPack.install()` added; keep it a copy, so a sheet change in zee comes across by copying the file.
 
 `tools/measure.gd` prints every vendored model's bounds (`godot --headless --path . --script tools/measure.gd`), which is where the heights in `ZedWeaponPack.art()` came from.

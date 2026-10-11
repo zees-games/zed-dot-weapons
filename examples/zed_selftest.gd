@@ -15,7 +15,7 @@ extends Node
 
 ## Every check this suite makes; a script error aborts a section part-way, and only the
 ## total can see the checks that never ran.
-const CHECKS := 26
+const CHECKS := 28
 
 const ZEE_COUNT := 27
 
@@ -145,6 +145,19 @@ func _art() -> void:
 	var muzzle := ZeeModelCache.muzzle_distance(ZedWeaponPack.WEAPONS_DIR + "sniperSand.glb", ZedWeaponPack.GUN_FORWARD)
 	# Half the rifle's 1.04 m: the model is centred along its length, so the far end is there.
 	_check("the hunting rifle's muzzle is measured half its length out (%.2f m)" % muzzle, absf(muzzle - 0.52) < 0.03)
+
+	# [b]zee's hold, turned for a gun pointing the other way.[/b] zee's cant and turn are written
+	# for a blaster pointing -Z; these point +Z, so the same numbers written straight across
+	# tip the gun's left side up. The hold must be exactly zee's hold with the model turned
+	# round first: in the view, the muzzle goes where a zee rifle's goes and so does the top.
+	var rifle := ZeeWeaponArtTable.get_art(ZedWeaponIds.HUNTING_RIFLE)
+	var zee_turn := Basis.from_euler(ZeeWeaponArtTable.pose_rotation(ZeeWeaponArtTable.POSE_RIFLE) * (PI / 180.0))
+	var held := rifle.view_transform().basis.orthonormalized()
+	var muzzle_dir := held * ZedWeaponPack.GUN_FORWARD
+	_check("a gun is held on zee's hold: muzzle where zee's points, %s" % muzzle_dir,
+		muzzle_dir.is_equal_approx(zee_turn * Vector3.FORWARD))
+	_check("and canted the same way, top toward the crosshair (%s)" % (held * Vector3.UP),
+		(held * Vector3.UP).is_equal_approx(zee_turn * Vector3.UP) and (held * Vector3.UP).x < 0.0)
 	_end()
 
 

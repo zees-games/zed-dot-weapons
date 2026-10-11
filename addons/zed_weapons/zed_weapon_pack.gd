@@ -482,10 +482,11 @@ static func _thrown(t: Dictionary, id: StringName, name: String, pool: StringNam
 ## How much larger than zee's blaster pose a real-sized gun is drawn.
 const REAL_SCALE := 1.45
 
-## Which way the Weapon Pack's barrels point: +Z, the same as zee's blasters. Found by the
-## rack render, as zee's was, and the first guess (-Z) was wrong: the shotguns' wooden
-## stocks and the hunting rifle's scope end sat at the red muzzle pips, and the rifle's
-## barrel and the rocket's warhead at the other end.
+## Which way the Weapon Pack's barrels point: +Z, the opposite of zee's blasters (-Z).
+## Settled by a side render in Blender with a marker on +Z (docs/history.md): the marker is
+## on the muzzle of the pistol, uzi, shotgun, hunting rifle, machine gun and rocket launcher.
+## The rack had said the same, but the rack cannot tell (zee's blasters passed it reversed
+## for years), so the side render is the proof.
 const GUN_FORWARD := Vector3.BACK
 
 
@@ -502,13 +503,22 @@ static func art() -> Array[ZeeWeaponArt]:
 		_heavy(_gun_art(ZedWeaponIds.GRENADE_LAUNCHER, "machinegunLauncher", ZeeWeaponArtTable.POSE_HEAVY, 0.264), 1.6),
 		_heavy(_gun_art(ZedWeaponIds.ROCKET_LAUNCHER, "rocketlauncherModern", ZeeWeaponArtTable.POSE_HEAVY, 0.337), 2.0),
 		_heavy(_gun_art(ZedWeaponIds.FLAMETHROWER, "flamethrower_long", ZeeWeaponArtTable.POSE_HEAVY, 0.207), 1.7),
-		_thrown_art(ZedWeaponIds.MOLOTOV, FOOD_DIR + "wine-red.scn", 0.45),
+		_thrown_art(ZedWeaponIds.MOLOTOV, FOOD_DIR + "wine-red.scn", 0.7),
 		_thrown_art(ZedWeaponIds.PIPE_BOMB, WEAPONS_DIR + "grenadeVintage.glb", 0.9),
 		_thrown_art(ZedWeaponIds.BILE_JAR, FOOD_DIR + "honey.scn", 0.6),
 	]
 
 
-## A gun: lies along Z, stands on its base, [param height] metres tall (measured).
+## A gun: lies along +Z, stands on its base, [param height] metres tall (measured).
+##
+## [b]On zee's hold[/b]: zee's pose offset and its cant and turn
+## ([method ZeeWeaponArtTable.pose_rotation]), zee's aim place, and (by leaving
+## [member ZeeWeaponArt.reload_keys] empty) the pose's reload keys. zee's rotations are written
+## for a model pointing -Z; these point +Z, and the 180-degree turn that [method
+## ZeeWeaponArt.orientation] puts in front of them flips the sign of a pitch and a roll (a
+## yaw is about the axis of the turn and keeps its sign), so they are handed over as
+## [method hold_rotation]. Written straight across, the cant tipped the left side up and
+## showed the camera the gun's underside.
 static func _gun_art(id: StringName, model: String, pose: StringName, height: float) -> ZeeWeaponArt:
 	var art := ZeeWeaponArt.make(id, WEAPONS_DIR + model + ".glb")
 	art.model_forward = GUN_FORWARD
@@ -516,12 +526,26 @@ static func _gun_art(id: StringName, model: String, pose: StringName, height: fl
 	art.view_scale = ZeeWeaponArtTable.pose_scale(pose) * REAL_SCALE
 	art.world_scale = REAL_SCALE
 	art.weight = ZeeWeaponArtTable.pose_weight(pose)
-	# Lifted by half its height in both views, so the grip is where zee's centred blasters'
-	# is, and scaled with the model (zee's third trap).
-	art.view_offset = ZeeWeaponArtTable.pose_offset(pose) + Vector3(0.0, -height * 0.5 * art.view_scale, 0.0)
+	art.view_rotation = hold_rotation(ZeeWeaponArtTable.pose_rotation(pose))
+	art.aim_rotation = hold_rotation(Vector3.ZERO)
+	# zee's blasters' aim place (ZeeWeaponArtTable._blaster): ZeeWeaponArt's default sits higher.
+	art.view_offset = ZeeWeaponArtTable.pose_offset(pose)
+	art.aim_offset = Vector3(0.0, -0.135, -0.46)
+	# Lifted by half its height, so the middle of the gun is where zee's centred blasters'
+	# is: along the model's own up through the hold's basis (which carries the scale and the
+	# cant), since once the hold is canted the camera's down is no longer the gun's. The aim
+	# place needs it too, or the gun at the sight sits half its height too high.
+	var lift := Vector3(0.0, -height * 0.5, 0.0)
+	art.view_offset += art.view_transform().basis * lift
+	art.aim_offset += art.aim_transform().basis * lift
 	art.world_offset = Vector3(0.0, -height * 0.5 * art.world_scale, 0.0)
-	art.view_rotation = Vector3(-2.0, -4.0, 0.0)
 	return art
+
+
+## zee's hold rotation (pitch, yaw, roll in degrees, written for a model pointing -Z) for a
+## model pointing +Z: pitch and roll change sign, yaw does not.
+static func hold_rotation(zee_rotation: Vector3) -> Vector3:
+	return Vector3(-zee_rotation.x, zee_rotation.y, -zee_rotation.z)
 
 
 static func _scoped(art: ZeeWeaponArt) -> ZeeWeaponArt:
