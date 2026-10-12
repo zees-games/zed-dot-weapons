@@ -501,9 +501,11 @@ static func art() -> Array[ZeeWeaponArt]:
 		_fed(_gun_art(ZedWeaponIds.PUMP_SHOTGUN, "shotgun", ZeeWeaponArtTable.POSE_RIFLE, 0.157), ROUND_SHELL, Vector3(0.0, 0.03, -0.03), true),
 		_fed(_gun_art(ZedWeaponIds.SAWED_OFF, "shotgunShort", ZeeWeaponArtTable.POSE_RIFLE, 0.134), ROUND_SHELL, Vector3(0.0, 0.05, 0.0), true),
 		_fed(_scoped(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "sniperSand", ZeeWeaponArtTable.POSE_RIFLE, 0.283)), ROUND_RIFLE, Vector3(0.0, 0.10, -0.12), true),
-		_fed(_heavy(_gun_art(ZedWeaponIds.MACHINE_GUN, "machinegun", ZeeWeaponArtTable.POSE_HEAVY, 0.264), 1.9), ROUND_BELT, Vector3(0.0, 0.03, -0.068), true),
-		_fed(_heavy(_gun_art(ZedWeaponIds.GRENADE_LAUNCHER, "machinegunLauncher", ZeeWeaponArtTable.POSE_HEAVY, 0.264), 1.6), ROUND_GRENADE, Vector3(0.0, 0.08, -0.12), true),
-		_fed(_heavy(_gun_art(ZedWeaponIds.ROCKET_LAUNCHER, "rocketlauncherModern", ZeeWeaponArtTable.POSE_HEAVY, 0.337), 2.0), ROUND_ROCKET, Vector3(0.0, 0.17, -0.30), true),
+		_box_fed(_heavy(_gun_art(ZedWeaponIds.MACHINE_GUN, "machinegun", ZeeWeaponArtTable.POSE_HEAVY, 0.264), 1.9)),
+		_hand_fed(_fed(_heavy(_gun_art(ZedWeaponIds.GRENADE_LAUNCHER, "machinegunLauncher", ZeeWeaponArtTable.POSE_HEAVY, 0.264), 1.6), ROUND_GRENADE, Vector3(0.0, 0.20, -0.10), true),
+			Vector3(0.0, 0.14, -0.06), 2.2, Vector3.ZERO, &"RELOAD_KEYS_BREAK"),
+		_hand_fed(_fed(_heavy(_gun_art(ZedWeaponIds.ROCKET_LAUNCHER, "rocketlauncherModern", ZeeWeaponArtTable.POSE_HEAVY, 0.337), 2.0), ROUND_ROCKET, Vector3(-0.046, 0.21, 0.30), true),
+			Vector3(0.0, 0.0, 0.30), 2.0, Vector3(0.0, 180.0, 0.0), &"RELOAD_KEYS_MUZZLE"),
 		_heavy(_gun_art(ZedWeaponIds.FLAMETHROWER, "flamethrower_long", ZeeWeaponArtTable.POSE_HEAVY, 0.207), 1.7),
 		_thrown_art(ZedWeaponIds.MOLOTOV, FOOD_DIR + "wine-red.scn", 0.7),
 		_thrown_art(ZedWeaponIds.PIPE_BOMB, WEAPONS_DIR + "grenadeVintage.glb", 0.9),
@@ -581,6 +583,34 @@ static func _fed(art: ZeeWeaponArt, path: String, offset: Vector3, loose: bool =
 	var _with := art.with_magazine(path, offset)
 	if loose:
 		art.set(&"magazine_loose", true)
+	return art
+
+
+## A machine gun fed from a box: zee's ammunition box and belt, built in code (`magazine_part`),
+## on the gun's right side (-X: the model points +Z, so its right is zee's left), dropped and
+## swapped on a reload. Set by name, so an older zee without the fields still loads the pack.
+##
+## [b]A box, not a loose round.[/b] The belt round this gun carried in before was 9 cm, drawn at
+## the hold's scale inside a fist: the reload read as the gun tilting.
+static func _box_fed(art: ZeeWeaponArt) -> ZeeWeaponArt:
+	art.set(&"magazine_part", &"ammo_box")
+	art.magazine_offset = Vector3(-0.09, 0.02, -0.02)
+	art.set(&"magazine_scale", 1.4)
+	return art
+
+
+## A launcher fed a round by hand in sight (zee's `ZeeWeaponArt.load_from`): the push starts at
+## [param from] off the seat (model space), the round drawn at [param scale] and turned by
+## [param rotation] (the rocket's nose to the muzzle), with zee's [param keys] by name
+## (`ZeeWeaponPose.RELOAD_KEYS_BREAK`, `_MUZZLE`). An older zee without them keeps its old reload.
+static func _hand_fed(art: ZeeWeaponArt, from: Vector3, scale: float, rotation: Vector3, keys: StringName) -> ZeeWeaponArt:
+	art.set(&"load_from", from)
+	art.set(&"magazine_scale", scale)
+	art.magazine_rotation = rotation
+	var pose: Script = ZeeWeaponPose
+	var table: Variant = pose.get_script_constant_map().get(keys)
+	if table is Array:
+		art.reload_keys = table
 	return art
 
 

@@ -28,7 +28,7 @@ dot-weapon spawns nothing; a thrown weapon's use is a `DotWeaponSpawn` handed to
 - **The models stand on their base**, origin at the middle of the bottom face, unlike zee's centred blasters, so each gun is lowered by half its measured height in both views (scaled with the model, zee's third trap). Real size, too: the pistol is 0.3 m and the rifle 1.04 m against zee's toy blasters, so the pose scale is zee's times `REAL_SCALE` (1.45).
 - **A bottle turned the way zee turns a grenade is drawn as its own base**, a dark hexagon behind the hand. zee maps a grenade's +Y onto the view's forward, which for something round is invisible. The throwables here are said to face forward already, so they are held standing up.
 
-- **Every gun has something to reload with** (`ZedWeaponPack._fed`): the Weapon Pack's `ammo_uzi` as a box magazine for the pistols and uzis, and a loose round for the hand-fed ones (shotgun shell, rifle cartridge, machine-gun round, grenade, rocket; `magazine_loose`). Without one zee's support hand never leaves the fore-end and the reload is the gun rolling and nothing else. Offsets are in model space (+Z forward, on its base) at the grip's foot or the loading port; check them on `--sheet` (reload 25/50%).
+- **Every gun has something to reload with** (`ZedWeaponPack._fed`): the Weapon Pack's `ammo_uzi` as a box magazine for the pistols and uzis, and a loose round for the hand-fed ones (shotgun shell, rifle cartridge, machine-gun round, grenade, rocket; `magazine_loose`). Without one zee's support hand never leaves the fore-end and the reload is the gun rolling and nothing else. Offsets are in model space (+Z forward, on its base) at the grip's foot or the loading port; check them on `--sheet` with `EXTRA="--reloads …"` (18 reload frames). **The heavy guns are not fed like that** (`_box_fed`, `_hand_fed`): the machine gun swaps zee's ammunition box and belt (`magazine_part`, built in code); the grenade launcher breaks and takes a grenade from above, the rocket launcher is tipped up and a rocket (turned 180, nose to the muzzle) pushed down the muzzle (`load_from`, `magazine_scale`, zee's `RELOAD_KEYS_BREAK` / `_MUZZLE` looked up by name, set by name so an older zee still loads). The rocket at the back of the tube never showed: the tube's rear end is below the screen. The suite's "carried in, in sight" check fails with a key name zee lacks.
 
 ## Every model stands alone, because a game is delivered as a pack
 
@@ -41,7 +41,7 @@ godot --headless --path . --import
 find . -name '*.gd' -not -path './.godot/*' -not -path './addons/dot_*' -not -path './addons/zee_weapons/*' | while read f; do
     godot --headless --path . --check-only --script "res://${f#./}"
 done
-timeout 120 godot --headless --path . res://examples/zed_selftest.tscn   # 9 sections, 30 checks
+timeout 120 godot --headless --path . res://examples/zed_selftest.tscn   # 9 sections, 32 checks
 tools/screenshot.sh --rack                                                # and look at it
 tools/screenshot.sh molotov
 tools/screenshot.sh --sheet service_pistol pump_shotgun hunting_rifle molotov   # zee's 18-frame contact sheet, per weapon

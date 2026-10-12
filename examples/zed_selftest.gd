@@ -15,7 +15,7 @@ extends Node
 
 ## Every check this suite makes; a script error aborts a section part-way, and only the
 ## total can see the checks that never ran.
-const CHECKS := 31
+const CHECKS := 32
 
 const ZEE_COUNT := 27
 
@@ -168,6 +168,18 @@ func _art() -> void:
 		muzzle_dir.is_equal_approx(zee_turn * Vector3.FORWARD))
 	_check("and canted the same way, top toward the crosshair (%s)" % (held * Vector3.UP),
 		(held * Vector3.UP).is_equal_approx(zee_turn * Vector3.UP) and (held * Vector3.UP).x < 0.0)
+
+	# [b]Every heavy gun reloads with something carried into it in sight[/b]: a box and belt,
+	# or a round pushed in from where the hand can be seen. A 9 cm round inside a fist, or a
+	# launcher reload keyed by a name zee does not have, reads as the gun tilting.
+	var unfed: Array[String] = []
+	for id in [ZedWeaponIds.MACHINE_GUN, ZedWeaponIds.GRENADE_LAUNCHER, ZedWeaponIds.ROCKET_LAUNCHER]:
+		var art := ZeeWeaponArtTable.get_art(id)
+		var boxed := art != null and art.magazine_part != &""
+		var fed := art != null and art.magazine_loose and art.load_from != Vector3.ZERO and not art.reload_keys.is_empty()
+		if not boxed and not fed:
+			unfed.append(String(id))
+	_check("every heavy gun reloads with something carried in, in sight: %s" % ", ".join(unfed), unfed.is_empty())
 	_end()
 
 
