@@ -494,16 +494,16 @@ const GUN_FORWARD := Vector3.BACK
 
 static func art() -> Array[ZeeWeaponArt]:
 	return [
-		_gun_art(ZedWeaponIds.SERVICE_PISTOL, "pistol", ZeeWeaponArtTable.POSE_PISTOL, 0.23),
-		_gun_art(ZedWeaponIds.SILENCED_PISTOL, "pistolSilencer", ZeeWeaponArtTable.POSE_PISTOL, 0.23),
-		_gun_art(ZedWeaponIds.UZI, "uzi", ZeeWeaponArtTable.POSE_PISTOL, 0.333),
-		_gun_art(ZedWeaponIds.TACTICAL_SMG, "uziLongSilencer", ZeeWeaponArtTable.POSE_RIFLE, 0.333),
-		_gun_art(ZedWeaponIds.PUMP_SHOTGUN, "shotgun", ZeeWeaponArtTable.POSE_RIFLE, 0.157),
-		_gun_art(ZedWeaponIds.SAWED_OFF, "shotgunShort", ZeeWeaponArtTable.POSE_RIFLE, 0.134),
-		_scoped(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "sniperSand", ZeeWeaponArtTable.POSE_RIFLE, 0.283)),
-		_heavy(_gun_art(ZedWeaponIds.MACHINE_GUN, "machinegun", ZeeWeaponArtTable.POSE_HEAVY, 0.264), 1.9),
-		_heavy(_gun_art(ZedWeaponIds.GRENADE_LAUNCHER, "machinegunLauncher", ZeeWeaponArtTable.POSE_HEAVY, 0.264), 1.6),
-		_heavy(_gun_art(ZedWeaponIds.ROCKET_LAUNCHER, "rocketlauncherModern", ZeeWeaponArtTable.POSE_HEAVY, 0.337), 2.0),
+		_fed(_gun_art(ZedWeaponIds.SERVICE_PISTOL, "pistol", ZeeWeaponArtTable.POSE_PISTOL, 0.23), MAG_BOX, Vector3(0.0, 0.03, -0.092)),
+		_fed(_gun_art(ZedWeaponIds.SILENCED_PISTOL, "pistolSilencer", ZeeWeaponArtTable.POSE_PISTOL, 0.23), MAG_BOX, Vector3(0.0, 0.03, -0.150)),
+		_fed(_gun_art(ZedWeaponIds.UZI, "uzi", ZeeWeaponArtTable.POSE_PISTOL, 0.333), MAG_BOX, Vector3(0.0, 0.03, -0.027)),
+		_fed(_gun_art(ZedWeaponIds.TACTICAL_SMG, "uziLongSilencer", ZeeWeaponArtTable.POSE_RIFLE, 0.333), MAG_BOX, Vector3(0.0, 0.03, -0.148)),
+		_fed(_gun_art(ZedWeaponIds.PUMP_SHOTGUN, "shotgun", ZeeWeaponArtTable.POSE_RIFLE, 0.157), ROUND_SHELL, Vector3(0.0, 0.03, -0.03), true),
+		_fed(_gun_art(ZedWeaponIds.SAWED_OFF, "shotgunShort", ZeeWeaponArtTable.POSE_RIFLE, 0.134), ROUND_SHELL, Vector3(0.0, 0.05, 0.0), true),
+		_fed(_scoped(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "sniperSand", ZeeWeaponArtTable.POSE_RIFLE, 0.283)), ROUND_RIFLE, Vector3(0.0, 0.10, -0.12), true),
+		_fed(_heavy(_gun_art(ZedWeaponIds.MACHINE_GUN, "machinegun", ZeeWeaponArtTable.POSE_HEAVY, 0.264), 1.9), ROUND_BELT, Vector3(0.0, 0.03, -0.068), true),
+		_fed(_heavy(_gun_art(ZedWeaponIds.GRENADE_LAUNCHER, "machinegunLauncher", ZeeWeaponArtTable.POSE_HEAVY, 0.264), 1.6), ROUND_GRENADE, Vector3(0.0, 0.08, -0.12), true),
+		_fed(_heavy(_gun_art(ZedWeaponIds.ROCKET_LAUNCHER, "rocketlauncherModern", ZeeWeaponArtTable.POSE_HEAVY, 0.337), 2.0), ROUND_ROCKET, Vector3(0.0, 0.17, -0.30), true),
 		_heavy(_gun_art(ZedWeaponIds.FLAMETHROWER, "flamethrower_long", ZeeWeaponArtTable.POSE_HEAVY, 0.207), 1.7),
 		_thrown_art(ZedWeaponIds.MOLOTOV, FOOD_DIR + "wine-red.scn", 0.7),
 		_thrown_art(ZedWeaponIds.PIPE_BOMB, WEAPONS_DIR + "grenadeVintage.glb", 0.9),
@@ -555,6 +555,32 @@ static func _scoped(art: ZeeWeaponArt) -> ZeeWeaponArt:
 	art.aim_zoom = 0.4
 	art.aim_time = 0.2
 	art.weight = 1.5
+	return art
+
+
+## What a reload carries in, from the Weapon Pack's own ammunition models: a box magazine for
+## the pistols and the uzis, and a loose round (a shell, a cartridge, a grenade, a rocket) for
+## everything fed by hand.
+const MAG_BOX := WEAPONS_DIR + "ammo_uzi.glb"
+const ROUND_SHELL := WEAPONS_DIR + "ammo_shotgun.glb"
+const ROUND_RIFLE := WEAPONS_DIR + "ammo_sniper.glb"
+const ROUND_BELT := WEAPONS_DIR + "ammo_machinegun.glb"
+const ROUND_GRENADE := WEAPONS_DIR + "ammo_machinegunLauncher.glb"
+const ROUND_ROCKET := WEAPONS_DIR + "ammo_rocketModern.glb"
+
+
+## Gives a gun something to reload with: [param path] at [param offset] in the model's own
+## space (+Z forward, standing on its base), where zee's support hand takes it.
+##
+## [b]Without one, zee's reload is the gun rolling and nothing else[/b]: the support hand stays
+## on the fore-end (zee sends it to the magazine well only when there is a magazine) and nothing
+## leaves or enters the gun. The play test called that "no proper reload animations". A
+## [param loose] round is drawn only while it is carried in (`ZeeWeaponArt.magazine_loose`, set
+## by name so an older zee without it still loads the pack).
+static func _fed(art: ZeeWeaponArt, path: String, offset: Vector3, loose: bool = false) -> ZeeWeaponArt:
+	var _with := art.with_magazine(path, offset)
+	if loose:
+		art.set(&"magazine_loose", true)
 	return art
 
 

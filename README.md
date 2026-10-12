@@ -50,7 +50,7 @@ Godot **4.7**, [zee-dot-weapons](https://github.com/zees-games/zee-dot-weapons) 
 The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-kit` and `assets/melee` from a zee-dot-weapons checkout (dot-bootstrap does).
 
 ## Credits
-The guns, the launchers, the flamethrower and the pipe bomb are Kenney's Weapon Pack, and the wine bottle and the honey jar are his Food Kit ([kenney.nl](https://kenney.nl), CC0). Each kit's licence is next to its files.
+The guns, the launchers, the flamethrower, the pipe bomb and the magazines and rounds a reload carries are Kenney's Weapon Pack, and the wine bottle and the honey jar are his Food Kit ([kenney.nl](https://kenney.nl), CC0). Each kit's licence is next to its files.
 
 ## License
 MIT. See [LICENSE](LICENSE). The Kenney art is CC0, which is public domain.
