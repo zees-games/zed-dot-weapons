@@ -494,13 +494,15 @@ const GUN_FORWARD := Vector3.BACK
 
 static func art() -> Array[ZeeWeaponArt]:
 	return [
-		_fed(_gun_art(ZedWeaponIds.SERVICE_PISTOL, "pistol", ZeeWeaponArtTable.POSE_PISTOL, 0.23), MAG_BOX, Vector3(0.0, 0.03, -0.092)),
-		_fed(_gun_art(ZedWeaponIds.SILENCED_PISTOL, "pistolSilencer", ZeeWeaponArtTable.POSE_PISTOL, 0.23), MAG_BOX, Vector3(0.0, 0.03, -0.150)),
-		_fed(_gun_art(ZedWeaponIds.UZI, "uzi", ZeeWeaponArtTable.POSE_PISTOL, 0.333), MAG_BOX, Vector3(0.0, 0.03, -0.027)),
-		_fed(_gun_art(ZedWeaponIds.TACTICAL_SMG, "uziLongSilencer", ZeeWeaponArtTable.POSE_RIFLE, 0.333), MAG_BOX, Vector3(0.0, 0.03, -0.148)),
-		_fed(_gun_art(ZedWeaponIds.PUMP_SHOTGUN, "shotgun", ZeeWeaponArtTable.POSE_RIFLE, 0.157), ROUND_SHELL, Vector3(0.0, 0.03, -0.03), true),
+		_boxed(_fed(_gun_art(ZedWeaponIds.SERVICE_PISTOL, "pistol", ZeeWeaponArtTable.POSE_PISTOL, 0.23), MAG_BOX, Vector3(0.0, 0.03, -0.092))),
+		_boxed(_fed(_gun_art(ZedWeaponIds.SILENCED_PISTOL, "pistolSilencer", ZeeWeaponArtTable.POSE_PISTOL, 0.23), MAG_BOX, Vector3(0.0, 0.03, -0.150))),
+		_boxed(_fed(_gun_art(ZedWeaponIds.UZI, "uzi", ZeeWeaponArtTable.POSE_PISTOL, 0.333), MAG_BOX, Vector3(0.0, 0.03, -0.027))),
+		_boxed(_fed(_gun_art(ZedWeaponIds.TACTICAL_SMG, "uziLongSilencer", ZeeWeaponArtTable.POSE_RIFLE, 0.333), MAG_BOX, Vector3(0.0, 0.03, -0.148))),
+		_rounds(_hand_fed(_fed(_gun_art(ZedWeaponIds.PUMP_SHOTGUN, "shotgun", ZeeWeaponArtTable.POSE_RIFLE, 0.157), ROUND_SHELL, Vector3(0.0, 0.03, -0.03), true),
+			Vector3(0.0, -0.10, 0.02), 1.6, Vector3.ZERO, &"RELOAD_KEYS_TUBE"), 3),
 		_fed(_gun_art(ZedWeaponIds.SAWED_OFF, "shotgunShort", ZeeWeaponArtTable.POSE_RIFLE, 0.134), ROUND_SHELL, Vector3(0.0, 0.05, 0.0), true),
-		_fed(_scoped(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "sniperSand", ZeeWeaponArtTable.POSE_RIFLE, 0.283)), ROUND_RIFLE, Vector3(0.0, 0.10, -0.12), true),
+		_rounds(_hand_fed(_fed(_scoped(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "sniperSand", ZeeWeaponArtTable.POSE_RIFLE, 0.283)), ROUND_RIFLE, Vector3(0.0, 0.10, -0.12), true),
+			Vector3(0.03, 0.12, 0.0), 0.7, Vector3(90.0, 0.0, 0.0), &"RELOAD_KEYS_BOLT"), 2),
 		_box_fed(_heavy(_gun_art(ZedWeaponIds.MACHINE_GUN, "machinegun", ZeeWeaponArtTable.POSE_HEAVY, 0.264), 1.9)),
 		_hand_fed(_fed(_heavy(_gun_art(ZedWeaponIds.GRENADE_LAUNCHER, "machinegunLauncher", ZeeWeaponArtTable.POSE_HEAVY, 0.264), 1.6), ROUND_GRENADE, Vector3(0.0, 0.20, -0.10), true),
 			Vector3(0.0, 0.14, -0.06), 2.2, Vector3.ZERO, &"RELOAD_KEYS_BREAK"),
@@ -611,6 +613,60 @@ static func _hand_fed(art: ZeeWeaponArt, from: Vector3, scale: float, rotation: 
 	var table: Variant = pose.get_script_constant_map().get(keys)
 	if table is Array:
 		art.reload_keys = table
+	return art
+
+
+## A stick magazine for the pistols and the uzis: zee's `box_magazine`, built in code, drawn half
+## again as big, its foot below the grip's.
+##
+## [b]Not the Weapon Pack's `ammo_uzi`[/b], which is a 6.5 cm cartridge: inside the grip and the
+## glove it was nothing on screen, and the reload sheet showed the gun lifting with nothing
+## leaving it or going in. An older zee without the part keeps the cartridge.
+static func _boxed(art: ZeeWeaponArt) -> ZeeWeaponArt:
+	var parts: Variant = load(ZEE_RELOAD_PARTS) if ResourceLoader.exists(ZEE_RELOAD_PARTS) else null
+	if parts is Script and (parts as Script).get_script_constant_map().has("BOX_MAGAZINE"):
+		art.magazine_path = ""
+		art.set(&"magazine_part", &"box_magazine")
+		art.magazine_offset += Vector3(0.0, -0.065, 0.0)
+		# Half again as big: at real size the gloves round the grip hid all but its foot.
+		art.set(&"magazine_scale", 1.5)
+	# Lifted further than zee's pose keys: these are real-sized, and a grip 23-33 cm tall puts
+	# its foot (the magazine well) under the bottom of the screen at zee's reload height.
+	art.reload_keys = lifted(ZeeWeaponArtTable.reload_keys(art.pose), RELOAD_LIFT)
+	return art
+
+
+## How much higher than zee's keys a box-fed gun is raised mid-reload, in metres.
+const RELOAD_LIFT := Vector3(-0.015, 0.075, 0.0)
+
+
+## [param keys] with [param lift] added in proportion to how far each key already is from rest,
+## so the ends stay at rest and the curve keeps its shape (no new corner for the suite's "never
+## jolts" check to find).
+static func lifted(keys: Array, lift: Vector3) -> Array:
+	var most := 0.0
+	for key: Array in keys:
+		most = maxf(most, (key[1] as Vector3).length())
+	if most <= 0.0001:
+		return keys
+	var out: Array = []
+	for key: Array in keys:
+		var weight := (key[1] as Vector3).length() / most
+		out.append([key[0], (key[1] as Vector3) + lift * weight, key[2]])
+	return out
+
+
+## zee's parts built in code, by path (the file has no `class_name`).
+const ZEE_RELOAD_PARTS := "res://addons/zee_weapons/view/zee_reload_parts.gd"
+
+
+## How many rounds a hand-fed gun takes, one push each (zee's `ZeeWeaponArt.load_count`, by name).
+##
+## [b]The pump gun and the hunting rifle are fed like zee's pump guns and bolt gun[/b]
+## (`RELOAD_KEYS_TUBE`, `_BOLT`): carried once from below the screen, the one round showed in one
+## frame of the reload sheet, and the rifle, long and lifted half out of frame, read as a tilt.
+static func _rounds(art: ZeeWeaponArt, count: int) -> ZeeWeaponArt:
+	art.set(&"load_count", count)
 	return art
 
 
