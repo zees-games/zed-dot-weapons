@@ -1,0 +1,54 @@
+[gd_resource type="Resource" script_class="DotWeaponDef" format=3]
+
+[ext_resource type="Script" path="res://addons/dot_weapon/core/dot_weapon_def.gd" id="1_b8qyp"]
+[ext_resource type="Script" path="res://addons/dot_combat/core/dot_damage_type.gd" id="2_fabl3"]
+[ext_resource type="Script" path="res://addons/dot_weapon/tuning/dot_weapon_ballistics.gd" id="3_yhhs5"]
+
+[sub_resource type="Resource" id="Resource_jn3sr"]
+script = ExtResource("2_fabl3")
+id = &"blast"
+display_name = "Blast"
+armour_share = 0.75
+armour_wear = 1.5
+uses_hit_groups = false
+knockback_per_point = 0.35
+
+[sub_resource type="Resource" id="Resource_p263w"]
+script = ExtResource("3_yhhs5")
+damage = 60.0
+damage_type = SubResource("Resource_jn3sr")
+min_charge_damage = 1.0
+max_range = 300.0
+spread = 0.0
+spread_moving = 0.0
+spread_airborne = 0.0
+recoil_pitch = 4.0
+splash_radius = 6.5
+splash_damage = 240.0
+splash_type = SubResource("Resource_jn3sr")
+speed = 36.0
+min_speed = 36.0
+radius = 0.15
+
+[resource]
+script = ExtResource("1_b8qyp")
+id = &"rocket_launcher"
+display_name = "Rocket Launcher"
+tags = Array[StringName]([&"heavy", &"explosive"])
+behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_projectile.gd"
+params = {
+&"bash_cooldown_ticks": 51,
+&"bash_damage": 42.0,
+&"bash_reach": 1.9
+}
+tuning = SubResource("Resource_p263w")
+authored_tick_rate = 64
+slot = 4
+deploy_ticks = 51
+holster_ticks = 32
+use_interval_ticks = 96
+ammo_type = &"ordnance"
+magazine = 1
+reserve = 6
+reserve_max = 12
+reload_ticks = 224

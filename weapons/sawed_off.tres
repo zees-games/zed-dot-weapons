@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="DotWeaponDef" format=3]
+
+[ext_resource type="Script" path="res://addons/dot_weapon/core/dot_weapon_def.gd" id="1_kp1pl"]
+[ext_resource type="Script" path="res://addons/dot_combat/core/dot_damage_type.gd" id="2_yuw6n"]
+[ext_resource type="Script" path="res://addons/dot_weapon/tuning/dot_weapon_ballistics.gd" id="3_brafn"]
+
+[sub_resource type="Resource" id="Resource_j4rxa"]
+script = ExtResource("2_yuw6n")
+id = &"dart"
+display_name = "Dart"
+falloff_start = 30.0
+falloff_end = 70.0
+falloff_floor = 0.6
+armour_share = 0.5
+self_scale = 0.0
+
+[sub_resource type="Resource" id="Resource_k2gj6"]
+script = ExtResource("3_brafn")
+damage = 12.0
+damage_type = SubResource("Resource_j4rxa")
+max_range = 15.0
+pellets = 14
+fixed_pattern = true
+spread = 7.5
+spread_moving = 1.0
+recoil_pitch = 3.6
+
+[resource]
+script = ExtResource("1_kp1pl")
+id = &"sawed_off"
+display_name = "Sawed-Off"
+tags = Array[StringName]([&"primary"])
+behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
+params = {
+&"bash_cooldown_ticks": 51,
+&"bash_damage": 42.0,
+&"bash_reach": 1.9
+}
+tuning = SubResource("Resource_k2gj6")
+authored_tick_rate = 64
+slot = 3
+deploy_ticks = 19
+use_interval_ticks = 16
+ammo_type = &"shells"
+magazine = 2
+reserve = 40
+reserve_max = 80
+reload_ticks = 128

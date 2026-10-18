@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="DotWeaponDef" format=3]
+
+[ext_resource type="Script" path="res://addons/dot_weapon/core/dot_weapon_def.gd" id="1_8uhnd"]
+[ext_resource type="Script" path="res://addons/dot_combat/core/dot_damage_type.gd" id="2_5dgkb"]
+[ext_resource type="Script" path="res://addons/dot_weapon/tuning/dot_weapon_ballistics.gd" id="3_fehun"]
+
+[sub_resource type="Resource" id="Resource_j4rxa"]
+script = ExtResource("2_5dgkb")
+id = &"dart"
+display_name = "Dart"
+falloff_start = 30.0
+falloff_end = 70.0
+falloff_floor = 0.6
+armour_share = 0.5
+self_scale = 0.0
+
+[sub_resource type="Resource" id="Resource_rsm38"]
+script = ExtResource("3_fehun")
+damage = 24.0
+damage_type = SubResource("Resource_j4rxa")
+max_range = 120.0
+spread = 0.6
+spread_moving = 1.6
+bloom = 0.5
+bloom_max = 3.0
+recoil_pitch = 0.8
+
+[resource]
+script = ExtResource("1_8uhnd")
+id = &"silenced_pistol"
+display_name = "Silenced Pistol"
+tags = Array[StringName]([&"sidearm", &"silenced"])
+behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
+params = {
+&"bash_cooldown_ticks": 51,
+&"bash_damage": 42.0,
+&"bash_reach": 1.9
+}
+tuning = SubResource("Resource_rsm38")
+authored_tick_rate = 64
+slot = 2
+deploy_ticks = 16
+holster_ticks = 12
+use_interval_ticks = 10
+ammo_type = &"darts_light"
+magazine = 12
+reserve = 90
+reserve_max = 180
+reload_ticks = 96

@@ -1,0 +1,243 @@
+{
+	"schema": 1,
+	"title": "Zed Weapons",
+	"kinds": [
+		"weapon"
+	],
+	"games": "*",
+	"categories": [
+		{
+			"id": "melee",
+			"name": "Melee"
+		},
+		{
+			"id": "sidearm",
+			"name": "Sidearms"
+		},
+		{
+			"id": "primary",
+			"name": "Primary"
+		},
+		{
+			"id": "heavy",
+			"name": "Heavy"
+		},
+		{
+			"id": "thrown",
+			"name": "Thrown"
+		}
+	],
+	"entries": [
+		{
+			"kind": "weapon",
+			"id": "service_pistol",
+			"name": "Service Pistol",
+			"def": "weapons/service_pistol.tres",
+			"slot": 2,
+			"category": "sidearm",
+			"tags": [
+				"sidearm"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "silenced_pistol",
+			"name": "Silenced Pistol",
+			"def": "weapons/silenced_pistol.tres",
+			"slot": 2,
+			"category": "sidearm",
+			"tags": [
+				"sidearm",
+				"silenced"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "uzi",
+			"name": "Uzi",
+			"def": "weapons/uzi.tres",
+			"slot": 2,
+			"category": "sidearm",
+			"tags": [
+				"sidearm",
+				"automatic"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "tactical_smg",
+			"name": "Tactical SMG",
+			"def": "weapons/tactical_smg.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary",
+				"automatic",
+				"silenced"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "pump_shotgun",
+			"name": "Pump Shotgun",
+			"def": "weapons/pump_shotgun.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "sawed_off",
+			"name": "Sawed-Off",
+			"def": "weapons/sawed_off.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "hunting_rifle",
+			"name": "Hunting Rifle",
+			"def": "weapons/hunting_rifle.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary",
+				"scoped"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "machine_gun",
+			"name": "Machine Gun",
+			"def": "weapons/machine_gun.tres",
+			"slot": 4,
+			"category": "heavy",
+			"tags": [
+				"heavy",
+				"automatic",
+				"primary"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "grenade_launcher",
+			"name": "Grenade Launcher",
+			"def": "weapons/grenade_launcher.tres",
+			"slot": 4,
+			"category": "heavy",
+			"tags": [
+				"heavy",
+				"explosive"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "rocket_launcher",
+			"name": "Rocket Launcher",
+			"def": "weapons/rocket_launcher.tres",
+			"slot": 4,
+			"category": "heavy",
+			"tags": [
+				"heavy",
+				"explosive"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "flamethrower",
+			"name": "Flamethrower",
+			"def": "weapons/flamethrower.tres",
+			"slot": 4,
+			"category": "heavy",
+			"tags": [
+				"heavy",
+				"automatic",
+				"incendiary"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "molotov",
+			"name": "Molotov",
+			"def": "weapons/molotov.tres",
+			"slot": 5,
+			"category": "thrown",
+			"tags": [
+				"thrown",
+				"molotov"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "pipe_bomb",
+			"name": "Pipe Bomb",
+			"def": "weapons/pipe_bomb.tres",
+			"slot": 5,
+			"category": "thrown",
+			"tags": [
+				"thrown",
+				"pipe_bomb",
+				"explosive"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "bile_jar",
+			"name": "Bile Jar",
+			"def": "weapons/bile_jar.tres",
+			"slot": 5,
+			"category": "thrown",
+			"tags": [
+				"thrown",
+				"bile"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		}
+	]
+}

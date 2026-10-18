@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="DotWeaponDef" format=3]
+
+[ext_resource type="Script" path="res://addons/dot_weapon/core/dot_weapon_def.gd" id="1_s70ga"]
+[ext_resource type="Script" path="res://addons/dot_combat/core/dot_damage_type.gd" id="2_7kggq"]
+[ext_resource type="Script" path="res://addons/dot_weapon/tuning/dot_weapon_ballistics.gd" id="3_p0cjj"]
+
+[sub_resource type="Resource" id="Resource_j4rxa"]
+script = ExtResource("2_7kggq")
+id = &"dart"
+display_name = "Dart"
+falloff_start = 30.0
+falloff_end = 70.0
+falloff_floor = 0.6
+armour_share = 0.5
+self_scale = 0.0
+
+[sub_resource type="Resource" id="Resource_yjebk"]
+script = ExtResource("3_p0cjj")
+damage = 5.0
+damage_type = SubResource("Resource_j4rxa")
+max_range = 9.0
+pellets = 4
+spread = 7.0
+spread_moving = 1.0
+recoil_pitch = 0.05
+
+[resource]
+script = ExtResource("1_s70ga")
+id = &"flamethrower"
+display_name = "Flamethrower"
+tags = Array[StringName]([&"heavy", &"automatic", &"incendiary"])
+behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
+params = {
+&"bash_cooldown_ticks": 51,
+&"bash_damage": 42.0,
+&"bash_reach": 1.9
+}
+tuning = SubResource("Resource_yjebk")
+authored_tick_rate = 64
+slot = 4
+deploy_ticks = 51
+holster_ticks = 32
+fire_mode = 1
+use_interval_ticks = 6
+ammo_type = &"fuel"
+reserve = 300
+reserve_max = 300
+reload_ticks = 0
+auto_reload = false

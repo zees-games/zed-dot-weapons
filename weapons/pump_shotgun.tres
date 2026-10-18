@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="DotWeaponDef" format=3]
+
+[ext_resource type="Script" path="res://addons/dot_weapon/core/dot_weapon_def.gd" id="1_psss1"]
+[ext_resource type="Script" path="res://addons/dot_combat/core/dot_damage_type.gd" id="2_m2gw8"]
+[ext_resource type="Script" path="res://addons/dot_weapon/tuning/dot_weapon_ballistics.gd" id="3_n7wof"]
+
+[sub_resource type="Resource" id="Resource_j4rxa"]
+script = ExtResource("2_m2gw8")
+id = &"dart"
+display_name = "Dart"
+falloff_start = 30.0
+falloff_end = 70.0
+falloff_floor = 0.6
+armour_share = 0.5
+self_scale = 0.0
+
+[sub_resource type="Resource" id="Resource_qca7t"]
+script = ExtResource("3_n7wof")
+damage = 14.0
+damage_type = SubResource("Resource_j4rxa")
+max_range = 24.0
+pellets = 10
+fixed_pattern = true
+spread = 4.6
+spread_moving = 0.6
+recoil_pitch = 2.6
+
+[resource]
+script = ExtResource("1_psss1")
+id = &"pump_shotgun"
+display_name = "Pump Shotgun"
+tags = Array[StringName]([&"primary"])
+behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
+params = {
+&"bash_cooldown_ticks": 51,
+&"bash_damage": 42.0,
+&"bash_reach": 1.9
+}
+tuning = SubResource("Resource_qca7t")
+authored_tick_rate = 64
+slot = 3
+deploy_ticks = 26
+holster_ticks = 18
+use_interval_ticks = 55
+ammo_type = &"shells"
+magazine = 8
+reserve = 56
+reserve_max = 112
+reload_ticks = 218

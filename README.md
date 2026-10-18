@@ -25,6 +25,8 @@ The guns share zee-dot-weapons' ammunition, so a box of ammo fills both packs' g
 
 What a throwable does when it lands is up to the game, because dot-weapon spawns nothing itself. Each one says what it is with a tag (`molotov`, `pipe_bomb`, `bile`), and the flamethrower is tagged `incendiary`. In game-zombie-zone a molotov starts a fire, a pipe bomb beeps, draws the horde to it and goes off, and a bile jar brings every zombie nearby to where it broke.
 
+**Workshop pack.** `provides.json` and `weapons/*.tres` publish the fourteen weapons as a schema-1 Workshop weapon pack (kind `weapon`, like zee-dot-weapons), so subscribing to the pack makes them appear in a `DotWeaponCatalogue` that follows the content index. They are generated from the code table by `tools/export-defs.sh`.
+
 ## Using it
 Link `addons/zed_weapons` next to `addons/zee_weapons` and call `install()` once, before you build your first weapon rig:
 

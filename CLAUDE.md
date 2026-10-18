@@ -10,6 +10,10 @@ A second copy of zee's rig, view model and effects for fourteen more weapons wou
 
 **The sources are static methods, not lambdas.** zee keeps them in a static variable that the engine clears after it has freed the scripts at exit, and the first version's lambdas outlived their script: every process that installed the pack aborted on the way out (`double free or corruption`, exit 134) with every check passed. dot-server-deploy's zombiezone_client found it by its exit code; the suite's "exiting" section runs `tools/exit_check.gd` as a second process and fails with a lambda put back.
 
+## The Workshop form
+
+`weapons/*.tres` (one `DotWeaponDef` each) and `provides.json` (schema 1, kind `weapon`, `meta.asset_root` `.`) publish the pack so that subscribing to it lists its weapons in a `DotWeaponCatalogue` following the content index. They are **generated** from `ZedWeaponPack.weapons` by `tools/export-defs.sh` (`ZedDefExport`, which reuses zee's `ZeeDefExport` for categories and the document); the suite's "Workshop files" section fails when they are stale, when an id is not a `ZedWeaponPack` weapon, or when one collides with zee's. Change a builder, re-run the script, commit all of it.
+
 ## Ticks at 64 Hz, and every row says so
 
 Every duration is in ticks at `ZedWeaponPack.TICK_RATE` (64), and both builders (`_gun`, `_thrown`) set `DotWeaponDef.authored_tick_rate` to it, so dot-weapon's arsenal scales each row to the rate a server runs at (zee's [design](../zee-dot-weapons/docs/design.md#durations-are-ticks)). A builder added without it fires at another speed off 64 Hz; the suite's "the documents" section counts the stamped rows.

@@ -15,7 +15,7 @@ extends Node
 
 ## Every check this suite makes; a script error aborts a section part-way, and only the
 ## total can see the checks that never ran.
-const CHECKS := 32
+const CHECKS := 43
 
 const ZEE_COUNT := 27
 
@@ -32,6 +32,7 @@ func _ready() -> void:
 	_ids()
 	_install()
 	_documents()
+	_workshop()
 	_art()
 	_sights()
 	_firing()
@@ -128,6 +129,76 @@ func _documents() -> void:
 		if def.authored_tick_rate == ZedWeaponPack.TICK_RATE:
 			stamped += 1
 	_check("every row says it was written at %d Hz" % ZedWeaponPack.TICK_RATE, stamped == ZedWeaponIds.all().size())
+	_end()
+
+
+func _workshop() -> void:
+	_begin("the Workshop files agree with the code table")
+
+	var doc: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://provides.json"))
+	_check("provides.json parses to a dictionary", doc is Dictionary)
+	if not (doc is Dictionary):
+		_end()
+		return
+
+	var provides := doc as Dictionary
+	var code := ZedDefExport.own_weapons()
+	var entries: Array = provides.get("entries", [])
+	_check("schema 1, kind weapon", int(provides.get("schema", 0)) == 1 and provides.get("kinds", []) == ["weapon"])
+	_check("one entry per code weapon", entries.size() == code.size() and code.size() == ZedWeaponIds.all().size())
+	_check("provides.json is what the exporter writes now (run tools/export-defs.sh)",
+		JSON.stringify(provides) == JSON.stringify(JSON.parse_string(JSON.stringify(ZedDefExport.provides(code)))))
+
+	var by_id := {}
+	for def in code:
+		by_id[def.id] = def
+
+	var bad: Array[String] = []
+	var clash: Array[String] = []
+	for e: Dictionary in entries:
+		var id := StringName(e["id"])
+		var def: DotWeaponDef = by_id.get(id, null)
+		var loaded := load("res://" + String(e["def"])) as DotWeaponDef
+		if def == null or loaded == null or loaded.id != id or loaded.slot != def.slot \
+				or e.get("category", "") != ZeeDefExport.category_for(def.slot) \
+				or not (e.get("meta", {}) as Dictionary).has("asset_root"):
+			bad.append(String(id))
+		if ZeeWeaponIds.all().has(id):
+			clash.append(String(id))
+
+	_check("every provided id is a ZedWeaponPack weapon whose file loads: %s" % ", ".join(bad), bad.is_empty())
+	_check("no provided id is one zee provides: %s" % ", ".join(clash), clash.is_empty())
+
+	var zee_doc: Variant = JSON.parse_string(FileAccess.get_file_as_string(ProjectSettings.globalize_path("res://").path_join("../zee-dot-weapons/provides.json")))
+	if zee_doc is Dictionary:
+		var zee_ids := {}
+		for e: Dictionary in (zee_doc as Dictionary).get("entries", []):
+			zee_ids[e["id"]] = true
+		var shared := 0
+		for e: Dictionary in entries:
+			if zee_ids.has(e["id"]):
+				shared += 1
+		_check("none collides with zee's provides.json", shared == 0)
+	else:
+		_check("zee's provides.json is not beside this checkout (skipped)", true)
+
+	var index := DotContentIndex.new()
+	index.set_session(DotContentIndex.SESSION_SOLO)
+	var added := index.add_pack({
+		"content_id": "gamemann/zed-dot-weapons", "version": "1.0.0", "prefix": "res://",
+		"session": "solo", "source": "subscription", "provides": provides,
+	})
+	_check("the index takes the pack", added.ok)
+	var cat := DotWeaponCatalogue.new().follow_content(index)
+	var listed := 0
+	for def in code:
+		if cat.has(def.id) and cat.listing(def.id) != null:
+			listed += 1
+	_check("a catalogue following the index lists every zed weapon", cat.size() == code.size() and listed == code.size())
+	_check("and validates", cat.validate().ok)
+	_check("a delivered weapon instantiates its behaviour", cat.instantiate(ZedWeaponIds.UZI).ok and cat.instantiate(ZedWeaponIds.MOLOTOV).ok)
+	cat.unfollow_content()
+
 	_end()
 
 
