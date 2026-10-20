@@ -12,25 +12,31 @@ import hq_kit as K
 # Where the attachments go, in mm. Each attachment is modelled with its origin at its mount.
 RAIL_TOP = 25.4          # top of the picatinny teeth, upper receiver and handguard alike
 HG_FRONT = 205.0
+HG_RAIL_TOP = 21.4       # the handguard's rails: low profile, so they stay out of the aimed view
 MUZZLE_BASE = 362.0      # where the flash hider starts: a suppressor slides over it from here
 MUZZLE_END = 402.0
+# Height of the sight line over the bore. A real carbine's is about 66 mm; the first version
+# kept it at 46, 20 mm over the rails, and the handguard's top rail filled the bottom of the
+# aimed view like a slab. Taller sights and a handguard rail 4 mm lower than the receiver's
+# (HG_RAIL_TOP) put the rail's near end well below the line, out of the sight picture.
+SIGHT_Z = 76.0
 SOCKETS = {
     "socket_optic": (0, -62, RAIL_TOP),
     "socket_muzzle": (0, MUZZLE_BASE, 0),
-    "socket_underbarrel": (0, 150, -RAIL_TOP),
-    "socket_side": (RAIL_TOP, 178, 0),
+    "socket_underbarrel": (0, 150, -HG_RAIL_TOP),
+    "socket_side": (HG_RAIL_TOP, 178, 0),
     "socket_magazine": (0, -24, -20),
     # Not sockets: the iron sight's line, through the rear aperture and the front post's tip.
     # zee aims along these instead of measuring the mesh and building a sight of its own.
-    "sight_rear": (0, -133, 46),
-    "sight_front": (0, 276.75, 46),
+    "sight_rear": (0, -133, SIGHT_Z),
+    "sight_front": (0, 276.75, SIGHT_Z),
 }
 
 
-def rail(name, y0, y1, side, base, hi, mat="anod"):
+def rail(name, y0, y1, side, base, hi, mat="anod", top=RAIL_TOP):
     """A picatinny rail from y0 to y1 on one side ('top', 'bottom', 'right', 'left'), its foot at
     `base` mm from the bore, with the cross slots cut every 10 mm."""
-    h = RAIL_TOP - base
+    h = top - base
     sec = [(-8.0, 0), (8.0, 0), (8.0, h - 4.2), (10.6, h - 2.0), (10.6, h - 1.0), (9.6, h),
            (-9.6, h), (-10.6, h - 1.0), (-10.6, h - 2.0), (-8.0, h - 4.2)]
     r = K.profile_x(name, [(x, z + base) for x, z in sec], y0, y1, mat)
@@ -184,7 +190,7 @@ def handguard(hi):
     K.finish(body, hi, bevel_mm=0.8)
     parts.append(body)
     for side in ("top", "bottom", "right", "left"):
-        parts.append(rail("hg_rail_" + side, 33, HG_FRONT - 2, side, 16.0, hi))
+        parts.append(rail("hg_rail_" + side, 33, HG_FRONT - 2, side, 16.0, hi, top=HG_RAIL_TOP))
     # Bolt heads at the corners of the front, one per side.
     for k in range(4):
         b = K.lathe("bolt_head", [(0, 0), (0, 3.2), (1.8, 3.2), (2.2, 2.6), (2.2, 0)], 6 if not hi else 24, "steel", axis="X")
@@ -201,17 +207,17 @@ def barrel(hi):
     b = K.lathe("barrel", prof, n, "steel")
     parts.append(K.finish(b, hi, bevel_mm=0.4))
     # Front sight base: the block round the barrel, the A-frame, the post between its ears.
-    fsb = K.profile("fsb", [(262, -13), (292, -13), (292, 9), (287, 13), (283, 41), (270, 41), (266, 13), (262, 9)], -9.5, 9.5, "steel")
-    K.cut(fsb, K.profile("fsb_win", [(271, 15), (282, 15), (279.5, 33), (273.5, 33)], -12, 12, None))
+    fsb = K.profile("fsb", [(262, -13), (292, -13), (292, 9), (287, 13), (283, 71), (270, 71), (266, 13), (262, 9)], -9.5, 9.5, "steel")
+    K.cut(fsb, K.profile("fsb_win", [(271, 15), (282, 15), (279.5, 63), (273.5, 63)], -12, 12, None))
     K.cut(fsb, K.cyl("fsb_bore", 255, 300, 9.0, 24, None))
     K.finish(fsb, hi, bevel_mm=0.8)
     parts.append(fsb)
-    ears = K.profile("fsb_ears", [(268, 39), (285, 39), (285, 47), (281, 54), (272, 54), (268, 47)], -8.5, 8.5, "steel")
-    K.cut(ears, K.box("ear_gap", (0, 276.5, 50), (11, 30, 14), None))
+    ears = K.profile("fsb_ears", [(268, 69), (285, 69), (285, 77), (281, 84), (272, 84), (268, 77)], -8.5, 8.5, "steel")
+    K.cut(ears, K.box("ear_gap", (0, 276.5, 80), (11, 30, 14), None))
     parts.append(K.finish(ears, hi, bevel_mm=0.6))
-    # The post's tip is level with the rear aperture's centre (46 mm), so the sight line runs
+    # The post's tip is level with the rear aperture's centre (SIGHT_Z), so the sight line runs
     # parallel to the bore and the view model can hold it straight down the screen's axis.
-    post = K.profile("post", [(275, 39), (278.5, 39), (278.5, 45.5), (277.8, 46.5), (275.7, 46.5), (275, 45.5)], -1.3, 1.3, "steel")
+    post = K.profile("post", [(275, 69), (278.5, 69), (278.5, 75.5), (277.8, 76.5), (275.7, 76.5), (275, 75.5)], -1.3, 1.3, "steel")
     parts.append(K.finish(post, hi, bevel_mm=0.25))
     lug = K.profile("bayonet_lug", [(274, -13), (290, -13), (290, -20), (277, -20)], -3, 3, "steel")
     parts.append(K.finish(lug, hi, bevel_mm=0.4))
@@ -240,10 +246,10 @@ def rear_sight(hi):
     K.cut(base, K.box("buis_gap", (0, -134, 33), (12, 30, 4), None))
     parts.append(K.finish(base, hi, bevel_mm=0.7))
     for sx in (1, -1):
-        wing = K.profile("buis_wing", [(-142, 31), (-126, 31), (-128, 50), (-140, 50)], sx * 6.5, sx * 9.5, "anod")
+        wing = K.profile("buis_wing", [(-142, 31), (-126, 31), (-128, 80), (-140, 80)], sx * 6.5, sx * 9.5, "anod")
         parts.append(K.finish(wing, hi, bevel_mm=0.6))
-    leaf = K.profile("buis_leaf", [(-136, 31), (-130, 31), (-131, 51), (-135, 51)], -5.5, 5.5, "steel")
-    K.cut(leaf, K.cyl("aperture", -140, -125, 1.4, 12, None, centre=(0, 0, 46)))
+    leaf = K.profile("buis_leaf", [(-136, 31), (-130, 31), (-131, 81), (-135, 81)], -5.5, 5.5, "steel")
+    K.cut(leaf, K.cyl("aperture", -140, -125, 1.4, 12, None, centre=(0, 0, SIGHT_Z)))
     parts.append(K.finish(leaf, hi, bevel_mm=0.3))
     knob = K.lathe("buis_knob", [(11, 0), (11, 4.5), (16, 4.5), (16.6, 3.8), (16.6, 0)], 12 if not hi else 32, "steel", axis="X", centre=(0, -134, 29))
     parts.append(K.finish(knob, hi, bevel_mm=0.3))

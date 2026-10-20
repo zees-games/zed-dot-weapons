@@ -328,24 +328,24 @@ def hi_material(kind):
 
     # Edge mask: how far the rounded (Bevel node) normal leans from the true one.
     bev = _n(nt, "ShaderNodeBevel", -1000, -300, samples=8)
-    bev.inputs["Radius"].default_value = 0.0012
+    bev.inputs["Radius"].default_value = 0.0018
     dot = _n(nt, "ShaderNodeVectorMath", -800, -300, operation="DOT_PRODUCT")
     nt.links.new(bev.outputs["Normal"], dot.inputs[0])
     nt.links.new(geo.outputs["Normal"], dot.inputs[1])
     edge = _n(nt, "ShaderNodeMapRange", -600, -300)
-    edge.inputs["From Min"].default_value = 0.995
-    edge.inputs["From Max"].default_value = 0.90
+    edge.inputs["From Min"].default_value = 0.9985
+    edge.inputs["From Max"].default_value = 0.93
     nt.links.new(dot.outputs["Value"], edge.inputs["Value"])
 
     # Break the wear into patches: large noise, thresholded.
     patch = _n(nt, "ShaderNodeTexNoise", -800, -550)
-    patch.inputs["Scale"].default_value = 90.0
+    patch.inputs["Scale"].default_value = 60.0
     patch.inputs["Detail"].default_value = 6.0
     patch.inputs["Roughness"].default_value = 0.65
     nt.links.new(tc.outputs["Object"], patch.inputs["Vector"])
     pmap = _n(nt, "ShaderNodeMapRange", -600, -550)
-    pmap.inputs["From Min"].default_value = 0.40
-    pmap.inputs["From Max"].default_value = 0.62
+    pmap.inputs["From Min"].default_value = 0.32
+    pmap.inputs["From Max"].default_value = 0.55
     nt.links.new(patch.outputs["Fac"], pmap.inputs["Value"])
     wear = _n(nt, "ShaderNodeMath", -400, -400, operation="MULTIPLY", use_clamp=True)
     nt.links.new(edge.outputs["Result"], wear.inputs[0])
@@ -353,16 +353,16 @@ def hi_material(kind):
 
     # Fine scratches: noise stretched along the bore (Y), a few of them bright.
     smap = _n(nt, "ShaderNodeMapping", -1000, -800)
-    smap.inputs["Scale"].default_value = (2600.0, 70.0, 2600.0)
+    smap.inputs["Scale"].default_value = (650.0, 30.0, 650.0)
     nt.links.new(tc.outputs["Object"], smap.inputs["Vector"])
     scr = _n(nt, "ShaderNodeTexNoise", -800, -800)
     scr.inputs["Scale"].default_value = 1.0
     scr.inputs["Detail"].default_value = 2.0
     nt.links.new(smap.outputs["Vector"], scr.inputs["Vector"])
     smr = _n(nt, "ShaderNodeMapRange", -600, -800)
-    smr.inputs["From Min"].default_value = 0.71
-    smr.inputs["From Max"].default_value = 0.75
-    smr.inputs["To Max"].default_value = 0.16
+    smr.inputs["From Min"].default_value = 0.62
+    smr.inputs["From Max"].default_value = 0.70
+    smr.inputs["To Max"].default_value = 0.42
     nt.links.new(scr.outputs["Fac"], smr.inputs["Value"])
     wear2 = _n(nt, "ShaderNodeMath", -200, -500, operation="MAXIMUM", use_clamp=True)
     nt.links.new(wear.outputs["Value"], wear2.inputs[0])
@@ -373,10 +373,10 @@ def hi_material(kind):
 
     # Dirt in the cavities: local AO, darkens and roughens.
     ao = _n(nt, "ShaderNodeAmbientOcclusion", -800, 300, only_local=True, samples=16)
-    ao.inputs["Distance"].default_value = 0.008
+    ao.inputs["Distance"].default_value = 0.012
     dirt = _n(nt, "ShaderNodeMapRange", -600, 300)
     dirt.inputs["From Min"].default_value = 1.0
-    dirt.inputs["From Max"].default_value = 0.4
+    dirt.inputs["From Max"].default_value = 0.25
     nt.links.new(ao.outputs["AO"], dirt.inputs["Value"])
 
     # Low-frequency mottling of the coating itself.
@@ -385,21 +385,49 @@ def hi_material(kind):
     mot.inputs["Detail"].default_value = 8.0
     nt.links.new(tc.outputs["Object"], mot.inputs["Vector"])
     motc = _n(nt, "ShaderNodeMapRange", -600, 600)
-    motc.inputs["To Min"].default_value = 0.82
-    motc.inputs["To Max"].default_value = 1.18
+    motc.inputs["To Min"].default_value = 0.62
+    motc.inputs["To Max"].default_value = 1.35
     nt.links.new(mot.outputs["Fac"], motc.inputs["Value"])
+
+    # Oil and handling streaks, long along the bore, multiplied into the mottling: they vary
+    # the colour and (through the same factor) the roughness, so the sheen is never uniform.
+    smap2 = _n(nt, "ShaderNodeMapping", -1000, 900)
+    smap2.inputs["Scale"].default_value = (60.0, 6.0, 60.0)
+    nt.links.new(tc.outputs["Object"], smap2.inputs["Vector"])
+    streak = _n(nt, "ShaderNodeTexNoise", -800, 900)
+    streak.inputs["Detail"].default_value = 4.0
+    nt.links.new(smap2.outputs["Vector"], streak.inputs["Vector"])
+    strc = _n(nt, "ShaderNodeMapRange", -600, 900)
+    strc.inputs["To Min"].default_value = 0.78
+    strc.inputs["To Max"].default_value = 1.2
+    nt.links.new(streak.outputs["Fac"], strc.inputs["Value"])
+    motx = _n(nt, "ShaderNodeMath", -500, 700, operation="MULTIPLY")
+    nt.links.new(motc.outputs["Result"], motx.inputs[0])
+    nt.links.new(strc.outputs["Result"], motx.inputs[1])
+    motc = motx
+    # Powder soot toward the muzzle (the object's Y is the bore).
+    sep = _n(nt, "ShaderNodeSeparateXYZ", -1000, 1150)
+    nt.links.new(tc.outputs["Object"], sep.inputs["Vector"])
+    sootm = _n(nt, "ShaderNodeMapRange", -800, 1150)
+    sootm.inputs["From Min"].default_value = 0.28
+    sootm.inputs["From Max"].default_value = 0.40
+    sootm.inputs["To Max"].default_value = 0.8
+    nt.links.new(sep.outputs["Y"], sootm.inputs["Value"])
 
     base = _n(nt, "ShaderNodeRGB", -400, 600)
     base.outputs[0].default_value = (*f["base"], 1)
     basem = _n(nt, "ShaderNodeMix", -200, 600, data_type="RGBA", blend_type="MULTIPLY")
     basem.inputs["Factor"].default_value = 1.0
     nt.links.new(base.outputs[0], basem.inputs[6])
-    nt.links.new(motc.outputs["Result"], basem.inputs[7])
+    nt.links.new(motc.outputs[0], basem.inputs[7])
     grime = _n(nt, "ShaderNodeMix", 0, 450, data_type="RGBA", blend_type="MIX")
     grime.inputs[7].default_value = (0.012, 0.011, 0.010, 1)
     gfac = _n(nt, "ShaderNodeMath", -200, 400, operation="MULTIPLY", use_clamp=True)
-    gfac.inputs[1].default_value = 0.75
-    nt.links.new(dirt.outputs["Result"], gfac.inputs[0])
+    gfac.inputs[1].default_value = 0.95
+    gmax = _n(nt, "ShaderNodeMath", -350, 400, operation="MAXIMUM", use_clamp=True)
+    nt.links.new(dirt.outputs["Result"], gmax.inputs[0])
+    nt.links.new(sootm.outputs["Result"], gmax.inputs[1])
+    nt.links.new(gmax.outputs["Value"], gfac.inputs[0])
     nt.links.new(gfac.outputs["Value"], grime.inputs["Factor"])
     nt.links.new(basem.outputs[2], grime.inputs[6])
     wcol = _n(nt, "ShaderNodeRGB", 0, 250)
@@ -421,7 +449,7 @@ def hi_material(kind):
     nt.links.new(rough.outputs["Result"], rdirt.inputs[2])
     rvar = _n(nt, "ShaderNodeMath", 700, 0, operation="MULTIPLY", use_clamp=True)
     nt.links.new(rdirt.outputs["Value"], rvar.inputs[0])
-    nt.links.new(motc.outputs["Result"], rvar.inputs[1])
+    nt.links.new(motc.outputs[0], rvar.inputs[1])
 
     metal = _n(nt, "ShaderNodeMapRange", 300, -200)
     metal.inputs["To Min"].default_value = f["metal"]
@@ -430,10 +458,10 @@ def hi_material(kind):
 
     # Surface relief: stippling on a grip, a fine cast/blast texture elsewhere.
     grain = _n(nt, "ShaderNodeTexVoronoi", -400, -1000)
-    grain.inputs["Scale"].default_value = 1500.0 if kind in ("grip", "rubber") else 2600.0
+    grain.inputs["Scale"].default_value = 520.0 if kind in ("grip", "rubber") else 420.0
     nt.links.new(tc.outputs["Object"], grain.inputs["Vector"])
     bump = _n(nt, "ShaderNodeBump", 800, -300)
-    bump.inputs["Strength"].default_value = 0.35 * f["bump"]
+    bump.inputs["Strength"].default_value = 0.30 * f["bump"]
     bump.inputs["Distance"].default_value = 0.0002
     nt.links.new(grain.outputs["Distance"], bump.inputs["Height"])
 
@@ -585,6 +613,21 @@ def finish_maps(maps, ao_in_albedo=0.45):
     normal = maps["normal"].copy()
     normal[..., 3] = 1.0
     return color, orm, normal
+
+
+def downscale(arr, px):
+    """Resamples a baked map to px x px (the bake runs larger than what ships: the extra samples
+    anti-alias the thin engraving and the normal map's edges). Returns a float array."""
+    h = arr.shape[0]
+    if px >= h:
+        return arr
+    img = bpy.data.images.new("ds", h, h, alpha=True, float_buffer=True)
+    img.pixels.foreach_set(np.ascontiguousarray(arr, dtype=np.float32).ravel())
+    img.scale(px, px)
+    out = np.empty(px * px * 4, dtype=np.float32)
+    img.pixels.foreach_get(out)
+    bpy.data.images.remove(img)
+    return out.reshape(px, px, 4)
 
 
 def low_material(name, color_img, orm_img, normal_img):

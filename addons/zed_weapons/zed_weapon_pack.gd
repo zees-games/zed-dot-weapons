@@ -539,7 +539,7 @@ static func art() -> Array[ZeeWeaponArt]:
 		_fed(_gun_art(ZedWeaponIds.SAWED_OFF, "sawed_off", ZeeWeaponArtTable.POSE_RIFLE, 0.141), ROUND_SHELL, Vector3(0.0, 0.05, 0.0), true),
 		_rounds(_hand_fed(_fed(_scoped(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "hunting_rifle", ZeeWeaponArtTable.POSE_RIFLE, 0.231)), ROUND_RIFLE, Vector3(0.0, 0.10, -0.12), true),
 			Vector3(0.03, 0.12, 0.0), 0.7, Vector3(90.0, 0.0, 0.0), &"RELOAD_KEYS_BOLT"), 2),
-		_fed(_gun_art(ZedWeaponIds.ASSAULT_CARBINE, "", ZeeWeaponArtTable.POSE_RIFLE, CARBINE_HEIGHT, HQ_DIR + "m4_carbine.glb"), MAG_BOX, Vector3(0.0, 0.03, 0.05)),
+		_fed(_gun_art(ZedWeaponIds.ASSAULT_CARBINE, "", ZeeWeaponArtTable.POSE_RIFLE, CARBINE_HEIGHT, HQ_DIR + "m4_carbine.glb"), MAG_BOX, Vector3(0.0, 0.03, -0.02)),
 		_box_fed(_heavy(_gun_art(ZedWeaponIds.MACHINE_GUN, "machine_gun", ZeeWeaponArtTable.POSE_HEAVY, 0.197), 1.9)),
 		_hand_fed(_fed(_heavy(_gun_art(ZedWeaponIds.GRENADE_LAUNCHER, "grenade_launcher", ZeeWeaponArtTable.POSE_HEAVY, 0.271), 1.6), ROUND_GRENADE, Vector3(0.0, 0.20, -0.10), true),
 			Vector3(0.0, 0.14, -0.06), 2.2, Vector3.ZERO, &"RELOAD_KEYS_BREAK"),
@@ -741,7 +741,7 @@ static func _thrown_art(id: StringName, path: String, scale: float) -> ZeeWeapon
 
 ## The assault carbine's height, measured on its model with the standard magazine in
 ## (art-src/hq/out/measure.json): the lift to its middle, as for the kitbashed guns.
-const CARBINE_HEIGHT := 0.249
+const CARBINE_HEIGHT := 0.279
 
 
 static func attachment_defs() -> Array[DotWeaponAttachment]:

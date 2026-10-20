@@ -3,7 +3,7 @@
 #   blender -b --python art-src/hq/build_hq.py -- [--out <dir>] [--px <size>] [--quick] [name ...]
 #
 # Names: m4_carbine, and the attachments in hq_attachments.BUILDERS. Default: all of them.
-# Writes <out>/<name>.glb (default assets/hq/), the baked maps as <out>/maps/<name>_*.png for
+# Writes <out>/<name>.glb (default assets/hq/), the baked maps as art-src/hq/out/maps/<name>_*.png for
 # looking at, and art-src/hq/out/measure.json: each model's triangles per node, size, and its
 # sockets in Godot's axes (x right... of a +Z-facing model: -X is its right; y up; z forward).
 # --quick bakes at 8 samples for a look at the shapes; never ship a quick bake.
@@ -36,15 +36,22 @@ def opt(flag, default):
 
 out = os.path.abspath(opt("--out", os.path.join(REPO, "assets", "hq")))
 px_override = opt("--px", None)
+ship_override = opt("--ship", None)
 quick = "--quick" in args
 if quick:
     args.remove("--quick")
 
-GUNS = {"m4_carbine": (hq_m4.build, hq_m4.SOCKETS, 2048)}
+# name: (builder, sockets, bake px, shipped px). The bake runs at the first size and the maps are
+# scaled to the second; what ships is the .scn Godot imports (Basis Universal, whose size follows
+# the pixels), so the shipped size is what the download budget is spent on. Shipped sizes are
+# (albedo, ORM, normal): measured on the carbine, the ORM map costs about four times the albedo
+# (three unrelated channels) and the normal map almost nothing, so the ORM is the one halved.
+GUNS = {"m4_carbine": (hq_m4.build, hq_m4.SOCKETS, 2048, (1024, 512, 1024))}
 # About the carbine's texel density (2048 over 0.77 m): the small ones need no more than 512.
 ATTACH_PX = {"scope_4x": 1024, "ext_mag": 512, "laser": 512, "red_dot": 512, "suppressor": 512, "foregrip": 512}
 names = args or (list(GUNS) + list(A.BUILDERS))
-os.makedirs(os.path.join(out, "maps"), exist_ok=True)
+MAPS = os.path.join(HERE, "out", "maps")  # for looking at; never under assets/ (Godot would import them)
+os.makedirs(MAPS, exist_ok=True)
 
 
 def tag_group(obj, group):
@@ -93,12 +100,13 @@ def make(name):
     t0 = time.time()
     K.reset()
     if name in GUNS:
-        builder, sockets, px = GUNS[name]
+        builder, sockets, px, ship = GUNS[name]
         lo_groups, glass = builder(False)
         hi_groups, hi_glass = builder(True)
         origin = None
     else:
         sockets, px = {}, ATTACH_PX.get(name, 1024)
+        ship = (min(px, 512), min(px, 512) // 2, min(px, 512))
         lo_groups, glass = A.build(name, False)
         hi_groups, hi_glass = A.build(name, True)
         origin = (0, 0, 0)
@@ -122,7 +130,10 @@ def make(name):
     K.unwrap(joined, margin=6.0 / px)
     maps = K.bake(joined, highs, px, samples=8 if quick else 96)
     color, orm, normal = K.finish_maps(maps)
-    mdir = os.path.join(out, "maps")
+    if ship_override:
+        ship = (int(ship_override),) * 3
+    color, orm, normal = (K.downscale(m, min(s, px)) for m, s in zip((color, orm, normal), ship))
+    mdir = MAPS
     ci = K.save_png(name + "_albedo", color, os.path.join(mdir, name + "_albedo.png"), False)
     oi = K.save_png(name + "_orm", orm, os.path.join(mdir, name + "_orm.png"), True)
     ni = K.save_png(name + "_normal", normal, os.path.join(mdir, name + "_normal.png"), True)
@@ -148,7 +159,7 @@ def make(name):
     lo, hi = K.bounds(meshes)
     if origin is None:
         origin = (0.0, (lo.y + hi.y) / 2 / K.MM, lo.z / K.MM)  # x on the bore, not the bounds' middle
-    report = {"tris": {k: K.tris(v) for k, v in nodes.items()}, "px": px, "quick": quick}
+    report = {"tris": {k: K.tris(v) for k, v in nodes.items()}, "px": px, "ship_px": list(ship), "quick": quick}
     report["tris_total"] = sum(report["tris"].values())
     K.export_glb(os.path.join(out, name + ".glb"), meshes + empties, origin)
     lo, hi = K.bounds(meshes)

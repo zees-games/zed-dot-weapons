@@ -37,3 +37,6 @@ Thumbs.db
 # Editors
 .vscode/
 /.scratch/
+
+# Baked maps, for looking at
+/art-src/hq/out/maps/
