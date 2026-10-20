@@ -13,7 +13,7 @@ RAIL_TOP = 26.5
 HG_BACK = 34.0
 HG_FRONT = 176.0
 MUZZLE_END = 252.0
-SIGHT_Z = 40.0
+SIGHT_Z = 54.0
 SOCKETS = {
     "socket_optic": (0, -58, RAIL_TOP),
     "socket_muzzle": (0, MUZZLE_END, 0),
@@ -133,7 +133,7 @@ def front(hi):
     base = K.profile("fs_base", [(154, RAIL_TOP), (172, RAIL_TOP), (170, 32), (156, 32)], -8.5, 8.5, "steel")
     parts.append(K.finish(base, hi, bevel_mm=0.5))
     for sx in (1, -1):
-        w = K.profile("fs_wing", [(157, 32), (167, 32), (167, 42), (157, 42)], sx * 4.2, sx * 7.0, "steel")
+        w = K.profile("fs_wing", [(157, 32), (167, 32), (167, SIGHT_Z - 4), (157, SIGHT_Z - 4)], sx * 4.2, sx * 7.0, "steel")
         parts.append(K.finish(w, hi, bevel_mm=0.4))
     post = K.profile("fs_post", [(160, 32), (165, 32), (164.4, SIGHT_Z - 0.6), (163.6, SIGHT_Z), (161.4, SIGHT_Z), (160.6, SIGHT_Z - 0.6)], -1.3, 1.3, "steel")
     parts.append(K.finish(post, hi, bevel_mm=0.25))
@@ -146,9 +146,9 @@ def rear_sight(hi):
                                  (-105, RAIL_TOP + 6.5), (-108, RAIL_TOP + 4)], -11, 11, "anod")
     parts.append(K.finish(base, hi, bevel_mm=0.6))
     for sx in (1, -1):
-        w = K.profile("rs_wing", [(-104, RAIL_TOP + 5), (-92, RAIL_TOP + 5), (-93, 46), (-103, 46)], sx * 6.8, sx * 9.6, "anod")
+        w = K.profile("rs_wing", [(-104, RAIL_TOP + 5), (-92, RAIL_TOP + 5), (-93, SIGHT_Z + 6), (-103, SIGHT_Z + 6)], sx * 6.8, sx * 9.6, "anod")
         parts.append(K.finish(w, hi, bevel_mm=0.5))
-    leaf = K.profile("rs_leaf", [(-100, RAIL_TOP + 5), (-95, RAIL_TOP + 5), (-95.6, 46), (-99.4, 46)], -5.8, 5.8, "steel")
+    leaf = K.profile("rs_leaf", [(-100, RAIL_TOP + 5), (-95, RAIL_TOP + 5), (-95.6, SIGHT_Z + 6), (-99.4, SIGHT_Z + 6)], -5.8, 5.8, "steel")
     K.cut(leaf, K.cyl("aperture", -104, -90, 1.4, 12, None, centre=(0, 0, SIGHT_Z)))
     parts.append(K.finish(leaf, hi, bevel_mm=0.3))
     return parts

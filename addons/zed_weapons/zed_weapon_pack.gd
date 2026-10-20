@@ -570,9 +570,9 @@ static func art() -> Array[ZeeWeaponArt]:
 			Vector3(0.0, -0.10, 0.02), 1.6, Vector3.ZERO, &"RELOAD_KEYS_TUBE"), 3),
 		_fed(_gun_art(ZedWeaponIds.SAWED_OFF, "sawed_off", ZeeWeaponArtTable.POSE_RIFLE, 0.141), ROUND_SHELL, Vector3(0.0, 0.05, 0.0), true),
 		_rounds(_hand_fed(_fed(_scoped(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, DMR_HEIGHT, HQ_DIR + "hunting_rifle.glb")), ROUND_RIFLE, Vector3(0.0, 0.14, -0.08), true),
-			Vector3(0.03, 0.12, 0.0), 0.7, Vector3(90.0, 0.0, 0.0), &"RELOAD_KEYS_BOLT"), 2),
+			Vector3(0.03, 0.12, 0.0), 0.35, Vector3(90.0, 0.0, 0.0), &"RELOAD_KEYS_BOLT"), 2),
 		_raised(_fed(_gun_art(ZedWeaponIds.AK_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, AK_HEIGHT, HQ_DIR + "ak_rifle.glb"), MAG_BOX, Vector3(0.0, 0.03, 0.0))),
-		_fed(_gun_art(ZedWeaponIds.ASSAULT_CARBINE, "", ZeeWeaponArtTable.POSE_RIFLE, CARBINE_HEIGHT, HQ_DIR + "m4_carbine.glb"), MAG_BOX, Vector3(0.0, 0.03, -0.02)),
+		_raised(_fed(_gun_art(ZedWeaponIds.ASSAULT_CARBINE, "", ZeeWeaponArtTable.POSE_RIFLE, CARBINE_HEIGHT, HQ_DIR + "m4_carbine.glb"), MAG_BOX, Vector3(0.0, 0.03, -0.02))),
 		_box_fed(_heavy(_gun_art(ZedWeaponIds.MACHINE_GUN, "machine_gun", ZeeWeaponArtTable.POSE_HEAVY, 0.197), 1.9)),
 		_hand_fed(_fed(_heavy(_gun_art(ZedWeaponIds.GRENADE_LAUNCHER, "grenade_launcher", ZeeWeaponArtTable.POSE_HEAVY, 0.271), 1.6), ROUND_GRENADE, Vector3(0.0, 0.20, -0.10), true),
 			Vector3(0.0, 0.14, -0.06), 2.2, Vector3.ZERO, &"RELOAD_KEYS_BREAK"),
@@ -709,6 +709,9 @@ static func _boxed(art: ZeeWeaponArt) -> ZeeWeaponArt:
 ## A gun that has its own magazine model (the high-detail ones): lifted reload keys, as for
 ## [method _boxed], but nothing drawn in the grip, since the model has its own.
 static func _raised(art: ZeeWeaponArt) -> ZeeWeaponArt:
+	# The model's own magazine is the one at rest; the prop is drawn only while the support hand
+	# carries it in (`magazine_loose`), else a yellow box sat at the grip in every frame.
+	art.set(&"magazine_loose", true)
 	art.reload_keys = lifted(ZeeWeaponArtTable.reload_keys(art.pose), RELOAD_LIFT)
 	return art
 
@@ -785,11 +788,11 @@ const CARBINE_HEIGHT := 0.279
 ## The service pistol's, magazine in.
 const PISTOL_HEIGHT := 0.145
 ## The tactical SMG's, magazine in.
-const SMG_HEIGHT := 0.223
+const SMG_HEIGHT := 0.237
 ## The pump shotgun's.
-const PUMP_HEIGHT := 0.144
+const PUMP_HEIGHT := 0.159
 ## The AK rifle's, magazine in.
-const AK_HEIGHT := 0.245
+const AK_HEIGHT := 0.277
 ## The marksman rifle's, scope on.
 const DMR_HEIGHT := 0.204
 

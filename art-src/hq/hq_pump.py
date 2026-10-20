@@ -12,7 +12,7 @@ BARREL_R = 10.5
 TUBE_Z = -23.0
 TUBE_R = 9.6
 MUZZLE = 500.0
-SIGHT_Z = 29.0
+SIGHT_Z = 44.0
 SOCKETS = {
     "socket_optic": (0, -24, 22),
     "socket_muzzle": (0, MUZZLE, 0),
@@ -126,7 +126,7 @@ def rear_sight(hi):
     parts = []
     base = K.profile("rs_base", [(-104, 22), (-70, 22), (-70, 26), (-76, 29.0), (-98, 29.0), (-104, 26)], -9, 9, "steel")
     parts.append(K.finish(base, hi, bevel_mm=0.5))
-    ring = K.profile("ghost_ring", [(-90, 22), (-82, 22), (-83, 36), (-89, 36)], -7, 7, "steel")
+    ring = K.profile("ghost_ring", [(-90, 22), (-82, 22), (-83, SIGHT_Z + 7), (-89, SIGHT_Z + 7)], -7, 7, "steel")
     K.cut(ring, K.cyl("aperture", -95, -78, 3.6, 16 if not hi else 32, None, centre=(0, 0, SIGHT_Z)))
     parts.append(K.finish(ring, hi, bevel_mm=0.3))
     return parts

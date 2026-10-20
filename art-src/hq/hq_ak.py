@@ -7,7 +7,7 @@ import hq_kit as K
 from hq_pistol import pin
 from hq_m4 import magazine_parts
 
-SIGHT_Z = 44.0           # tops of both sights: the aimed view's line runs parallel to the bore
+SIGHT_Z = 76.0           # tops of both sights: the aimed view's line runs parallel to the bore
 MUZZLE = 472.0
 SOCKETS = {
     "socket_optic": (0, -40, 26),
