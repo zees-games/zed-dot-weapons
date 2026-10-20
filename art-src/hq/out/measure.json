@@ -49,6 +49,64 @@
   },
   "tris_total": 724
  },
+ "hunting_rifle": {
+  "origin_mm": [
+   0.0,
+   117.0,
+   -127.69
+  ],
+  "px": 2048,
+  "quick": false,
+  "seconds": 203.9,
+  "ship_px": [
+   1024,
+   512,
+   1024
+  ],
+  "size": [
+   0.125,
+   0.2042,
+   1.046
+  ],
+  "sockets": {
+   "sight_front": [
+    -0.0,
+    0.1737,
+    0.043
+   ],
+   "sight_rear": [
+    0.0,
+    0.1737,
+    -0.169
+   ],
+   "socket_magazine": [
+    0.0,
+    0.0977,
+    -0.111
+   ],
+   "socket_muzzle": [
+    -0.0,
+    0.1277,
+    0.523
+   ],
+   "socket_side": [
+    -0.018,
+    0.1277,
+    0.183
+   ],
+   "socket_underbarrel": [
+    -0.0,
+    0.0937,
+    0.243
+   ]
+  },
+  "tris": {
+   "body": 10960,
+   "hunting_rifle_glass": 216,
+   "magazine": 1504
+  },
+  "tris_total": 12680
+ },
  "laser": {
   "origin_mm": [
    0,

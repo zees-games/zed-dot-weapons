@@ -537,7 +537,7 @@ static func art() -> Array[ZeeWeaponArt]:
 		_rounds(_hand_fed(_fed(_gun_art(ZedWeaponIds.PUMP_SHOTGUN, "", ZeeWeaponArtTable.POSE_RIFLE, PUMP_HEIGHT, HQ_DIR + "pump_shotgun.glb"), ROUND_SHELL, Vector3(0.0, 0.07, -0.07), true),
 			Vector3(0.0, -0.10, 0.02), 1.6, Vector3.ZERO, &"RELOAD_KEYS_TUBE"), 3),
 		_fed(_gun_art(ZedWeaponIds.SAWED_OFF, "sawed_off", ZeeWeaponArtTable.POSE_RIFLE, 0.141), ROUND_SHELL, Vector3(0.0, 0.05, 0.0), true),
-		_rounds(_hand_fed(_fed(_scoped(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "hunting_rifle", ZeeWeaponArtTable.POSE_RIFLE, 0.231)), ROUND_RIFLE, Vector3(0.0, 0.10, -0.12), true),
+		_rounds(_hand_fed(_fed(_scoped(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, DMR_HEIGHT, HQ_DIR + "hunting_rifle.glb")), ROUND_RIFLE, Vector3(0.0, 0.14, -0.08), true),
 			Vector3(0.03, 0.12, 0.0), 0.7, Vector3(90.0, 0.0, 0.0), &"RELOAD_KEYS_BOLT"), 2),
 		_fed(_gun_art(ZedWeaponIds.ASSAULT_CARBINE, "", ZeeWeaponArtTable.POSE_RIFLE, CARBINE_HEIGHT, HQ_DIR + "m4_carbine.glb"), MAG_BOX, Vector3(0.0, 0.03, -0.02)),
 		_box_fed(_heavy(_gun_art(ZedWeaponIds.MACHINE_GUN, "machine_gun", ZeeWeaponArtTable.POSE_HEAVY, 0.197), 1.9)),
@@ -755,6 +755,8 @@ const PISTOL_HEIGHT := 0.145
 const SMG_HEIGHT := 0.223
 ## The pump shotgun's.
 const PUMP_HEIGHT := 0.144
+## The marksman rifle's, scope on.
+const DMR_HEIGHT := 0.204
 
 
 static func attachment_defs() -> Array[DotWeaponAttachment]:
