@@ -190,6 +190,64 @@
   },
   "tris_total": 2976
  },
+ "service_pistol": {
+  "origin_mm": [
+   0.0,
+   -14.15,
+   -121.0
+  ],
+  "px": 2048,
+  "quick": false,
+  "seconds": 175.4,
+  "ship_px": [
+   1024,
+   512,
+   1024
+  ],
+  "size": [
+   0.028,
+   0.145,
+   0.2273
+  ],
+  "sockets": {
+   "sight_front": [
+    -0.0,
+    0.145,
+    0.1011
+   ],
+   "sight_rear": [
+    0.0,
+    0.145,
+    -0.0699
+   ],
+   "socket_magazine": [
+    0.0,
+    0.107,
+    -0.0559
+   ],
+   "socket_muzzle": [
+    -0.0,
+    0.121,
+    0.1136
+   ],
+   "socket_optic": [
+    0.0,
+    0.14,
+    -0.0159
+   ],
+   "socket_underbarrel": [
+    -0.0,
+    0.094,
+    0.0481
+   ]
+  },
+  "tris": {
+   "body": 4082,
+   "magazine": 502,
+   "rear_sight": 452
+  },
+  "tris_total": 5036
+ },
  "suppressor": {
   "origin_mm": [
    0,

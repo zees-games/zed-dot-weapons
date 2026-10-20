@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import bpy  # noqa: E402
 import hq_kit as K  # noqa: E402
 import hq_m4  # noqa: E402
+import hq_pistol  # noqa: E402
 import hq_attachments as A  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -46,7 +47,10 @@ if quick:
 # the pixels), so the shipped size is what the download budget is spent on. Shipped sizes are
 # (albedo, ORM, normal): measured on the carbine, the ORM map costs about four times the albedo
 # (three unrelated channels) and the normal map almost nothing, so the ORM is the one halved.
-GUNS = {"m4_carbine": (hq_m4.build, hq_m4.SOCKETS, 2048, (1024, 512, 1024))}
+GUNS = {
+    "m4_carbine": (hq_m4.build, hq_m4.SOCKETS, 2048, (1024, 512, 1024)),
+    "service_pistol": (hq_pistol.build, hq_pistol.SOCKETS, 2048, (1024, 512, 1024)),
+}
 # About the carbine's texel density (2048 over 0.77 m): the small ones need no more than 512.
 ATTACH_PX = {"scope_4x": 1024, "ext_mag": 512, "laser": 512, "red_dot": 512, "suppressor": 512, "foregrip": 512}
 names = args or (list(GUNS) + list(A.BUILDERS))

@@ -140,6 +140,8 @@ for setup in setups:
     floor.location.z = lo.z - 0.02
     centre = (lo + hi) / 2
     size = max((hi - lo).length, 0.2)
+    if size < 0.5:
+        size *= 1.7  # a sidearm's diagonal is short, but its height is a half of its length: the 70 mm lens needs the room
     cam = bpy.data.objects.new("cam", bpy.data.cameras.new("cam"))
     sc.collection.objects.link(cam)
     sc.camera = cam

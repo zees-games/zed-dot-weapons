@@ -530,7 +530,7 @@ const GUN_FORWARD := Vector3.BACK
 
 static func art() -> Array[ZeeWeaponArt]:
 	return [
-		_boxed(_fed(_gun_art(ZedWeaponIds.SERVICE_PISTOL, "service_pistol", ZeeWeaponArtTable.POSE_PISTOL, 0.22), MAG_BOX, Vector3(0.0, 0.03, -0.092))),
+		_raised(_fed(_gun_art(ZedWeaponIds.SERVICE_PISTOL, "", ZeeWeaponArtTable.POSE_PISTOL, PISTOL_HEIGHT, HQ_DIR + "service_pistol.glb"), MAG_BOX, Vector3(0.0, 0.03, -0.09))),
 		_boxed(_fed(_gun_art(ZedWeaponIds.SILENCED_PISTOL, "silenced_pistol", ZeeWeaponArtTable.POSE_PISTOL, 0.156), MAG_BOX, Vector3(0.0, 0.03, -0.150))),
 		_boxed(_fed(_gun_art(ZedWeaponIds.UZI, "uzi", ZeeWeaponArtTable.POSE_PISTOL, 0.207), MAG_BOX, Vector3(0.0, 0.03, -0.04))),
 		_boxed(_fed(_gun_art(ZedWeaponIds.TACTICAL_SMG, "tactical_smg", ZeeWeaponArtTable.POSE_RIFLE, 0.204), MAG_BOX, Vector3(0.0, 0.03, -0.148))),
@@ -673,6 +673,13 @@ static func _boxed(art: ZeeWeaponArt) -> ZeeWeaponArt:
 	return art
 
 
+## A gun that has its own magazine model (the high-detail ones): lifted reload keys, as for
+## [method _boxed], but nothing drawn in the grip, since the model has its own.
+static func _raised(art: ZeeWeaponArt) -> ZeeWeaponArt:
+	art.reload_keys = lifted(ZeeWeaponArtTable.reload_keys(art.pose), RELOAD_LIFT)
+	return art
+
+
 ## How much higher than zee's keys a box-fed gun is raised mid-reload, in metres.
 const RELOAD_LIFT := Vector3(-0.015, 0.075, 0.0)
 
@@ -742,6 +749,8 @@ static func _thrown_art(id: StringName, path: String, scale: float) -> ZeeWeapon
 ## The assault carbine's height, measured on its model with the standard magazine in
 ## (art-src/hq/out/measure.json): the lift to its middle, as for the kitbashed guns.
 const CARBINE_HEIGHT := 0.279
+## The service pistol's, magazine in.
+const PISTOL_HEIGHT := 0.145
 
 
 static func attachment_defs() -> Array[DotWeaponAttachment]:
