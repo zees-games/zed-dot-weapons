@@ -4,7 +4,7 @@ A second weapons pack, on top of zee-dot-weapons. Read `../../CLAUDE.md` and `..
 
 ## The one idea: content, through zee's seam
 
-A second copy of zee's rig, view model and effects for fourteen more weapons would be two rigs a game has to choose between. So this pack is documents (`ZedWeaponPack.weapons`), art entries (`ZedWeaponPack.art`, `ZeeWeaponArt` objects) and a sound class per gun, and `ZedWeaponPack.install()` hands all three to zee through `ZeeWeaponPack.add_source`, `ZeeWeaponArtTable.add_source` and `ZeeWeaponSound.set_class` (added to zee for this, 2026-10-10). After that every catalogue zee builds, which is every rig's default, carries both packs. **zee's ids win a clash**, so no id here may be one zee has (`service_pistol`, not `pistol`); the suite checks.
+A second copy of zee's rig, view model and effects for fifteen more weapons would be two rigs a game has to choose between. So this pack is documents (`ZedWeaponPack.weapons`), art entries (`ZedWeaponPack.art`, `ZeeWeaponArt` objects) and a sound class per gun, and `ZedWeaponPack.install()` hands all three to zee through `ZeeWeaponPack.add_source`, `ZeeWeaponArtTable.add_source` and `ZeeWeaponSound.set_class` (added to zee for this, 2026-10-10). After that every catalogue zee builds, which is every rig's default, carries both packs. **zee's ids win a clash**, so no id here may be one zee has (`service_pistol`, not `pistol`); the suite checks.
 
 **Install before the first rig is set up.** A rig builds its catalogue once, in `setup()`; one built before `install()` carries zee's weapons for as long as it lives.
 
@@ -38,6 +38,19 @@ dot-weapon spawns nothing; a thrown weapon's use is a `DotWeaponSpawn` handed to
 
 The eleven real-world guns are `assets/kitbash/<id>.glb`, built by `art-src/guns/build.py` from `zed_guns.py` (zee's kit, `zed_kit.py`, plus `export_standing`: +Z forward, origin at the middle of the base, as `ZedWeaponPack` expects). `build.py` prints each gun's size and writes `art-src/guns/out/measure.json`; the heights in `art()` come from there, and the reload offsets are in model space, so a changed recipe means re-checking `--sheet` with `EXTRA="--reloads …"`. The Weapon Pack still supplies the ammunition and the pipe bomb (`WEAPONS_DIR`); the guns come from `KIT_DIR`. A vendoring game needs `tools/sync-art.sh` after a rebuild.
 
+## The high-detail guns (`assets/hq/`, `art-src/hq/`)
+
+The assault carbine (2026-10-20) is the first of a second tier: modelled from scratch in `art-src/hq/` (`hq_kit.py` the kit, `hq_m4.py` the gun, `hq_attachments.py` the six attachments, `build_hq.py` the driver), each part built twice, a low mesh that ships and a bevelled high one baked onto it (normal, AO into the albedo, ORM), one 2048 set per gun and 512-1024 per attachment. Budget: 5-12k triangles a gun, 1-2k an attachment; `build_hq.py` prints the triangles per part and writes `art-src/hq/out/measure.json`. Rebuild on staging02 (the GPU bakes; CPU works but is slow), never with `--quick` for a model that ships. The textures are procedural, so there is nothing to credit; keep it that way or credit the CC0 source in the README.
+
+- **The model points +Z, origin at the bottom, x on the bore**, like the kitbashes, so `_gun_art` takes it with the path as its last argument. `CARBINE_HEIGHT` is measured with the standard magazine in.
+- **The gun's parts are nodes**: `body`, `magazine`, `rear_sight`, so an attachment can hide what it replaces (`ATTACHMENT_ART[id].hides`: the scope hides the rear sight, the extended magazine the magazine).
+- **Sockets are empties named `socket_<mount>`** (`socket_name()`), identity rotation; each attachment's origin is where it meets the gun, so it is parented to the socket with no offset. A socket that carried the export's 180-degree turn put the suppressor on backwards, and stale `matrix_world` put every socket on one point: `hq_kit.export_glb` updates the view layer and resets the empties' rotation.
+- **`sight_rear` and `sight_front` mark the real sights**, and zee aims down them and builds no ring (zee's `IronSight.from_marks`).
+- **The `.glb.import` files embed the textures as Basis Universal** (`gltf/embedded_image_handling=2`): the model stands alone in a delivered pack, and nothing is extracted next to it.
+- `art-src/hq/render_hq.py` renders Cycles frames of the exported files with attachments on their sockets, as the game fits them; the frames of record are in `reports/models/2026-10-20/`.
+
+**Attachments are data here, the rules are dot-weapon's** (`DotWeaponAttachment`, `DotWeaponAttachments`): `ZedWeaponPack.attachment_defs()` says what each one changes, `attachments()` is the catalogue an arsenal takes. **zee does not draw a fitted attachment yet**: `ATTACHMENT_ART` and the sockets are ready for it.
+
 ## Every model stands alone, because a game is delivered as a pack
 
 A game that vendors this art is mounted under `res://dot_cloud/<id>/<version>/`, where a model that names another file by `res://assets/…` loads without it. The Weapon Pack's models use plain material colours and name nothing. The Food Kit's name an external `Textures/colormap.png`, so the bottle and the jar are baked by `tools/bake_food.gd` into `.scn` files that carry the texture inside them (an `ImageTexture` made from the pixels), and the art names those. The suite's "no model leans on another file" asks `ResourceLoader.get_dependencies` of every model; pointed at the raw `.glb` it fails.
@@ -49,7 +62,7 @@ godot --headless --path . --import
 find . -name '*.gd' -not -path './.godot/*' -not -path './addons/dot_*' -not -path './addons/zee_weapons/*' | while read f; do
     godot --headless --path . --check-only --script "res://${f#./}"
 done
-timeout 120 godot --headless --path . res://examples/zed_selftest.tscn   # 9 sections, 32 checks
+timeout 120 godot --headless --path . res://examples/zed_selftest.tscn   # 11 sections, 51 checks
 tools/screenshot.sh --rack                                                # and look at it
 tools/screenshot.sh molotov
 tools/screenshot.sh --sheet service_pistol pump_shotgun hunting_rifle molotov   # zee's 18-frame contact sheet, per weapon

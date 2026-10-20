@@ -44,6 +44,8 @@ const TACTICAL_SMG := &"tactical_smg"
 const PUMP_SHOTGUN := &"pump_shotgun"
 const SAWED_OFF := &"sawed_off"
 const HUNTING_RIFLE := &"hunting_rifle"
+## The high-detail rifle (assets/hq/): baked textures, and mounts for every attachment below.
+const ASSAULT_CARBINE := &"assault_carbine"
 
 # --- Heavies -------------------------------------------------------------------
 const MACHINE_GUN := &"machine_gun"
@@ -62,7 +64,24 @@ const BILE_JAR := &"bile_jar"
 static func all() -> Array[StringName]:
 	return [
 		SERVICE_PISTOL, SILENCED_PISTOL, UZI,
-		TACTICAL_SMG, PUMP_SHOTGUN, SAWED_OFF, HUNTING_RIFLE,
+		TACTICAL_SMG, PUMP_SHOTGUN, SAWED_OFF, HUNTING_RIFLE, ASSAULT_CARBINE,
 		MACHINE_GUN, GRENADE_LAUNCHER, ROCKET_LAUNCHER, FLAMETHROWER,
 		MOLOTOV, PIPE_BOMB, BILE_JAR,
 	]
+
+
+# --- Attachments -----------------------------------------------------------------
+#
+# dot-weapon's attachment ids ([DotWeaponAttachment]), each on one of its mounts. Named by
+# what they do, like the weapons.
+
+const RED_DOT := &"red_dot"
+const SCOPE_4X := &"scope_4x"
+const SUPPRESSOR := &"suppressor"
+const FOREGRIP := &"foregrip"
+const LASER_SIGHT := &"laser_sight"
+const EXTENDED_MAG := &"extended_mag"
+
+
+static func all_attachments() -> Array[StringName]:
+	return [RED_DOT, SCOPE_4X, SUPPRESSOR, FOREGRIP, LASER_SIGHT, EXTENDED_MAG]

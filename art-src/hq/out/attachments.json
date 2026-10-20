@@ -1,0 +1,33 @@
+{
+ "ext_mag": {
+  "hides": [
+   "magazine"
+  ],
+  "mount": "magazine"
+ },
+ "foregrip": {
+  "hides": [],
+  "mount": "underbarrel"
+ },
+ "laser": {
+  "hides": [],
+  "mount": "side"
+ },
+ "red_dot": {
+  "axis_mm": 30.0,
+  "hides": [],
+  "mount": "optic"
+ },
+ "scope_4x": {
+  "axis_mm": 38.0,
+  "hides": [
+   "rear_sight"
+  ],
+  "mount": "optic"
+ },
+ "suppressor": {
+  "hides": [],
+  "length_mm": 172.0,
+  "mount": "muzzle"
+ }
+}

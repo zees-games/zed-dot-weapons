@@ -30,6 +30,8 @@ const WEAPONS_DIR := "res://assets/weapon-pack/"
 ## The guns: our own kitbashes (art-src/guns/), one silhouette each. WEAPONS_DIR keeps the ammunition and throwables.
 const KIT_DIR := "res://assets/kitbash/"
 const FOOD_DIR := "res://assets/food-kit/"
+## The high-detail models: baked textures embedded in each file (art-src/hq/build_hq.py).
+const HQ_DIR := "res://assets/hq/"
 
 
 static func rpm_ticks(rpm: float) -> int:
@@ -78,6 +80,7 @@ const SOUNDS := {
 	ZedWeaponIds.PUMP_SHOTGUN: &"shotgun",
 	ZedWeaponIds.SAWED_OFF: &"shotgun",
 	ZedWeaponIds.HUNTING_RIFLE: &"sniper",
+	ZedWeaponIds.ASSAULT_CARBINE: &"rifle",
 	ZedWeaponIds.MACHINE_GUN: &"heavy",
 	ZedWeaponIds.GRENADE_LAUNCHER: &"launcher",
 	ZedWeaponIds.ROCKET_LAUNCHER: &"launcher",
@@ -92,7 +95,7 @@ static func weapons(types: Dictionary = {}) -> Array[DotWeaponDef]:
 
 	return [
 		service_pistol(t), silenced_pistol(t), uzi(t),
-		tactical_smg(t), pump_shotgun(t), sawed_off(t), hunting_rifle(t),
+		tactical_smg(t), pump_shotgun(t), sawed_off(t), hunting_rifle(t), assault_carbine(t),
 		machine_gun(t), grenade_launcher(t), rocket_launcher(t), flamethrower(t),
 		molotov(t), pipe_bomb(t), bile_jar(t),
 	]
@@ -264,6 +267,37 @@ static func hunting_rifle(t: Dictionary = {}) -> DotWeaponDef:
 	b.spread_crouched = 0.0
 	b.recoil_pitch = 3.2
 	b.max_range = 600.0
+	def.tuning = b
+	return def
+
+
+## The high-detail one: a 30-round carbine with a mount for every attachment
+## ([method attachments]). Its model is baked (assets/hq/, art-src/hq/), not kitbashed.
+static func assault_carbine(t: Dictionary = {}) -> DotWeaponDef:
+	var def := _gun(ZedWeaponIds.ASSAULT_CARBINE, "Assault Carbine", ZeeWeaponIds.SLOT_PRIMARY,
+		DotWeaponDef.Fire.AUTO, rpm_ticks(750.0))
+	def.tags = [ZeeWeaponIds.TAG_PRIMARY, ZeeWeaponIds.TAG_AUTOMATIC]
+	def.ammo_type = ZeeWeaponIds.AMMO_HEAVY
+	def.magazine = 30
+	def.reserve = 120
+	def.reserve_max = 240
+	def.reload_ticks = sec_ticks(2.4)
+	def.deploy_ticks = sec_ticks(0.4)
+	def.holster_ticks = sec_ticks(0.25)
+	def.mounts = [
+		DotWeaponAttachment.MOUNT_OPTIC, DotWeaponAttachment.MOUNT_MUZZLE,
+		DotWeaponAttachment.MOUNT_UNDERBARREL, DotWeaponAttachment.MOUNT_SIDE,
+		DotWeaponAttachment.MOUNT_MAGAZINE,
+	]
+
+	var b := _ballistics(t, 26.0)
+	b.spread = 0.7
+	b.spread_moving = 2.0
+	b.bloom = 0.14
+	b.bloom_max = 2.8
+	b.recoil_pitch = 0.45
+	b.recoil_yaw = 0.2
+	b.max_range = 180.0
 	def.tuning = b
 	return def
 
@@ -505,6 +539,7 @@ static func art() -> Array[ZeeWeaponArt]:
 		_fed(_gun_art(ZedWeaponIds.SAWED_OFF, "sawed_off", ZeeWeaponArtTable.POSE_RIFLE, 0.141), ROUND_SHELL, Vector3(0.0, 0.05, 0.0), true),
 		_rounds(_hand_fed(_fed(_scoped(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "hunting_rifle", ZeeWeaponArtTable.POSE_RIFLE, 0.231)), ROUND_RIFLE, Vector3(0.0, 0.10, -0.12), true),
 			Vector3(0.03, 0.12, 0.0), 0.7, Vector3(90.0, 0.0, 0.0), &"RELOAD_KEYS_BOLT"), 2),
+		_fed(_gun_art(ZedWeaponIds.ASSAULT_CARBINE, "", ZeeWeaponArtTable.POSE_RIFLE, CARBINE_HEIGHT, HQ_DIR + "m4_carbine.glb"), MAG_BOX, Vector3(0.0, 0.03, 0.05)),
 		_box_fed(_heavy(_gun_art(ZedWeaponIds.MACHINE_GUN, "machine_gun", ZeeWeaponArtTable.POSE_HEAVY, 0.197), 1.9)),
 		_hand_fed(_fed(_heavy(_gun_art(ZedWeaponIds.GRENADE_LAUNCHER, "grenade_launcher", ZeeWeaponArtTable.POSE_HEAVY, 0.271), 1.6), ROUND_GRENADE, Vector3(0.0, 0.20, -0.10), true),
 			Vector3(0.0, 0.14, -0.06), 2.2, Vector3.ZERO, &"RELOAD_KEYS_BREAK"),
@@ -527,8 +562,8 @@ static func art() -> Array[ZeeWeaponArt]:
 ## yaw is about the axis of the turn and keeps its sign), so they are handed over as
 ## [method hold_rotation]. Written straight across, the cant tipped the left side up and
 ## showed the camera the gun's underside.
-static func _gun_art(id: StringName, model: String, pose: StringName, height: float) -> ZeeWeaponArt:
-	var art := ZeeWeaponArt.make(id, KIT_DIR + model + ".glb")
+static func _gun_art(id: StringName, model: String, pose: StringName, height: float, path: String = "") -> ZeeWeaponArt:
+	var art := ZeeWeaponArt.make(id, path if path != "" else KIT_DIR + model + ".glb")
 	art.model_forward = GUN_FORWARD
 	art.pose = pose
 	art.view_scale = ZeeWeaponArtTable.pose_scale(pose) * REAL_SCALE
@@ -694,6 +729,76 @@ static func _thrown_art(id: StringName, path: String, scale: float) -> ZeeWeapon
 	art.view_rotation = Vector3(10.0, 0.0, -12.0)
 	art.aim_enabled = false
 	return art
+
+
+# --- Attachments ---------------------------------------------------------------------
+#
+# [b]The rules are dot-weapon's, the content is here.[/b] Which mount an attachment takes,
+# what it changes and the code that goes on the wire are [DotWeaponAttachments]'; this pack
+# only says which six exist and what they do to a gun. Each multiplier names a field of the
+# document or its tuning, so a typo fails `apply` instead of shipping a suppressor that is not
+# quiet.
+
+## The assault carbine's height, measured on its model with the standard magazine in
+## (art-src/hq/out/measure.json): the lift to its middle, as for the kitbashed guns.
+const CARBINE_HEIGHT := 0.249
+
+
+static func attachment_defs() -> Array[DotWeaponAttachment]:
+	return [
+		_attachment(ZedWeaponIds.RED_DOT, "Red Dot", DotWeaponAttachment.MOUNT_OPTIC,
+			{}, {}, [], {&"aim_zoom": 0.8}),
+		_attachment(ZedWeaponIds.SCOPE_4X, "4x Scope", DotWeaponAttachment.MOUNT_OPTIC,
+			{"spread": 0.85}, {}, [ZeeWeaponIds.TAG_SCOPED], {&"aim_zoom": 0.4}),
+		_attachment(ZedWeaponIds.SUPPRESSOR, "Suppressor", DotWeaponAttachment.MOUNT_MUZZLE,
+			{"recoil_pitch": 0.9, "max_range": 0.9}, {}, [ZeeWeaponIds.TAG_SILENCED]),
+		_attachment(ZedWeaponIds.FOREGRIP, "Foregrip", DotWeaponAttachment.MOUNT_UNDERBARREL,
+			{"recoil_pitch": 0.8, "spread_moving": 0.9}),
+		_attachment(ZedWeaponIds.LASER_SIGHT, "Laser Sight", DotWeaponAttachment.MOUNT_SIDE,
+			{"spread": 0.8}),
+		_attachment(ZedWeaponIds.EXTENDED_MAG, "Extended Magazine", DotWeaponAttachment.MOUNT_MAGAZINE,
+			{"reload_ticks": 1.1}, {"magazine": 10}),
+	]
+
+
+## The six in one catalogue, ready for an arsenal's `attachments`.
+static func attachments() -> DotWeaponAttachments:
+	var out := DotWeaponAttachments.new()
+	for att in attachment_defs():
+		var _added := out.add(att)
+	return out
+
+
+## How each attachment is drawn: its model, and the nodes of the gun's model it replaces (a
+## scope stands where the rear sight is; an extended magazine is the magazine). The gun's
+## model carries a `socket_<mount>` node per mount, placed so the attachment's own origin goes
+## on it with no offset (art-src/hq/hq_attachments.py says where each one's origin is).
+const ATTACHMENT_ART := {
+	ZedWeaponIds.RED_DOT: {"path": HQ_DIR + "red_dot.glb", "hides": []},
+	ZedWeaponIds.SCOPE_4X: {"path": HQ_DIR + "scope_4x.glb", "hides": [&"rear_sight"]},
+	ZedWeaponIds.SUPPRESSOR: {"path": HQ_DIR + "suppressor.glb", "hides": []},
+	ZedWeaponIds.FOREGRIP: {"path": HQ_DIR + "foregrip.glb", "hides": []},
+	ZedWeaponIds.LASER_SIGHT: {"path": HQ_DIR + "laser.glb", "hides": []},
+	ZedWeaponIds.EXTENDED_MAG: {"path": HQ_DIR + "ext_mag.glb", "hides": [&"magazine"]},
+}
+
+
+## The node an attachment on [param mount] is parented to, in the gun's model.
+static func socket_name(mount: StringName) -> StringName:
+	return StringName("socket_" + String(mount))
+
+
+static func _attachment(id: StringName, name: String, mount: StringName, scale: Dictionary = {},
+		add: Dictionary = {}, tags: Array[StringName] = [], params: Dictionary = {}) -> DotWeaponAttachment:
+	var att := DotWeaponAttachment.new()
+	att.id = id
+	att.display_name = name
+	att.mount = mount
+	att.scale = scale
+	att.add = add
+	att.tags_added = tags
+	att.params_set = params
+	return att
 
 
 ## Every art entry's models exist. Loads nothing; asks the resource loader.

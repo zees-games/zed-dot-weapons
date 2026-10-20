@@ -133,6 +133,21 @@
 		},
 		{
 			"kind": "weapon",
+			"id": "assault_carbine",
+			"name": "Assault Carbine",
+			"def": "weapons/assault_carbine.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary",
+				"automatic"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
 			"id": "machine_gun",
 			"name": "Machine Gun",
 			"def": "weapons/machine_gun.tres",

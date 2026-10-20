@@ -15,7 +15,7 @@ extends Node
 
 ## Every check this suite makes; a script error aborts a section part-way, and only the
 ## total can see the checks that never ran.
-const CHECKS := 43
+const CHECKS := 51
 
 const ZEE_COUNT := 27
 
@@ -37,6 +37,7 @@ func _ready() -> void:
 	_sights()
 	_firing()
 	_throwing()
+	_attachments()
 	_uninstall()
 	_exiting()
 
@@ -56,7 +57,7 @@ func _ready() -> void:
 func _ids() -> void:
 	_begin("ids")
 	var all := ZedWeaponIds.all()
-	_check("fourteen weapons are named", all.size() == 14)
+	_check("fifteen weapons are named", all.size() == 15)
 
 	var clash: Array[String] = []
 
@@ -287,7 +288,7 @@ func _sights() -> void:
 		if off > worst:
 			worst = off
 			worst_id = art.id
-	_check("every unscoped gun has a measured iron sight (%d; none for %s)" % [sighted, ", ".join(unsighted)], sighted == 10)
+	_check("every unscoped gun has a measured iron sight (%d; none for %s)" % [sighted, ", ".join(unsighted)], sighted == 11)
 	_check("and its line runs through the screen's centre when aimed (worst %.4f m, %s)" % [worst, worst_id],
 		worst < 0.002)
 	view.queue_free()
@@ -364,6 +365,63 @@ func _throwing() -> void:
 		remove_child(arsenal)
 		arsenal.free()
 
+	_end()
+
+
+## The six attachments: dot-weapon's catalogue takes them, each fits the carbine on its own
+## mount, they change the document the way their names say, and each model is on disk, stands
+## alone, and the carbine's model has the socket it goes on.
+func _attachments() -> void:
+	_begin("attachments")
+	var cat := ZedWeaponPack.attachments()
+	var bad: Array[String] = []
+	for att in ZedWeaponPack.attachment_defs():
+		if not att.validate().ok:
+			bad.append(String(att.id))
+	_check("six attachments, each valid: %s" % ", ".join(bad), cat.ids().size() == 6 and bad.is_empty())
+
+	var carbine := ZedWeaponPack.assault_carbine()
+	var choices := cat.choices_for(carbine)
+	_check("the carbine takes something on each of its five mounts (%s)" % str(choices.keys()), choices.size() == 5)
+
+	var fitting := DotWeaponFitting.make(carbine.id)
+	fitting.fit(DotWeaponAttachment.MOUNT_MAGAZINE, ZedWeaponIds.EXTENDED_MAG)
+	fitting.fit(DotWeaponAttachment.MOUNT_MUZZLE, ZedWeaponIds.SUPPRESSOR)
+	fitting.fit(DotWeaponAttachment.MOUNT_UNDERBARREL, ZedWeaponIds.FOREGRIP)
+	var applied := cat.apply(carbine, fitting)
+	var fitted: DotWeaponDef = applied.value if applied.ok else null
+	_check("a full fitting applies (%s)" % ("" if applied.ok else applied.error.message), fitted != null)
+	_check("an extended magazine holds ten more, and the catalogue's copy is untouched",
+		fitted != null and fitted.magazine == 40 and carbine.magazine == 30)
+	_check("a suppressor makes it silenced, a foregrip and a suppressor tame the kick",
+		fitted != null and fitted.tags.has(ZeeWeaponIds.TAG_SILENCED)
+		and absf(fitted.tuning.recoil_pitch - carbine.tuning.recoil_pitch * 0.72) < 0.001)
+
+	var missing: Array[String] = []
+	var leaning: Array[String] = []
+	for id: StringName in ZedWeaponPack.ATTACHMENT_ART:
+		var path: String = ZedWeaponPack.ATTACHMENT_ART[id].path
+		if not ResourceLoader.exists(path):
+			missing.append(path)
+			continue
+		for dep in ResourceLoader.get_dependencies(path):
+			leaning.append("%s -> %s" % [id, dep])
+	_check("every attachment has art, and every model is on disk: %s" % ", ".join(missing),
+		ZedWeaponPack.ATTACHMENT_ART.size() == 6 and missing.is_empty())
+	_check("and none leans on another file: %s" % ", ".join(leaning), leaning.is_empty())
+
+	var gun := (load(ZeeWeaponArtTable.get_art(ZedWeaponIds.ASSAULT_CARBINE).model_path) as PackedScene).instantiate()
+	var sockets: Array[String] = []
+	for mount in carbine.mounts:
+		if gun.find_child(String(ZedWeaponPack.socket_name(mount)), true, false) == null:
+			sockets.append(String(mount))
+	for id: StringName in ZedWeaponPack.ATTACHMENT_ART:
+		for hide: StringName in ZedWeaponPack.ATTACHMENT_ART[id].hides:
+			if gun.find_child(String(hide), true, false) == null:
+				sockets.append("%s hides %s" % [id, hide])
+	gun.free()
+	_check("the carbine's model has a socket per mount and every node an attachment hides: missing %s" % ", ".join(sockets),
+		sockets.is_empty())
 	_end()
 
 
