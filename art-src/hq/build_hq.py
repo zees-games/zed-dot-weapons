@@ -22,6 +22,7 @@ import hq_pistol  # noqa: E402
 import hq_smg  # noqa: E402
 import hq_pump  # noqa: E402
 import hq_dmr  # noqa: E402
+import hq_ak  # noqa: E402
 import hq_attachments as A  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -56,6 +57,7 @@ GUNS = {
     "tactical_smg": (hq_smg.build, hq_smg.SOCKETS, 2048, (1024, 512, 1024)),
     "pump_shotgun": (hq_pump.build, hq_pump.SOCKETS, 2048, (1024, 512, 1024)),
     "hunting_rifle": (hq_dmr.build, hq_dmr.SOCKETS, 2048, (1024, 512, 1024)),
+    "ak_rifle": (hq_ak.build, hq_ak.SOCKETS, 2048, (1024, 512, 1024)),
 }
 # About the carbine's texel density (2048 over 0.77 m): the small ones need no more than 512.
 ATTACH_PX = {"scope_4x": 1024, "ext_mag": 512, "laser": 512, "red_dot": 512, "suppressor": 512, "foregrip": 512}

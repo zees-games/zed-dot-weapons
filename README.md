@@ -1,4 +1,4 @@
-This is a weapons pack to demonstrate the capabilities of the [**Dot collection**](https://moddingcommunity.com/co/4-dot-assets) built on-top of [Godot 4](https://godotengine.org/) and [TMC's gaming platform](https://moddingcommunity.com/play). It is a second pack on top of [zee-dot-weapons](https://github.com/zees-games/zee-dot-weapons): fifteen more weapons with a real-world look (pistols, an Uzi, an assault carbine, shotguns, a hunting rifle, a machine gun, launchers and a flamethrower) and the throwables a zombie game needs (a molotov, a pipe bomb and a bile jar). It was made for [game-zombie-zone](https://github.com/zees-games/game-zombie-zone), and any game on zee-dot-weapons can carry both packs at once.
+This is a weapons pack to demonstrate the capabilities of the [**Dot collection**](https://moddingcommunity.com/co/4-dot-assets) built on-top of [Godot 4](https://godotengine.org/) and [TMC's gaming platform](https://moddingcommunity.com/play). It is a second pack on top of [zee-dot-weapons](https://github.com/zees-games/zee-dot-weapons): sixteen more weapons with a real-world look (pistols, an Uzi, an assault carbine, an AK rifle, shotguns, a hunting rifle, a machine gun, launchers and a flamethrower) and the throwables a zombie game needs (a molotov, a pipe bomb and a bile jar). It was made for [game-zombie-zone](https://github.com/zees-games/game-zombie-zone), and any game on zee-dot-weapons can carry both packs at once.
 
 **This pack and the assets under it are COMPLETELY OPEN SOURCE**. You are free to use, modify, and distribute them under the terms of the MIT license, and the art it ships is CC0, which asks for even less. The only thing not open source is the back-end web infrastructure. So if you opt into using your own authentication backend instead of integrating with TMC, you will need to build and integrate your own back-end infrastructure.
 
@@ -27,7 +27,7 @@ The guns share zee-dot-weapons' ammunition, so a box of ammo fills both packs' g
 
 What a throwable does when it lands is up to the game, because dot-weapon spawns nothing itself. Each one says what it is with a tag (`molotov`, `pipe_bomb`, `bile`), and the flamethrower is tagged `incendiary`. In game-zombie-zone a molotov starts a fire, a pipe bomb beeps, draws the horde to it and goes off, and a bile jar brings every zombie nearby to where it broke.
 
-**Workshop pack.** `provides.json` and `weapons/*.tres` publish the fifteen weapons as a schema-1 Workshop weapon pack (kind `weapon`, like zee-dot-weapons), so subscribing to the pack makes them appear in a `DotWeaponCatalogue` that follows the content index. They are generated from the code table by `tools/export-defs.sh`.
+**Workshop pack.** `provides.json` and `weapons/*.tres` publish the sixteen weapons as a schema-1 Workshop weapon pack (kind `weapon`, like zee-dot-weapons), so subscribing to the pack makes them appear in a `DotWeaponCatalogue` that follows the content index. They are generated from the code table by `tools/export-defs.sh`.
 
 ## Using it
 Link `addons/zed_weapons` next to `addons/zee_weapons` and call `install()` once, before you build your first weapon rig:
@@ -36,7 +36,7 @@ Link `addons/zed_weapons` next to `addons/zee_weapons` and call `install()` once
 ZedWeaponPack.install()
 ```
 
-That adds the fifteen weapons to zee-dot-weapons' catalogue, their models to its art table and their reports to its sounds, so every rig, view model and world model in your game carries both packs with nothing else changed. `ZedWeaponPack.uninstall()` takes them out again.
+That adds the sixteen weapons to zee-dot-weapons' catalogue, their models to its art table and their reports to its sounds, so every rig, view model and world model in your game carries both packs with nothing else changed. `ZedWeaponPack.uninstall()` takes them out again.
 
 The models are under `assets/`. A game that vendors them (because it is delivered as a pack) copies `assets/weapon-pack` and `assets/food-kit` next to zee's art, and zee's `ZeeModelCache.set_asset_root` finds them the same way.
 

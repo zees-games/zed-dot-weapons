@@ -81,6 +81,7 @@ const SOUNDS := {
 	ZedWeaponIds.SAWED_OFF: &"shotgun",
 	ZedWeaponIds.HUNTING_RIFLE: &"sniper",
 	ZedWeaponIds.ASSAULT_CARBINE: &"rifle",
+	ZedWeaponIds.AK_RIFLE: &"rifle",
 	ZedWeaponIds.MACHINE_GUN: &"heavy",
 	ZedWeaponIds.GRENADE_LAUNCHER: &"launcher",
 	ZedWeaponIds.ROCKET_LAUNCHER: &"launcher",
@@ -95,7 +96,7 @@ static func weapons(types: Dictionary = {}) -> Array[DotWeaponDef]:
 
 	return [
 		service_pistol(t), silenced_pistol(t), uzi(t),
-		tactical_smg(t), pump_shotgun(t), sawed_off(t), hunting_rifle(t), assault_carbine(t),
+		tactical_smg(t), pump_shotgun(t), sawed_off(t), hunting_rifle(t), assault_carbine(t), ak_rifle(t),
 		machine_gun(t), grenade_launcher(t), rocket_launcher(t), flamethrower(t),
 		molotov(t), pipe_bomb(t), bile_jar(t),
 	]
@@ -298,6 +299,37 @@ static func assault_carbine(t: Dictionary = {}) -> DotWeaponDef:
 	b.recoil_pitch = 0.45
 	b.recoil_yaw = 0.2
 	b.max_range = 180.0
+	def.tuning = b
+	return def
+
+
+## The second high-detail rifle: a 30-round 7.62 mm with wood furniture, hitting harder and
+## kicking more than the carbine, and slower. Same five mounts.
+static func ak_rifle(t: Dictionary = {}) -> DotWeaponDef:
+	var def := _gun(ZedWeaponIds.AK_RIFLE, "AK Rifle", ZeeWeaponIds.SLOT_PRIMARY,
+		DotWeaponDef.Fire.AUTO, rpm_ticks(600.0))
+	def.tags = [ZeeWeaponIds.TAG_PRIMARY, ZeeWeaponIds.TAG_AUTOMATIC]
+	def.ammo_type = ZeeWeaponIds.AMMO_HEAVY
+	def.magazine = 30
+	def.reserve = 120
+	def.reserve_max = 240
+	def.reload_ticks = sec_ticks(2.6)
+	def.deploy_ticks = sec_ticks(0.45)
+	def.holster_ticks = sec_ticks(0.3)
+	def.mounts = [
+		DotWeaponAttachment.MOUNT_OPTIC, DotWeaponAttachment.MOUNT_MUZZLE,
+		DotWeaponAttachment.MOUNT_UNDERBARREL, DotWeaponAttachment.MOUNT_SIDE,
+		DotWeaponAttachment.MOUNT_MAGAZINE,
+	]
+
+	var b := _ballistics(t, 32.0)
+	b.spread = 0.9
+	b.spread_moving = 2.4
+	b.bloom = 0.2
+	b.bloom_max = 3.4
+	b.recoil_pitch = 0.62
+	b.recoil_yaw = 0.3
+	b.max_range = 170.0
 	def.tuning = b
 	return def
 
@@ -539,6 +571,7 @@ static func art() -> Array[ZeeWeaponArt]:
 		_fed(_gun_art(ZedWeaponIds.SAWED_OFF, "sawed_off", ZeeWeaponArtTable.POSE_RIFLE, 0.141), ROUND_SHELL, Vector3(0.0, 0.05, 0.0), true),
 		_rounds(_hand_fed(_fed(_scoped(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, DMR_HEIGHT, HQ_DIR + "hunting_rifle.glb")), ROUND_RIFLE, Vector3(0.0, 0.14, -0.08), true),
 			Vector3(0.03, 0.12, 0.0), 0.7, Vector3(90.0, 0.0, 0.0), &"RELOAD_KEYS_BOLT"), 2),
+		_raised(_fed(_gun_art(ZedWeaponIds.AK_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, AK_HEIGHT, HQ_DIR + "ak_rifle.glb"), MAG_BOX, Vector3(0.0, 0.03, 0.0))),
 		_fed(_gun_art(ZedWeaponIds.ASSAULT_CARBINE, "", ZeeWeaponArtTable.POSE_RIFLE, CARBINE_HEIGHT, HQ_DIR + "m4_carbine.glb"), MAG_BOX, Vector3(0.0, 0.03, -0.02)),
 		_box_fed(_heavy(_gun_art(ZedWeaponIds.MACHINE_GUN, "machine_gun", ZeeWeaponArtTable.POSE_HEAVY, 0.197), 1.9)),
 		_hand_fed(_fed(_heavy(_gun_art(ZedWeaponIds.GRENADE_LAUNCHER, "grenade_launcher", ZeeWeaponArtTable.POSE_HEAVY, 0.271), 1.6), ROUND_GRENADE, Vector3(0.0, 0.20, -0.10), true),
@@ -755,6 +788,8 @@ const PISTOL_HEIGHT := 0.145
 const SMG_HEIGHT := 0.223
 ## The pump shotgun's.
 const PUMP_HEIGHT := 0.144
+## The AK rifle's, magazine in.
+const AK_HEIGHT := 0.245
 ## The marksman rifle's, scope on.
 const DMR_HEIGHT := 0.204
 

@@ -289,6 +289,7 @@ FINISHES = {
     "grip": dict(base=(0.034, 0.034, 0.034), rough=0.78, metal=0.0, wear=(0.09, 0.09, 0.088), wear_rough=0.55, wear_metal=0.0, wear_amt=0.5, bump=1.0),
     "rubber": dict(base=(0.022, 0.022, 0.022), rough=0.88, metal=0.0, wear=(0.05, 0.05, 0.05), wear_rough=0.8, wear_metal=0.0, wear_amt=0.3, bump=0.6),
     "tan": dict(base=(0.30, 0.22, 0.13), rough=0.66, metal=0.0, wear=(0.42, 0.34, 0.24), wear_rough=0.5, wear_metal=0.0, wear_amt=0.6, bump=0.3),
+    "wood": dict(base=(0.095, 0.036, 0.014), rough=0.52, metal=0.0, wear=(0.24, 0.11, 0.05), wear_rough=0.45, wear_metal=0.0, wear_amt=0.7, bump=0.35),
     "cerakote": dict(base=(0.055, 0.055, 0.052), rough=0.55, metal=0.0, wear=(0.42, 0.42, 0.41), wear_rough=0.3, wear_metal=1.0, wear_amt=0.8, bump=0.15),
     "magalu": dict(base=(0.050, 0.050, 0.048), rough=0.45, metal=0.0, wear=(0.62, 0.62, 0.64), wear_rough=0.3, wear_metal=1.0, wear_amt=1.0, bump=0.1),
     "brass": dict(base=(0.80, 0.52, 0.22), rough=0.30, metal=1.0, wear=(0.85, 0.62, 0.34), wear_rough=0.22, wear_metal=1.0, wear_amt=0.3, bump=0.05),

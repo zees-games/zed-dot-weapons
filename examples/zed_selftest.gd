@@ -57,7 +57,7 @@ func _ready() -> void:
 func _ids() -> void:
 	_begin("ids")
 	var all := ZedWeaponIds.all()
-	_check("fifteen weapons are named", all.size() == 15)
+	_check("sixteen weapons are named", all.size() == 16)
 
 	var clash: Array[String] = []
 
@@ -288,7 +288,7 @@ func _sights() -> void:
 		if off > worst:
 			worst = off
 			worst_id = art.id
-	_check("every unscoped gun has a measured iron sight (%d; none for %s)" % [sighted, ", ".join(unsighted)], sighted == 11)
+	_check("every unscoped gun has a measured iron sight (%d; none for %s)" % [sighted, ", ".join(unsighted)], sighted == 12)
 	_check("and its line runs through the screen's centre when aimed (worst %.4f m, %s)" % [worst, worst_id],
 		worst < 0.002)
 	view.queue_free()

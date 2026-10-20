@@ -1,4 +1,67 @@
 {
+ "ak_rifle": {
+  "origin_mm": [
+   0.0,
+   38.02,
+   -200.98
+  ],
+  "px": 2048,
+  "quick": false,
+  "seconds": 196.8,
+  "ship_px": [
+   1024,
+   512,
+   1024
+  ],
+  "size": [
+   0.058,
+   0.245,
+   0.868
+  ],
+  "sockets": {
+   "sight_front": [
+    -0.0,
+    0.245,
+    0.375
+   ],
+   "sight_rear": [
+    -0.0,
+    0.245,
+    0.167
+   ],
+   "socket_magazine": [
+    0.0,
+    0.175,
+    -0.014
+   ],
+   "socket_muzzle": [
+    -0.0,
+    0.201,
+    0.434
+   ],
+   "socket_optic": [
+    0.0,
+    0.227,
+    -0.078
+   ],
+   "socket_side": [
+    -0.02,
+    0.201,
+    0.242
+   ],
+   "socket_underbarrel": [
+    -0.0,
+    0.17,
+    0.262
+   ]
+  },
+  "tris": {
+   "body": 6217,
+   "magazine": 1524,
+   "rear_sight": 192
+  },
+  "tris_total": 7933
+ },
  "ext_mag": {
   "origin_mm": [
    0,

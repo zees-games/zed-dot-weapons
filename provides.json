@@ -148,6 +148,21 @@
 		},
 		{
 			"kind": "weapon",
+			"id": "ak_rifle",
+			"name": "AK Rifle",
+			"def": "weapons/ak_rifle.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary",
+				"automatic"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
 			"id": "machine_gun",
 			"name": "Machine Gun",
 			"def": "weapons/machine_gun.tres",

@@ -46,6 +46,8 @@ const SAWED_OFF := &"sawed_off"
 const HUNTING_RIFLE := &"hunting_rifle"
 ## The high-detail rifle (assets/hq/): baked textures, and mounts for every attachment below.
 const ASSAULT_CARBINE := &"assault_carbine"
+## The second high-detail rifle: wood furniture, a curved magazine, the same five mounts.
+const AK_RIFLE := &"ak_rifle"
 
 # --- Heavies -------------------------------------------------------------------
 const MACHINE_GUN := &"machine_gun"
@@ -64,7 +66,7 @@ const BILE_JAR := &"bile_jar"
 static func all() -> Array[StringName]:
 	return [
 		SERVICE_PISTOL, SILENCED_PISTOL, UZI,
-		TACTICAL_SMG, PUMP_SHOTGUN, SAWED_OFF, HUNTING_RIFLE, ASSAULT_CARBINE,
+		TACTICAL_SMG, PUMP_SHOTGUN, SAWED_OFF, HUNTING_RIFLE, ASSAULT_CARBINE, AK_RIFLE,
 		MACHINE_GUN, GRENADE_LAUNCHER, ROCKET_LAUNCHER, FLAMETHROWER,
 		MOLOTOV, PIPE_BOMB, BILE_JAR,
 	]

@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="DotWeaponDef" format=3]
+
+[ext_resource type="Script" path="res://addons/dot_weapon/core/dot_weapon_def.gd" id="1_qt0gs"]
+[ext_resource type="Script" path="res://addons/dot_combat/core/dot_damage_type.gd" id="2_kjkdg"]
+[ext_resource type="Script" path="res://addons/dot_weapon/tuning/dot_weapon_ballistics.gd" id="3_ceil0"]
+
+[sub_resource type="Resource" id="Resource_j4rxa"]
+script = ExtResource("2_kjkdg")
+id = &"dart"
+display_name = "Dart"
+falloff_start = 30.0
+falloff_end = 70.0
+falloff_floor = 0.6
+armour_share = 0.5
+self_scale = 0.0
+
+[sub_resource type="Resource" id="Resource_aqw0w"]
+script = ExtResource("3_ceil0")
+damage = 32.0
+damage_type = SubResource("Resource_j4rxa")
+max_range = 170.0
+spread = 0.9
+spread_moving = 2.4
+bloom = 0.2
+bloom_max = 3.4
+recoil_pitch = 0.62
+recoil_yaw = 0.3
+
+[resource]
+script = ExtResource("1_qt0gs")
+id = &"ak_rifle"
+display_name = "AK Rifle"
+tags = Array[StringName]([&"primary", &"automatic"])
+behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
+params = {
+&"bash_cooldown_ticks": 51,
+&"bash_damage": 42.0,
+&"bash_reach": 1.9
+}
+tuning = SubResource("Resource_aqw0w")
+mounts = Array[StringName]([&"optic", &"muzzle", &"underbarrel", &"side", &"magazine"])
+authored_tick_rate = 64
+slot = 3
+deploy_ticks = 29
+holster_ticks = 19
+fire_mode = 1
+use_interval_ticks = 6
+ammo_type = &"darts_heavy"
+magazine = 30
+reserve = 120
+reserve_max = 240
+reload_ticks = 166
