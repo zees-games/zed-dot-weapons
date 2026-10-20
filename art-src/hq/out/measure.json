@@ -138,6 +138,63 @@
   },
   "tris_total": 13260
  },
+ "pump_shotgun": {
+  "origin_mm": [
+   0.0,
+   67.0,
+   -108.0
+  ],
+  "px": 2048,
+  "quick": false,
+  "seconds": 155.0,
+  "ship_px": [
+   1024,
+   512,
+   1024
+  ],
+  "size": [
+   0.035,
+   0.144,
+   0.866
+  ],
+  "sockets": {
+   "sight_front": [
+    -0.0,
+    0.137,
+    0.425
+   ],
+   "sight_rear": [
+    0.0,
+    0.137,
+    -0.153
+   ],
+   "socket_muzzle": [
+    -0.0,
+    0.108,
+    0.433
+   ],
+   "socket_optic": [
+    0.0,
+    0.13,
+    -0.091
+   ],
+   "socket_side": [
+    -0.017,
+    0.096,
+    0.103
+   ],
+   "socket_underbarrel": [
+    -0.0,
+    0.064,
+    0.253
+   ]
+  },
+  "tris": {
+   "body": 7356,
+   "rear_sight": 236
+  },
+  "tris_total": 7592
+ },
  "red_dot": {
   "origin_mm": [
    0,
