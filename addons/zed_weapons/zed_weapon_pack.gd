@@ -533,7 +533,7 @@ static func art() -> Array[ZeeWeaponArt]:
 		_raised(_fed(_gun_art(ZedWeaponIds.SERVICE_PISTOL, "", ZeeWeaponArtTable.POSE_PISTOL, PISTOL_HEIGHT, HQ_DIR + "service_pistol.glb"), MAG_BOX, Vector3(0.0, 0.03, -0.09))),
 		_boxed(_fed(_gun_art(ZedWeaponIds.SILENCED_PISTOL, "silenced_pistol", ZeeWeaponArtTable.POSE_PISTOL, 0.156), MAG_BOX, Vector3(0.0, 0.03, -0.150))),
 		_boxed(_fed(_gun_art(ZedWeaponIds.UZI, "uzi", ZeeWeaponArtTable.POSE_PISTOL, 0.207), MAG_BOX, Vector3(0.0, 0.03, -0.04))),
-		_boxed(_fed(_gun_art(ZedWeaponIds.TACTICAL_SMG, "tactical_smg", ZeeWeaponArtTable.POSE_RIFLE, 0.204), MAG_BOX, Vector3(0.0, 0.03, -0.148))),
+		_raised(_fed(_gun_art(ZedWeaponIds.TACTICAL_SMG, "", ZeeWeaponArtTable.POSE_RIFLE, SMG_HEIGHT, HQ_DIR + "tactical_smg.glb"), MAG_BOX, Vector3(0.0, 0.03, 0.027))),
 		_rounds(_hand_fed(_fed(_gun_art(ZedWeaponIds.PUMP_SHOTGUN, "pump_shotgun", ZeeWeaponArtTable.POSE_RIFLE, 0.092), ROUND_SHELL, Vector3(0.0, 0.03, -0.03), true),
 			Vector3(0.0, -0.10, 0.02), 1.6, Vector3.ZERO, &"RELOAD_KEYS_TUBE"), 3),
 		_fed(_gun_art(ZedWeaponIds.SAWED_OFF, "sawed_off", ZeeWeaponArtTable.POSE_RIFLE, 0.141), ROUND_SHELL, Vector3(0.0, 0.05, 0.0), true),
@@ -751,6 +751,8 @@ static func _thrown_art(id: StringName, path: String, scale: float) -> ZeeWeapon
 const CARBINE_HEIGHT := 0.279
 ## The service pistol's, magazine in.
 const PISTOL_HEIGHT := 0.145
+## The tactical SMG's, magazine in.
+const SMG_HEIGHT := 0.223
 
 
 static func attachment_defs() -> Array[DotWeaponAttachment]:

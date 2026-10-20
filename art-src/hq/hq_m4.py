@@ -256,11 +256,10 @@ def rear_sight(hi):
     return parts
 
 
-def magazine_parts(name, hi, length=170.0, curve=0.16, mat="magalu", window=False):
+def magazine_parts(name, hi, length=170.0, curve=0.16, mat="magalu", window=False, depth=62.0):
     """A curved box magazine, its origin (0, 0, 0) at the top centre of where it seats in the
     well: so the standard and the extended one share the gun's socket_magazine."""
     parts = []
-    depth = 62.0
     pts_f, pts_r = [], []
     steps = 10
     for i in range(steps + 1):

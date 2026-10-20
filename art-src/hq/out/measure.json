@@ -272,5 +272,68 @@
    "suppressor": 952
   },
   "tris_total": 952
+ },
+ "tactical_smg": {
+  "origin_mm": [
+   0.0,
+   -10.0,
+   -176.97
+  ],
+  "px": 2048,
+  "quick": false,
+  "seconds": 214.8,
+  "ship_px": [
+   1024,
+   512,
+   1024
+  ],
+  "size": [
+   0.0515,
+   0.223,
+   0.524
+  ],
+  "sockets": {
+   "sight_front": [
+    -0.0,
+    0.217,
+    0.1725
+   ],
+   "sight_rear": [
+    0.0,
+    0.217,
+    -0.088
+   ],
+   "socket_magazine": [
+    -0.0,
+    0.155,
+    0.016
+   ],
+   "socket_muzzle": [
+    -0.0,
+    0.177,
+    0.262
+   ],
+   "socket_optic": [
+    0.0,
+    0.2035,
+    -0.048
+   ],
+   "socket_side": [
+    -0.0215,
+    0.177,
+    0.12
+   ],
+   "socket_underbarrel": [
+    -0.0,
+    0.1555,
+    0.13
+   ]
+  },
+  "tris": {
+   "body": 7478,
+   "magazine": 1500,
+   "rear_sight": 308
+  },
+  "tris_total": 9286
  }
 }
