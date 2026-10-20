@@ -10,7 +10,7 @@ This pack, along with every asset it is built on, was built initially with **Cla
 I intend on reviewing code, testing, and editing documentation regularly. If you're interested in helping out, please let me know!
 
 ## What is in it
-Art is Kenney's **Weapon Pack**, with the molotov and the bile jar from his **Food Kit**. All of it is CC0 and included, so there is nothing to download.
+The eleven real-world guns are our own kitbashes (parts of Quaternius's Ultimate Low Poly Guns and Kenney's Blaster Kit, CC0, rebuilt by `art-src/guns/`); the rest is Kenney's **Weapon Pack** (ammunition, pipe bomb), with the molotov and the bile jar from his **Food Kit**. All of it is CC0 and included, so there is nothing to download.
 
 ![the whole pack](docs/rack.png)
 
@@ -52,7 +52,7 @@ Godot **4.7**, [zee-dot-weapons](https://github.com/zees-games/zee-dot-weapons) 
 The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-kit` and `assets/melee` from a zee-dot-weapons checkout (dot-bootstrap does).
 
 ## Credits
-The guns, the launchers, the flamethrower, the pipe bomb and the magazines and rounds a reload carries are Kenney's Weapon Pack, and the wine bottle and the honey jar are his Food Kit ([kenney.nl](https://kenney.nl), CC0). Each kit's licence is next to its files.
+The eleven real-world guns (`assets/kitbash/`) are kitbashed by the Blender scripts in `art-src/guns/` (one recipe per gun in `zed_guns.py`, `blender -b --python art-src/guns/build.py` rebuilds them): parts of [Quaternius](https://quaternius.com)'s [Ultimate Low Poly Guns Pack](https://opengameart.org/content/low-poly-guns-pack) (CC0) and of Kenney's [Blaster Kit](https://kenney.nl/assets/blaster-kit) (CC0) are cut, reshaped, joined with barrels, muzzle devices, sights, rails, magazines and tubes modelled in the script, recoloured and bevelled, so no gun is any one source model. The pipe bomb and the magazines and rounds a reload carries are Kenney's Weapon Pack, and the wine bottle and the honey jar are his Food Kit ([kenney.nl](https://kenney.nl), CC0). Each kit's licence is next to its files.
 
 ## License
 MIT. See [LICENSE](LICENSE). The Kenney art is CC0, which is public domain.

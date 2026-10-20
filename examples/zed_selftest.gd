@@ -263,6 +263,7 @@ func _sights() -> void:
 	view.show_arms = false
 	add_child(view)
 	var sighted := 0
+	var unsighted: Array[String] = []
 	var worst := 0.0
 	var worst_id := &""
 	for art in ZedWeaponPack.art():
@@ -274,6 +275,7 @@ func _sights() -> void:
 			view._process(0.02)
 		var points := view.sight_points()
 		if points.is_empty():
+			unsighted.append(String(art.id))
 			continue
 		sighted += 1
 		var rear: Vector3 = points.rear
@@ -285,7 +287,7 @@ func _sights() -> void:
 		if off > worst:
 			worst = off
 			worst_id = art.id
-	_check("every unscoped gun has a measured iron sight (%d)" % sighted, sighted == 10)
+	_check("every unscoped gun has a measured iron sight (%d; none for %s)" % [sighted, ", ".join(unsighted)], sighted == 10)
 	_check("and its line runs through the screen's centre when aimed (worst %.4f m, %s)" % [worst, worst_id],
 		worst < 0.002)
 	view.queue_free()

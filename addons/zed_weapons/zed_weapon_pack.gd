@@ -27,6 +27,8 @@ const PROJECTILE := "res://addons/dot_weapon/behaviour/dot_weapon_projectile.gd"
 const THROWN := "res://addons/dot_weapon/behaviour/dot_weapon_thrown.gd"
 
 const WEAPONS_DIR := "res://assets/weapon-pack/"
+## The guns: our own kitbashes (art-src/guns/), one silhouette each. WEAPONS_DIR keeps the ammunition and throwables.
+const KIT_DIR := "res://assets/kitbash/"
 const FOOD_DIR := "res://assets/food-kit/"
 
 
@@ -494,21 +496,21 @@ const GUN_FORWARD := Vector3.BACK
 
 static func art() -> Array[ZeeWeaponArt]:
 	return [
-		_boxed(_fed(_gun_art(ZedWeaponIds.SERVICE_PISTOL, "pistol", ZeeWeaponArtTable.POSE_PISTOL, 0.23), MAG_BOX, Vector3(0.0, 0.03, -0.092))),
-		_boxed(_fed(_gun_art(ZedWeaponIds.SILENCED_PISTOL, "pistolSilencer", ZeeWeaponArtTable.POSE_PISTOL, 0.23), MAG_BOX, Vector3(0.0, 0.03, -0.150))),
-		_boxed(_fed(_gun_art(ZedWeaponIds.UZI, "uzi", ZeeWeaponArtTable.POSE_PISTOL, 0.333), MAG_BOX, Vector3(0.0, 0.03, -0.027))),
-		_boxed(_fed(_gun_art(ZedWeaponIds.TACTICAL_SMG, "uziLongSilencer", ZeeWeaponArtTable.POSE_RIFLE, 0.333), MAG_BOX, Vector3(0.0, 0.03, -0.148))),
-		_rounds(_hand_fed(_fed(_gun_art(ZedWeaponIds.PUMP_SHOTGUN, "shotgun", ZeeWeaponArtTable.POSE_RIFLE, 0.157), ROUND_SHELL, Vector3(0.0, 0.03, -0.03), true),
+		_boxed(_fed(_gun_art(ZedWeaponIds.SERVICE_PISTOL, "service_pistol", ZeeWeaponArtTable.POSE_PISTOL, 0.22), MAG_BOX, Vector3(0.0, 0.03, -0.092))),
+		_boxed(_fed(_gun_art(ZedWeaponIds.SILENCED_PISTOL, "silenced_pistol", ZeeWeaponArtTable.POSE_PISTOL, 0.156), MAG_BOX, Vector3(0.0, 0.03, -0.150))),
+		_boxed(_fed(_gun_art(ZedWeaponIds.UZI, "uzi", ZeeWeaponArtTable.POSE_PISTOL, 0.207), MAG_BOX, Vector3(0.0, 0.03, -0.04))),
+		_boxed(_fed(_gun_art(ZedWeaponIds.TACTICAL_SMG, "tactical_smg", ZeeWeaponArtTable.POSE_RIFLE, 0.204), MAG_BOX, Vector3(0.0, 0.03, -0.148))),
+		_rounds(_hand_fed(_fed(_gun_art(ZedWeaponIds.PUMP_SHOTGUN, "pump_shotgun", ZeeWeaponArtTable.POSE_RIFLE, 0.092), ROUND_SHELL, Vector3(0.0, 0.03, -0.03), true),
 			Vector3(0.0, -0.10, 0.02), 1.6, Vector3.ZERO, &"RELOAD_KEYS_TUBE"), 3),
-		_fed(_gun_art(ZedWeaponIds.SAWED_OFF, "shotgunShort", ZeeWeaponArtTable.POSE_RIFLE, 0.134), ROUND_SHELL, Vector3(0.0, 0.05, 0.0), true),
-		_rounds(_hand_fed(_fed(_scoped(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "sniperSand", ZeeWeaponArtTable.POSE_RIFLE, 0.283)), ROUND_RIFLE, Vector3(0.0, 0.10, -0.12), true),
+		_fed(_gun_art(ZedWeaponIds.SAWED_OFF, "sawed_off", ZeeWeaponArtTable.POSE_RIFLE, 0.141), ROUND_SHELL, Vector3(0.0, 0.05, 0.0), true),
+		_rounds(_hand_fed(_fed(_scoped(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "hunting_rifle", ZeeWeaponArtTable.POSE_RIFLE, 0.231)), ROUND_RIFLE, Vector3(0.0, 0.10, -0.12), true),
 			Vector3(0.03, 0.12, 0.0), 0.7, Vector3(90.0, 0.0, 0.0), &"RELOAD_KEYS_BOLT"), 2),
-		_box_fed(_heavy(_gun_art(ZedWeaponIds.MACHINE_GUN, "machinegun", ZeeWeaponArtTable.POSE_HEAVY, 0.264), 1.9)),
-		_hand_fed(_fed(_heavy(_gun_art(ZedWeaponIds.GRENADE_LAUNCHER, "machinegunLauncher", ZeeWeaponArtTable.POSE_HEAVY, 0.264), 1.6), ROUND_GRENADE, Vector3(0.0, 0.20, -0.10), true),
+		_box_fed(_heavy(_gun_art(ZedWeaponIds.MACHINE_GUN, "machine_gun", ZeeWeaponArtTable.POSE_HEAVY, 0.197), 1.9)),
+		_hand_fed(_fed(_heavy(_gun_art(ZedWeaponIds.GRENADE_LAUNCHER, "grenade_launcher", ZeeWeaponArtTable.POSE_HEAVY, 0.271), 1.6), ROUND_GRENADE, Vector3(0.0, 0.20, -0.10), true),
 			Vector3(0.0, 0.14, -0.06), 2.2, Vector3.ZERO, &"RELOAD_KEYS_BREAK"),
-		_hand_fed(_fed(_heavy(_gun_art(ZedWeaponIds.ROCKET_LAUNCHER, "rocketlauncherModern", ZeeWeaponArtTable.POSE_HEAVY, 0.337), 2.0), ROUND_ROCKET, Vector3(-0.046, 0.21, 0.30), true),
+		_hand_fed(_fed(_heavy(_gun_art(ZedWeaponIds.ROCKET_LAUNCHER, "rocket_launcher", ZeeWeaponArtTable.POSE_HEAVY, 0.193), 2.0), ROUND_ROCKET, Vector3(-0.046, 0.21, 0.30), true),
 			Vector3(0.0, 0.0, 0.30), 2.0, Vector3(0.0, 180.0, 0.0), &"RELOAD_KEYS_MUZZLE"),
-		_heavy(_gun_art(ZedWeaponIds.FLAMETHROWER, "flamethrower_long", ZeeWeaponArtTable.POSE_HEAVY, 0.207), 1.7),
+		_heavy(_gun_art(ZedWeaponIds.FLAMETHROWER, "flamethrower", ZeeWeaponArtTable.POSE_HEAVY, 0.151), 1.7),
 		_thrown_art(ZedWeaponIds.MOLOTOV, FOOD_DIR + "wine-red.scn", 0.7),
 		_thrown_art(ZedWeaponIds.PIPE_BOMB, WEAPONS_DIR + "grenadeVintage.glb", 0.9),
 		_thrown_art(ZedWeaponIds.BILE_JAR, FOOD_DIR + "honey.scn", 0.6),
@@ -526,7 +528,7 @@ static func art() -> Array[ZeeWeaponArt]:
 ## [method hold_rotation]. Written straight across, the cant tipped the left side up and
 ## showed the camera the gun's underside.
 static func _gun_art(id: StringName, model: String, pose: StringName, height: float) -> ZeeWeaponArt:
-	var art := ZeeWeaponArt.make(id, WEAPONS_DIR + model + ".glb")
+	var art := ZeeWeaponArt.make(id, KIT_DIR + model + ".glb")
 	art.model_forward = GUN_FORWARD
 	art.pose = pose
 	art.view_scale = ZeeWeaponArtTable.pose_scale(pose) * REAL_SCALE
