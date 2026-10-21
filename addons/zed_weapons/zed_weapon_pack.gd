@@ -569,15 +569,15 @@ static func art() -> Array[ZeeWeaponArt]:
 		_rounds(_hand_fed(_fed(_gun_art(ZedWeaponIds.PUMP_SHOTGUN, "", ZeeWeaponArtTable.POSE_RIFLE, PUMP_HEIGHT, HQ_DIR + "pump_shotgun.glb"), ROUND_SHELL, Vector3(0.0, 0.07, -0.07), true),
 			Vector3(0.0, -0.10, 0.02), 1.6, Vector3.ZERO, &"RELOAD_KEYS_TUBE"), 3),
 		_fed(_gun_art(ZedWeaponIds.SAWED_OFF, "sawed_off", ZeeWeaponArtTable.POSE_RIFLE, 0.141), ROUND_SHELL, Vector3(0.0, 0.05, 0.0), true),
-		_rounds(_hand_fed(_fed(_scoped(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, DMR_HEIGHT, HQ_DIR + "hunting_rifle.glb")), ROUND_RIFLE, Vector3(0.0, 0.14, -0.08), true),
+		_rounds(_hand_fed(_fed(_low_fore(_scoped(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, DMR_HEIGHT, HQ_DIR + "hunting_rifle.glb"))), ROUND_RIFLE, Vector3(0.0, 0.14, -0.08), true),
 			Vector3(0.03, 0.12, 0.0), 0.35, Vector3(90.0, 0.0, 0.0), &"RELOAD_KEYS_BOLT"), 2),
 		_own_magazine(_gun_art(ZedWeaponIds.AK_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, AK_HEIGHT, HQ_DIR + "ak_rifle.glb"), "ak_rifle"),
-		_own_magazine(_gun_art(ZedWeaponIds.ASSAULT_CARBINE, "", ZeeWeaponArtTable.POSE_RIFLE, CARBINE_HEIGHT, HQ_DIR + "m4_carbine.glb"), "m4_carbine"),
+		_hip(_own_magazine(_gun_art(ZedWeaponIds.ASSAULT_CARBINE, "", ZeeWeaponArtTable.POSE_RIFLE, CARBINE_HEIGHT, HQ_DIR + "m4_carbine.glb"), "m4_carbine"), 1.3, Vector3(-0.06, 0.02, 0.0)),
 		_box_fed(_heavy(_gun_art(ZedWeaponIds.MACHINE_GUN, "machine_gun", ZeeWeaponArtTable.POSE_HEAVY, 0.197), 1.9)),
 		_hand_fed(_fed(_heavy(_gun_art(ZedWeaponIds.GRENADE_LAUNCHER, "grenade_launcher", ZeeWeaponArtTable.POSE_HEAVY, 0.271), 1.6), ROUND_GRENADE, Vector3(0.0, 0.20, -0.10), true),
 			Vector3(0.0, 0.14, -0.06), 2.2, Vector3.ZERO, &"RELOAD_KEYS_BREAK"),
-		_hand_fed(_fed(_heavy(_gun_art(ZedWeaponIds.ROCKET_LAUNCHER, "rocket_launcher", ZeeWeaponArtTable.POSE_HEAVY, 0.193), 2.0), ROUND_ROCKET, Vector3(-0.046, 0.21, 0.30), true),
-			Vector3(0.0, 0.0, 0.30), 2.0, Vector3(0.0, 180.0, 0.0), &"RELOAD_KEYS_MUZZLE"),
+		_tamed(_hand_fed(_fed(_heavy(_gun_art(ZedWeaponIds.ROCKET_LAUNCHER, "rocket_launcher", ZeeWeaponArtTable.POSE_HEAVY, 0.193), 2.0), ROUND_ROCKET, Vector3(-0.046, 0.21, 0.30), true),
+			Vector3(0.0, 0.0, -0.06), 1.5, Vector3(0.0, 180.0, 0.0), &"RELOAD_KEYS_MUZZLE"), ROCKET_TIP),
 		_heavy(_gun_art(ZedWeaponIds.FLAMETHROWER, "flamethrower", ZeeWeaponArtTable.POSE_HEAVY, 0.151), 1.7),
 		_thrown_art(ZedWeaponIds.MOLOTOV, FOOD_DIR + "wine-red.scn", 0.7),
 		_thrown_art(ZedWeaponIds.PIPE_BOMB, WEAPONS_DIR + "grenadeVintage.glb", 0.9),
@@ -666,8 +666,8 @@ static func _fed(art: ZeeWeaponArt, path: String, offset: Vector3, loose: bool =
 ## the hold's scale inside a fist: the reload read as the gun tilting.
 static func _box_fed(art: ZeeWeaponArt) -> ZeeWeaponArt:
 	art.set(&"magazine_part", &"ammo_box")
-	art.magazine_offset = Vector3(-0.09, 0.02, -0.02)
-	art.set(&"magazine_scale", 1.4)
+	art.magazine_offset = Vector3(-0.075, 0.0, -0.02)
+	art.set(&"magazine_scale", 0.85)
 	return art
 
 
@@ -725,6 +725,11 @@ static func _own_magazine(art: ZeeWeaponArt, gun: String) -> ZeeWeaponArt:
 	var socket := {"service_pistol": Vector3(0.0, 0.107, -0.0559), "tactical_smg": Vector3(0.0, 0.155, 0.016), "ak_rifle": Vector3(0.0, 0.175, -0.014), "m4_carbine": Vector3(0.0, 0.175, -0.041)}
 	var _with := art.with_magazine(HQ_DIR + gun + "_mag.glb", socket.get(gun, Vector3.ZERO))
 	art.set(&"hide_during_reload", &"magazine")
+	# The pistol's well is under the support fist: carried at the palm the magazine was behind
+	# the glove from the pull to the seat (50-56% of the reload). Set by name, as zee's older
+	# versions lack the field.
+	if gun == "service_pistol":
+		art.set(&"magazine_carry", Vector3(0.0, 0.07, 0.05))
 	return _raised(art)
 
 
@@ -759,6 +764,39 @@ const ZEE_RELOAD_PARTS := "res://addons/zee_weapons/view/zee_reload_parts.gd"
 ## frame of the reload sheet, and the rifle, long and lifted half out of frame, read as a tilt.
 static func _rounds(art: ZeeWeaponArt, count: int) -> ZeeWeaponArt:
 	art.set(&"load_count", count)
+	return art
+
+
+## How much of zee's muzzle-up reload tip the rocket launcher keeps. At zee's full tip the
+## muzzle is at the top of the screen and the support hand, sent after it, is behind the sight
+## ring with the sleeve's cut end hanging in mid-air below it (the arm only, no hand).
+const ROCKET_TIP := 0.55
+
+
+## [param art]'s reload keys with every offset and turn scaled by [param amount]: the same curve
+## (rest at both ends stays rest) shallower, so no new corner for the "never jolts" check.
+static func _tamed(art: ZeeWeaponArt, amount: float) -> ZeeWeaponArt:
+	var out: Array = []
+	for key: Array in art.reload_keys:
+		out.append([key[0], (key[1] as Vector3) * amount, (key[2] as Vector3) * amount])
+	art.reload_keys = out
+	return art
+
+
+## The support hand lower on a gun with a scope on it: zee measures the fore-end's height as a
+## share of the bounds, and a scope makes them tall, so the glove sat over barrel and scope at the
+## hip and covered both.
+static func _low_fore(art: ZeeWeaponArt) -> ZeeWeaponArt:
+	art.set(&"fore_up", 0.22)
+	return art
+
+
+## A gun drawn [param scale] times larger at the hip, moved by [param shift] (the view's metres).
+## The carbine's hip pose, zee's rifle hold, left it a small shape far to the right with its
+## stock off the screen.
+static func _hip(art: ZeeWeaponArt, scale: float, shift: Vector3) -> ZeeWeaponArt:
+	art.view_scale *= scale
+	art.view_offset += shift
 	return art
 
 

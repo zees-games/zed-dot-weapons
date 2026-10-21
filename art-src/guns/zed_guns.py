@@ -307,7 +307,7 @@ def grenade_launcher():
     parts.append(cyl(0.039, 0.024, "cfc", (0, front + 0.15, zc - 0.004), material="graphite", sides=12))
     parts.append(box((0.01, 0.03, 0.05), "ccd", (0, front + 0.01, zc + 0.03), "blued", 0.1))
     parts.append(box((0.01, 0.01, 0.034), "ccd", (0, front + 0.01, zc + 0.078), "steel", 0.0))
-    stock = donor("Stock", unit=U * 0.95, default_mat="tan")
+    stock = donor("Stock", unit=U * 0.66, default_mat="polymer")
     back = at(frame, "cbu")
     place(stock, "cfu", (0, back.y + 0.12, back.z - 0.015))
     parts.append(stock)
