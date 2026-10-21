@@ -562,17 +562,17 @@ const GUN_FORWARD := Vector3.BACK
 
 static func art() -> Array[ZeeWeaponArt]:
 	return [
-		_raised(_fed(_gun_art(ZedWeaponIds.SERVICE_PISTOL, "", ZeeWeaponArtTable.POSE_PISTOL, PISTOL_HEIGHT, HQ_DIR + "service_pistol.glb"), MAG_BOX, Vector3(0.0, 0.03, -0.09))),
+		_own_magazine(_gun_art(ZedWeaponIds.SERVICE_PISTOL, "", ZeeWeaponArtTable.POSE_PISTOL, PISTOL_HEIGHT, HQ_DIR + "service_pistol.glb"), "service_pistol"),
 		_boxed(_fed(_gun_art(ZedWeaponIds.SILENCED_PISTOL, "silenced_pistol", ZeeWeaponArtTable.POSE_PISTOL, 0.156), MAG_BOX, Vector3(0.0, 0.03, -0.150))),
 		_boxed(_fed(_gun_art(ZedWeaponIds.UZI, "uzi", ZeeWeaponArtTable.POSE_PISTOL, 0.207), MAG_BOX, Vector3(0.0, 0.03, -0.04))),
-		_raised(_fed(_gun_art(ZedWeaponIds.TACTICAL_SMG, "", ZeeWeaponArtTable.POSE_RIFLE, SMG_HEIGHT, HQ_DIR + "tactical_smg.glb"), MAG_BOX, Vector3(0.0, 0.03, 0.027))),
+		_own_magazine(_gun_art(ZedWeaponIds.TACTICAL_SMG, "", ZeeWeaponArtTable.POSE_RIFLE, SMG_HEIGHT, HQ_DIR + "tactical_smg.glb"), "tactical_smg"),
 		_rounds(_hand_fed(_fed(_gun_art(ZedWeaponIds.PUMP_SHOTGUN, "", ZeeWeaponArtTable.POSE_RIFLE, PUMP_HEIGHT, HQ_DIR + "pump_shotgun.glb"), ROUND_SHELL, Vector3(0.0, 0.07, -0.07), true),
 			Vector3(0.0, -0.10, 0.02), 1.6, Vector3.ZERO, &"RELOAD_KEYS_TUBE"), 3),
 		_fed(_gun_art(ZedWeaponIds.SAWED_OFF, "sawed_off", ZeeWeaponArtTable.POSE_RIFLE, 0.141), ROUND_SHELL, Vector3(0.0, 0.05, 0.0), true),
 		_rounds(_hand_fed(_fed(_scoped(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, DMR_HEIGHT, HQ_DIR + "hunting_rifle.glb")), ROUND_RIFLE, Vector3(0.0, 0.14, -0.08), true),
 			Vector3(0.03, 0.12, 0.0), 0.35, Vector3(90.0, 0.0, 0.0), &"RELOAD_KEYS_BOLT"), 2),
-		_raised(_fed(_gun_art(ZedWeaponIds.AK_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, AK_HEIGHT, HQ_DIR + "ak_rifle.glb"), MAG_BOX, Vector3(0.0, 0.03, 0.0))),
-		_raised(_fed(_gun_art(ZedWeaponIds.ASSAULT_CARBINE, "", ZeeWeaponArtTable.POSE_RIFLE, CARBINE_HEIGHT, HQ_DIR + "m4_carbine.glb"), MAG_BOX, Vector3(0.0, 0.03, -0.02))),
+		_own_magazine(_gun_art(ZedWeaponIds.AK_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, AK_HEIGHT, HQ_DIR + "ak_rifle.glb"), "ak_rifle"),
+		_own_magazine(_gun_art(ZedWeaponIds.ASSAULT_CARBINE, "", ZeeWeaponArtTable.POSE_RIFLE, CARBINE_HEIGHT, HQ_DIR + "m4_carbine.glb"), "m4_carbine"),
 		_box_fed(_heavy(_gun_art(ZedWeaponIds.MACHINE_GUN, "machine_gun", ZeeWeaponArtTable.POSE_HEAVY, 0.197), 1.9)),
 		_hand_fed(_fed(_heavy(_gun_art(ZedWeaponIds.GRENADE_LAUNCHER, "grenade_launcher", ZeeWeaponArtTable.POSE_HEAVY, 0.271), 1.6), ROUND_GRENADE, Vector3(0.0, 0.20, -0.10), true),
 			Vector3(0.0, 0.14, -0.06), 2.2, Vector3.ZERO, &"RELOAD_KEYS_BREAK"),
@@ -714,6 +714,18 @@ static func _raised(art: ZeeWeaponArt) -> ZeeWeaponArt:
 	art.set(&"magazine_loose", true)
 	art.reload_keys = lifted(ZeeWeaponArtTable.reload_keys(art.pose), RELOAD_LIFT)
 	return art
+
+
+## A high-detail gun reloaded with its own magazine: the model's `magazine` node split out into
+## `assets/hq/<gun>_mag.glb` (`art-src/hq/split_magazine.py`, origin at the gun's `socket_magazine`)
+## is what the hand carries in, and the gun's own node is hidden from the pull to the seat
+## (`ZeeWeaponArt.hide_during_reload`, set by name so an older zee still loads the pack). The
+## Weapon Pack's `ammo_uzi` this replaced was a yellow 6.5 cm cartridge, not a magazine.
+static func _own_magazine(art: ZeeWeaponArt, gun: String) -> ZeeWeaponArt:
+	var socket := {"service_pistol": Vector3(0.0, 0.107, -0.0559), "tactical_smg": Vector3(0.0, 0.155, 0.016), "ak_rifle": Vector3(0.0, 0.175, -0.014), "m4_carbine": Vector3(0.0, 0.175, -0.041)}
+	var _with := art.with_magazine(HQ_DIR + gun + "_mag.glb", socket.get(gun, Vector3.ZERO))
+	art.set(&"hide_during_reload", &"magazine")
+	return _raised(art)
 
 
 ## How much higher than zee's keys a box-fed gun is raised mid-reload, in metres.
