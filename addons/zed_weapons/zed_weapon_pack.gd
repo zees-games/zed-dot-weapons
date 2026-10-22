@@ -103,12 +103,12 @@ static func weapons(types: Dictionary = {}, profiled: bool = true) -> Array[DotW
 	]
 
 	if profiled:
-		errors = ZeeWeaponProfiles.tune(out, profile_set())
+		errors = DotWeaponProfiles.tune(out, profile_set())
 
 	return out
 
 
-## The config addon name profiles are read under (`cfg/addons/zed_weapons/weapon`); see [ZeeWeaponProfiles].
+## The config addon name profiles are read under (`cfg/addons/zed_weapons/weapon`); see [DotWeaponProfiles].
 const ADDON := "zed_weapons"
 ## The game id for the game tier (`cfg/game/<game>/weapon`); empty skips it.
 static var game: String = ""
@@ -122,7 +122,7 @@ static var errors: PackedStringArray = PackedStringArray()
 
 ## The weapon profile set; call [method DotProfileSet.clear_cache] when done.
 static func profile_set(layer: Variant = null) -> DotProfileSet:
-	return ZeeWeaponProfiles.profile_set(ADDON, game, pack_cfg_root, base_roots, layer)
+	return DotWeaponProfiles.overlay_set(ADDON, game, pack_cfg_root, base_roots, layer)
 
 
 ## Weapon [param id] with the upgrades [param ids] applied; value `{def, cost}`.
@@ -131,7 +131,7 @@ static func upgraded(id: StringName, ids: Array, types: Dictionary = {}) -> DotR
 	if def == null:
 		return DotResult.fail(DotError.CODE_INVALID, "no weapon %s" % id)
 	var set := profile_set()
-	var res := ZeeWeaponProfiles.upgraded(def, ids, set)
+	var res := DotWeaponProfiles.upgraded(def, ids, set)
 	set.clear_cache()
 	return res
 

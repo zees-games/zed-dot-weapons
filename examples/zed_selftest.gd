@@ -577,13 +577,13 @@ func _profiles() -> void:
 	set.clear_cache()
 	var stale := PackedStringArray()
 	for id in vanilla:
-		if FileAccess.get_file_as_string(ZeeWeaponProfiles.profile_path("zed_weapons", id)) != ZeeWeaponProfiles.to_yaml(vanilla[id], ZedDefExport.TITLE):
+		if FileAccess.get_file_as_string(DotWeaponProfiles.profile_path("zed_weapons", id)) != DotWeaponProfiles.to_yaml(vanilla[id], ZedDefExport.TITLE):
 			stale.append(id)
 	_check("shipped profiles are what the exporter writes (run tools/export-defs.sh): %s" % ", ".join(stale), stale.is_empty())
 	var tuned := _by_id(ZedWeaponPack.weapons())
 	var drift := PackedStringArray()
 	for id in vanilla:
-		if str(ZeeWeaponProfiles.flat_of(tuned[id])) != str(ZeeWeaponProfiles.flat_of(vanilla[id])):
+		if str(DotWeaponProfiles.flat_of(tuned[id])) != str(DotWeaponProfiles.flat_of(vanilla[id])):
 			drift.append(id)
 	_check("loading every shipped profile changes no number: %s" % ", ".join(drift), drift.is_empty())
 	_check("no shipped profile fails", ZedWeaponPack.errors.is_empty())

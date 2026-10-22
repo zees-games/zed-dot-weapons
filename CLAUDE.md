@@ -12,7 +12,7 @@ A second copy of zee's rig, view model and effects for sixteen more weapons woul
 
 ## Weapon profiles
 
-`cfg/addons/zed_weapons/weapon/<id>.yml` (folder form with `upgrades/` for ak_rifle and pump_shotgun) overlays the builders' numbers through zee's `ZeeWeaponProfiles`, only the keys a file sets (`DotProfile.file_keys`). The shipped ymls are **generated** by `tools/export-defs.sh` from the builders and the suite fails when stale; upgrades are hand-written. `ZedWeaponPack.weapons(types, false)` skips profiles (the export); `pack_cfg_root` is a mounted pack's cfg, the weakest root; `upgraded(id, ids)` returns `{def, cost}`.
+`cfg/addons/zed_weapons/weapon/<id>.yml` (folder form with `upgrades/` for ak_rifle and pump_shotgun) overlays the builders' numbers through dot-weapon's `DotWeaponProfiles` (`overlay_set`, `tune`), only the keys a file sets (`DotProfile.file_keys`). The shipped ymls are **generated** by `tools/export-defs.sh` from the builders and the suite fails when stale; upgrades are hand-written. `ZedWeaponPack.weapons(types, false)` skips profiles (the export); `pack_cfg_root` is a mounted pack's cfg, the weakest root; `upgraded(id, ids)` returns `{def, cost}`.
 
 ## The Workshop form
 
