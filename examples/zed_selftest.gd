@@ -15,7 +15,7 @@ extends Node
 
 ## Every check this suite makes; a script error aborts a section part-way, and only the
 ## total can see the checks that never ran.
-const CHECKS := 51
+const CHECKS := 54
 
 const ZEE_COUNT := 27
 
@@ -36,6 +36,7 @@ func _ready() -> void:
 	_art()
 	_sights()
 	_firing()
+	_reloading()
 	_throwing()
 	_attachments()
 	_uninstall()
@@ -340,6 +341,63 @@ func _firing() -> void:
 	_check("a rocket flies straight", rocket != null and is_zero_approx(rocket.gravity_scale) and rocket.splash_damage > 200.0)
 	remove_child(launcher)
 	launcher.free()
+	_end()
+
+
+## A reload's motion is a fraction of the reload the arsenal runs, so the two must agree: the
+## arsenal's real reload lasts what the profile says (the start plus a round each for a per-round
+## gun), and the motion's keys begin and end at the rest pose, not stuck out of the hands.
+func _reloading() -> void:
+	_begin("reloading")
+	var drift: Array[String] = []
+	var unrested: Array[String] = []
+	var still: Array[String] = []
+	var arts := {}
+	for art in ZedWeaponPack.art():
+		arts[art.id] = art
+
+	for id in ZedWeaponIds.all():
+		var def: DotWeaponDef = ZedWeaponPack.table()[id]
+
+		if def.tags.has(ZeeWeaponIds.TAG_THROWN) or def.magazine <= 0 or def.reload_ticks <= 0:
+			continue
+
+		var keys: Array = ZeeWeaponArtTable.reload_keys((arts[id] as ZeeWeaponArt).pose)
+		if not (arts[id] as ZeeWeaponArt).reload_keys.is_empty():
+			keys = (arts[id] as ZeeWeaponArt).reload_keys
+		var peak := 0.0
+		for i in range(21):
+			var sampled: Array = ZeeWeaponPose.sample_keys(keys, i / 20.0)
+			peak = maxf(peak, (sampled[0] as Vector3).length() + (sampled[1] as Vector3).length())
+		if peak < 0.01:
+			still.append(String(id))
+		for end in [0.0, 1.0]:
+			var at_rest: Array = ZeeWeaponPose.sample_keys(keys, end)
+			if (at_rest[0] as Vector3).length() > 0.012 or (at_rest[1] as Vector3).length() > 0.02:
+				unrested.append("%s@%d" % [id, int(end)])
+
+		var arsenal := _arsenal()
+		var _given := arsenal.give(id)
+		_run(arsenal, 0, 80, 0)
+		var _shot := _run(arsenal, 80, 84, DotWeaponCommand.BUTTON_ATTACK)
+		_run(arsenal, 84, 160, 0)
+		var space := arsenal.current().magazine_space()
+		var want := def.reload_ticks
+		if def.reload_per_round:
+			want = def.reload_start_ticks + def.reload_ticks * maxi(space, 1)
+		_run(arsenal, 160, 161, DotWeaponCommand.BUTTON_RELOAD)
+		var took := 0
+		while arsenal.is_reloading() and took < 2000:
+			_run(arsenal, 161 + took, 162 + took, 0)
+			took += 1
+		if absi(took + 1 - want) > 3 + want / 20:
+			drift.append("%s %d vs %d" % [id, took + 1, want])
+		remove_child(arsenal)
+		arsenal.free()
+
+	_check("every reload's real length is the profile's (%s)" % ", ".join(drift), drift.is_empty())
+	_check("every reload's motion begins and ends at rest (%s)" % ", ".join(unrested), unrested.is_empty())
+	_check("and moves in between (%s)" % ", ".join(still), still.is_empty())
 	_end()
 
 
