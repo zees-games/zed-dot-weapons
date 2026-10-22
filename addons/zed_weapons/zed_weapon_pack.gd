@@ -91,15 +91,49 @@ const SOUNDS := {
 
 # --- The documents ---------------------------------------------------------------
 
-static func weapons(types: Dictionary = {}) -> Array[DotWeaponDef]:
+## [param profiled] false skips the cfg profiles (the Workshop export writes the builders' own numbers).
+static func weapons(types: Dictionary = {}, profiled: bool = true) -> Array[DotWeaponDef]:
 	var t := types if not types.is_empty() else ZeeWeaponDamage.table()
 
-	return [
+	var out: Array[DotWeaponDef] = [
 		service_pistol(t), silenced_pistol(t), uzi(t),
 		tactical_smg(t), pump_shotgun(t), sawed_off(t), hunting_rifle(t), assault_carbine(t), ak_rifle(t),
 		machine_gun(t), grenade_launcher(t), rocket_launcher(t), flamethrower(t),
 		molotov(t), pipe_bomb(t), bile_jar(t),
 	]
+
+	if profiled:
+		errors = ZeeWeaponProfiles.tune(out, profile_set())
+
+	return out
+
+
+## The config addon name profiles are read under (`cfg/addons/zed_weapons/weapon`); see [ZeeWeaponProfiles].
+const ADDON := "zed_weapons"
+## The game id for the game tier (`cfg/game/<game>/weapon`); empty skips it.
+static var game: String = ""
+## A mounted pack's `cfg` root (`DotCloudMounter.cfg_root_of`), the weakest root.
+static var pack_cfg_root: String = ""
+## Roots under [member pack_cfg_root]; empty means [method DotProfileSet.default_roots]. Tests set it.
+static var base_roots: PackedStringArray = PackedStringArray()
+## Profiles that failed to load in the last [method weapons]; their weapons keep the builder's numbers.
+static var errors: PackedStringArray = PackedStringArray()
+
+
+## The weapon profile set; call [method DotProfileSet.clear_cache] when done.
+static func profile_set(layer: Variant = null) -> DotProfileSet:
+	return ZeeWeaponProfiles.profile_set(ADDON, game, pack_cfg_root, base_roots, layer)
+
+
+## Weapon [param id] with the upgrades [param ids] applied; value `{def, cost}`.
+static func upgraded(id: StringName, ids: Array, types: Dictionary = {}) -> DotResult:
+	var def: DotWeaponDef = table(types).get(id)
+	if def == null:
+		return DotResult.fail(DotError.CODE_INVALID, "no weapon %s" % id)
+	var set := profile_set()
+	var res := ZeeWeaponProfiles.upgraded(def, ids, set)
+	set.clear_cache()
+	return res
 
 
 static func table(types: Dictionary = {}) -> Dictionary:

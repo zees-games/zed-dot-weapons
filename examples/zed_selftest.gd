@@ -15,7 +15,7 @@ extends Node
 
 ## Every check this suite makes; a script error aborts a section part-way, and only the
 ## total can see the checks that never ran.
-const CHECKS := 54
+const CHECKS := 67
 
 const ZEE_COUNT := 27
 
@@ -33,6 +33,7 @@ func _ready() -> void:
 	_install()
 	_documents()
 	_workshop()
+	_profiles()
 	_art()
 	_sights()
 	_firing()
@@ -549,6 +550,69 @@ func _run(arsenal: DotWeaponArsenal, from: int, to: int, buttons: int, release_a
 		previous = command
 
 	return out
+
+
+func _profile_file(root: String, rel: String, text: String) -> void:
+	var path := root.path_join("addons/zed_weapons/weapon").path_join(rel)
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(path.get_base_dir()))
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	f.store_string(text)
+	f.close()
+
+
+func _by_id(defs: Array[DotWeaponDef]) -> Dictionary:
+	var out := {}
+	for d in defs:
+		out[String(d.id)] = d
+	return out
+
+
+func _profiles() -> void:
+	_begin("weapon profiles overlay only the keys a file sets")
+	var saved_roots := ZedWeaponPack.base_roots
+	var vanilla := _by_id(ZedWeaponPack.weapons({}, false))
+	ZedWeaponPack.base_roots = PackedStringArray(["res://cfg"])
+	var set := ZedWeaponPack.profile_set()
+	_check("one shipped profile per weapon", set.list_ids().size() == vanilla.size() and vanilla.size() == ZedWeaponIds.all().size())
+	set.clear_cache()
+	var stale := PackedStringArray()
+	for id in vanilla:
+		if FileAccess.get_file_as_string(ZeeWeaponProfiles.profile_path("zed_weapons", id)) != ZeeWeaponProfiles.to_yaml(vanilla[id], ZedDefExport.TITLE):
+			stale.append(id)
+	_check("shipped profiles are what the exporter writes (run tools/export-defs.sh): %s" % ", ".join(stale), stale.is_empty())
+	var tuned := _by_id(ZedWeaponPack.weapons())
+	var drift := PackedStringArray()
+	for id in vanilla:
+		if str(ZeeWeaponProfiles.flat_of(tuned[id])) != str(ZeeWeaponProfiles.flat_of(vanilla[id])):
+			drift.append(id)
+	_check("loading every shipped profile changes no number: %s" % ", ".join(drift), drift.is_empty())
+	_check("no shipped profile fails", ZedWeaponPack.errors.is_empty())
+
+	var tmp := "user://zed_profiles_cfg"
+	_profile_file(tmp, "uzi.yml", "magazine: 12\nextra:\n  tuning:\n    damage: 99\n")
+	_profile_file(tmp, "ak_rifle.yml", "magazine: -5\n")
+	ZedWeaponPack.base_roots = PackedStringArray([tmp])
+	var t2 := _by_id(ZedWeaponPack.weapons())
+	var u: DotWeaponDef = t2["uzi"]
+	_check("a file-set key overrides the builder", u.magazine == 12 and is_equal_approx((u.tuning as DotWeaponBallistics).damage, 99.0))
+	_check("a key the file leaves out keeps the builder's value", u.reload_ticks == vanilla["uzi"].reload_ticks and is_equal_approx((u.tuning as DotWeaponBallistics).spread, 2.0))
+	_check("a broken profile is reported and its weapon keeps the builder's numbers", ZedWeaponPack.errors.size() == 1 and t2["ak_rifle"].magazine == vanilla["ak_rifle"].magazine)
+	_check("the exporter's list ignores the profiles", _by_id(ZedDefExport.own_weapons())["uzi"].magazine == vanilla["uzi"].magazine)
+	ZedWeaponPack.pack_cfg_root = "user://zed_profiles_pack"
+	_profile_file("user://zed_profiles_pack", "tactical_smg.yml", "extra:\n  tuning:\n    damage: 55\n")
+	_check("a delivered pack's cfg root is read", is_equal_approx((_by_id(ZedWeaponPack.weapons())["tactical_smg"].tuning as DotWeaponBallistics).damage, 55.0))
+	ZedWeaponPack.pack_cfg_root = ""
+
+	ZedWeaponPack.base_roots = PackedStringArray(["res://cfg"])
+	var up := ZedWeaponPack.upgraded(&"ak_rifle", ["extended_mag"])
+	_check("an upgrade is applied to a copy", up.ok and up.value["def"].magazine == 40 and up.value["cost"] == 100 and vanilla["ak_rifle"].magazine == 30)
+	var choke := ZedWeaponPack.upgraded(&"pump_shotgun", ["choke"])
+	_check("a set upgrade changes an int field", choke.ok and (choke.value["def"].tuning as DotWeaponBallistics).pellets == 9)
+	_check("an unknown weapon is refused", not ZedWeaponPack.upgraded(&"ghost", []).ok)
+	var wrote := ZeeDefExport.write_cfg("user://zed_profiles_export", "zed_weapons", ZedDefExport.TITLE, ZedDefExport.own_weapons())
+	_check("the export writes every profile and the upgrade folders", wrote.ok and FileAccess.file_exists("user://zed_profiles_export/cfg/addons/zed_weapons/weapon/ak_rifle/upgrades/extended_mag.yml") and FileAccess.file_exists("user://zed_profiles_export/cfg/addons/zed_weapons/weapon/uzi.yml"))
+	ZedWeaponPack.base_roots = saved_roots
+	_end()
 
 
 func _begin(name: String) -> void:

@@ -14,7 +14,7 @@ const TITLE := "Zed Weapons"
 
 
 static func own_weapons() -> Array[DotWeaponDef]:
-	return ZedWeaponPack.weapons(ZeeWeaponDamage.table())
+	return ZedWeaponPack.weapons(ZeeWeaponDamage.table(), false)
 
 
 ## The `provides.json` document for [param defs].
@@ -38,6 +38,10 @@ static func export_to(root: String) -> DotResult:
 		var saved := ResourceSaver.save(def, path)
 		if saved != OK:
 			return DotResult.fail(DotError.CODE_IO, "Cannot save %s (error %d)." % [path, saved])
+
+	var cfg := ZeeDefExport.write_cfg(root, ZedWeaponPack.ADDON, TITLE, defs)
+	if not cfg.ok:
+		return cfg
 
 	var json_path := root.path_join("provides.json")
 	var f := FileAccess.open(json_path, FileAccess.WRITE)
