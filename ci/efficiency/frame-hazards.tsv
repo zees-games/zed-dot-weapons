@@ -1,0 +1,6 @@
+# frame-hazards
+# Baselines only shrink: scripts/<gate> --update lowers or drops entries and refuses to add.
+examples/zed_range.gd::_draw_readout::string_build	3
+examples/zed_range.gd::_launch::connect_unguarded	1
+examples/zed_range.gd::_launch::node_lookup	1
+examples/zed_range.gd::_mark::node_lookup	1
