@@ -6,6 +6,7 @@
 # The dot-* addons and zee-dot-weapons are separate repositories and are linked in, never
 # committed. bootstrap.sh derives this project's dependencies from the lines below.
 /addons/dot_core
+/addons/dot_profile
 /addons/dot_combat
 /addons/dot_weapon
 /addons/dot_net
