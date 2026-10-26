@@ -2,6 +2,7 @@
 name: "Flamethrower"
 description: ""
 tags: ["heavy", "automatic", "incendiary"]
+weight: 6
 behaviour: "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
 slot: 4
 authored_tick_rate: 64

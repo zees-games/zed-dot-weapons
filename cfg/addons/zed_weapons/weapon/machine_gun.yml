@@ -2,6 +2,7 @@
 name: "Machine Gun"
 description: ""
 tags: ["heavy", "automatic", "primary"]
+weight: 6
 behaviour: "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
 slot: 4
 authored_tick_rate: 64
