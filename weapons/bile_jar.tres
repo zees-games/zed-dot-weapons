@@ -41,6 +41,7 @@ slot = 5
 holster_ticks = 16
 fire_mode = 3
 use_interval_ticks = 64
+fire_modes = PackedStringArray()
 ammo_type = &"bile_jars"
 reserve = 1
 reserve_max = 1

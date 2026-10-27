@@ -43,6 +43,7 @@ slot = 5
 holster_ticks = 16
 fire_mode = 3
 use_interval_ticks = 64
+fire_modes = PackedStringArray()
 ammo_type = &"pipe_bombs"
 reserve = 1
 reserve_max = 1

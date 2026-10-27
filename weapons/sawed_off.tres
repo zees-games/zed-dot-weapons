@@ -42,6 +42,7 @@ authored_tick_rate = 64
 slot = 3
 deploy_ticks = 19
 use_interval_ticks = 16
+fire_modes = PackedStringArray()
 ammo_type = &"shells"
 magazine = 2
 reserve = 40

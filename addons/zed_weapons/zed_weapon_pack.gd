@@ -494,6 +494,13 @@ static func bile_jar(t: Dictionary = {}) -> DotWeaponDef:
 	return _thrown(t, ZedWeaponIds.BILE_JAR, "Bile Jar", ZedWeaponIds.AMMO_BILE, ZedWeaponIds.TAG_BILE)
 
 
+## Guns that really have a selector, the first entry being how they start.
+const SELECTABLE := {
+	ZedWeaponIds.UZI: ["auto", "semi"], ZedWeaponIds.TACTICAL_SMG: ["auto", "semi", "burst"],
+	ZedWeaponIds.ASSAULT_CARBINE: ["auto", "semi", "burst"], ZedWeaponIds.AK_RIFLE: ["auto", "semi"],
+}
+
+
 # --- Builders ------------------------------------------------------------------------
 
 static func _gun(id: StringName, name: String, slot: int, fire: DotWeaponDef.Fire, interval: int) -> DotWeaponDef:
@@ -504,6 +511,8 @@ static func _gun(id: StringName, name: String, slot: int, fire: DotWeaponDef.Fir
 	def.behaviour_path = HITSCAN
 	def.slot = slot
 	def.fire_mode = fire
+	if SELECTABLE.has(id):
+		def.fire_modes = PackedStringArray(SELECTABLE[id])
 	def.use_interval_ticks = interval
 	def.cost_per_use = 1
 	# zee's bash, which every one of its guns has; ZeeWeaponBash reads these through the rig.

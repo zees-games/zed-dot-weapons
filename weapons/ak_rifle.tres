@@ -45,6 +45,7 @@ deploy_ticks = 29
 holster_ticks = 19
 fire_mode = 1
 use_interval_ticks = 6
+fire_modes = PackedStringArray("auto", "semi")
 ammo_type = &"darts_heavy"
 magazine = 30
 reserve = 120

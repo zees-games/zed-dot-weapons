@@ -45,6 +45,7 @@ deploy_ticks = 58
 holster_ticks = 38
 fire_mode = 1
 use_interval_ticks = 5
+fire_modes = PackedStringArray()
 ammo_type = &"belt"
 magazine = 100
 reserve = 200
