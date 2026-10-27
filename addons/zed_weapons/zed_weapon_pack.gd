@@ -74,9 +74,9 @@ static func installed() -> bool:
 ## Which of zee's baked reports each weapon sounds like.
 const SOUNDS := {
 	ZedWeaponIds.SERVICE_PISTOL: &"light",
-	ZedWeaponIds.SILENCED_PISTOL: &"light",
+	ZedWeaponIds.SILENCED_PISTOL: ZeeWeaponSound.SUPPRESSED,
 	ZedWeaponIds.UZI: &"smg",
-	ZedWeaponIds.TACTICAL_SMG: &"smg",
+	ZedWeaponIds.TACTICAL_SMG: ZeeWeaponSound.SUPPRESSED,
 	ZedWeaponIds.PUMP_SHOTGUN: &"shotgun",
 	ZedWeaponIds.SAWED_OFF: &"shotgun",
 	ZedWeaponIds.HUNTING_RIFLE: &"sniper",
