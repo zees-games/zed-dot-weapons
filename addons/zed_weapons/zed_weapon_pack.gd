@@ -75,8 +75,8 @@ static func installed() -> bool:
 const SOUNDS := {
 	ZedWeaponIds.SERVICE_PISTOL: &"light",
 	ZedWeaponIds.SILENCED_PISTOL: &"light",
-	ZedWeaponIds.UZI: &"light",
-	ZedWeaponIds.TACTICAL_SMG: &"light",
+	ZedWeaponIds.UZI: &"smg",
+	ZedWeaponIds.TACTICAL_SMG: &"smg",
 	ZedWeaponIds.PUMP_SHOTGUN: &"shotgun",
 	ZedWeaponIds.SAWED_OFF: &"shotgun",
 	ZedWeaponIds.HUNTING_RIFLE: &"sniper",
