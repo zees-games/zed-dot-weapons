@@ -38,6 +38,7 @@ params = {
 }
 tuning = SubResource("Resource_0q37d")
 mounts = Array[StringName]([&"optic", &"muzzle", &"underbarrel", &"side", &"magazine"])
+weight = 4.0
 authored_tick_rate = 64
 slot = 3
 deploy_ticks = 26

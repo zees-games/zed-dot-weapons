@@ -102,12 +102,21 @@ static func weapons(types: Dictionary = {}, profiled: bool = true) -> Array[DotW
 		molotov(t), pipe_bomb(t), bile_jar(t),
 	]
 
+	for def in out:
+		def.weight = float(WEIGHTS.get(def.id, def.weight))
+
 	if profiled:
 		errors = DotWeaponProfiles.tune(out, profile_set())
 
 	return out
 
 
+## Carry weight in kg per weapon; a profile's `weight` key overrides it.
+const WEIGHTS := {
+	&"service_pistol": 1.0, &"silenced_pistol": 1.0, &"uzi": 1.0, &"tactical_smg": 2.8, &"sawed_off": 4.0,
+	&"hunting_rifle": 5.0, &"assault_carbine": 4.0, &"machine_gun": 6.0, &"grenade_launcher": 6.0,
+	&"rocket_launcher": 6.0, &"flamethrower": 6.0, &"molotov": 0.4, &"pipe_bomb": 0.4, &"bile_jar": 0.4,
+}
 ## The config addon name profiles are read under (`cfg/addons/zed_weapons/weapon`); see [DotWeaponProfiles].
 const ADDON := "zed_weapons"
 ## The game id for the game tier (`cfg/game/<game>/weapon`); empty skips it.

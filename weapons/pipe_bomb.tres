@@ -37,6 +37,7 @@ params = {
 &"speed_scales_with_cook": true
 }
 tuning = SubResource("Resource_khmkc")
+weight = 0.4
 authored_tick_rate = 64
 slot = 5
 holster_ticks = 16

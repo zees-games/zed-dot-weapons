@@ -43,6 +43,7 @@ params = {
 &"bash_reach": 1.9
 }
 tuning = SubResource("Resource_3faar")
+weight = 6.0
 authored_tick_rate = 64
 slot = 4
 deploy_ticks = 32
