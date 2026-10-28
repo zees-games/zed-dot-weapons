@@ -731,8 +731,12 @@ static func _hand_fed(art: ZeeWeaponArt, from: Vector3, scale: float, rotation: 
 	art.set(&"load_from", from)
 	art.set(&"magazine_scale", scale)
 	art.magazine_rotation = rotation
+	# The key tables may live on a base script of the pose, so walk up.
+	var table: Variant = null
 	var pose: Script = ZeeWeaponPose
-	var table: Variant = pose.get_script_constant_map().get(keys)
+	while pose != null and table == null:
+		table = pose.get_script_constant_map().get(keys)
+		pose = pose.get_base_script()
 	if table is Array:
 		art.reload_keys = table
 	return art
