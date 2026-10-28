@@ -15,7 +15,7 @@ extends Node
 
 ## Every check this suite makes; a script error aborts a section part-way, and only the
 ## total can see the checks that never ran.
-const CHECKS := 68
+const CHECKS := 78
 
 const ZEE_COUNT := 27
 
@@ -40,6 +40,7 @@ func _ready() -> void:
 	_reloading()
 	_throwing()
 	_attachments()
+	_drawing()
 	_uninstall()
 	_exiting()
 
@@ -491,6 +492,74 @@ func _attachments() -> void:
 	gun.free()
 	_check("the carbine's model has a socket per mount and every node an attachment hides: missing %s" % ", ".join(sockets),
 		sockets.is_empty())
+	_end()
+
+
+func _drawing() -> void:
+	_begin("drawing the attachments")
+	var id := ZedWeaponIds.ASSAULT_CARBINE
+	var art := ZeeWeaponArtTable.get_art(id)
+	var cat := ZedWeaponPack.attachments()
+	var base := ZeeWeaponPack.catalogue().get_def(id)
+	var camera := Camera3D.new()
+	add_child(camera)
+	var view := ZeeViewModel.new()
+	camera.add_child(view)
+	var world := ZeeWorldModel.new()
+	add_child(world)
+
+	_check("an attachment's art comes from zed's hook", ZeeAttachmentArt.of(ZedWeaponIds.SUPPRESSOR).get("path", "") == ZedWeaponPack.ATTACHMENT_ART[ZedWeaponIds.SUPPRESSOR].path
+		and ZeeAttachmentArt.of(&"no_such_attachment").is_empty())
+
+	var dot := DotWeaponFitting.make(id)
+	dot.fit(DotWeaponAttachment.MOUNT_OPTIC, ZedWeaponIds.RED_DOT)
+	dot.fit(DotWeaponAttachment.MOUNT_MUZZLE, ZedWeaponIds.SUPPRESSOR)
+	view.equip(art)
+	world.equip(art)
+	var plain := world.muzzle_transform().origin
+	world.set_fitting(dot)
+	var gun := world.find_child("Weapon", true, false)
+	var optic := gun.find_child("socket_optic", true, false)
+	var muzzle := gun.find_child("socket_muzzle", true, false)
+	_check("each model stands on its socket node", optic.get_child_count() == 1 and muzzle.get_child_count() == 1)
+	_check("a red dot hides the rear sight it replaces", not (gun.find_child("rear_sight", true, false) as Node3D).visible)
+	var shift := world.muzzle_transform().origin.distance_to(plain)
+	_check("a suppressor moves the muzzle to its far end (%.3f m)" % shift, shift > 0.1 and shift < 0.4)
+
+	var code := cat.encode(base, dot)
+	world.set_fitting(null)
+	_check("an empty fitting shows the rear sight again and puts the muzzle back",
+		(gun.find_child("rear_sight", true, false) as Node3D).visible and world.muzzle_transform().origin.distance_to(plain) < 0.001)
+	world.attachments = cat
+	world.on_fitted(code)
+	_check("a replicated code draws the same fitting", not (gun.find_child("rear_sight", true, false) as Node3D).visible
+		and world.muzzle_transform().origin.distance_to(plain) > 0.1)
+	world.on_fitted(0)
+	_check("and code 0 takes it off", (gun.find_child("rear_sight", true, false) as Node3D).visible)
+
+	view.set_fitting(dot)
+	view.aim(true)
+	for i in 120:
+		view.advance(1.0 / 60.0)
+	var points := view.sight_points()
+	var glass := view.find_child("red_dot_glass", true, false) as MeshInstance3D
+	var through := camera.to_local(glass.global_transform * glass.get_aabb().get_center())
+	_check("aimed with a red dot, the sight line runs through its glass (%.4f, %.4f)" % [through.x, through.y],
+		not points.is_empty() and absf(through.x) < 0.01 and absf(through.y) < 0.01 and not view.is_scoped())
+
+	var scope := DotWeaponFitting.make(id)
+	scope.fit(DotWeaponAttachment.MOUNT_OPTIC, ZedWeaponIds.SCOPE_4X)
+	view.set_fitting(scope)
+	for i in 120:
+		view.advance(1.0 / 60.0)
+	_check("a 4x scope puts the view through it, at its zoom (%.2f)" % view.aim_fov_scale(),
+		view.is_scoped() and absf(view.aim_fov_scale() - 0.4) < 0.01)
+	view.set_fitting(null)
+	for i in 120:
+		view.advance(1.0 / 60.0)
+	_check("and taking it off puts the gun back at its own", not view.is_scoped() and view.aim_fov_scale() > 0.7)
+	camera.free()
+	world.free()
 	_end()
 
 

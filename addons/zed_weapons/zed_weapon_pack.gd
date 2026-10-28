@@ -56,6 +56,7 @@ static func install() -> void:
 	# zombiezone_client; `tools/exit_check.gd` and the suite's "exiting" section hold it.
 	ZeeWeaponPack.add_source(SOURCE, Callable(ZedWeaponPack, &"weapons"))
 	ZeeWeaponArtTable.add_source(SOURCE, Callable(ZedWeaponPack, &"art"))
+	ZeeAttachmentArt.add_source(SOURCE, Callable(ZedWeaponPack, &"attachment_art"))
 
 	for id: StringName in SOUNDS:
 		ZeeWeaponSound.set_class(id, SOUNDS[id])
@@ -65,6 +66,7 @@ static func install() -> void:
 static func uninstall() -> void:
 	ZeeWeaponPack.remove_source(SOURCE)
 	ZeeWeaponArtTable.remove_source(SOURCE)
+	ZeeAttachmentArt.remove_source(SOURCE)
 
 
 static func installed() -> bool:
@@ -887,13 +889,7 @@ static func _thrown_art(id: StringName, path: String, scale: float) -> ZeeWeapon
 	return art
 
 
-# --- Attachments ---------------------------------------------------------------------
-#
-# [b]The rules are dot-weapon's, the content is here.[/b] Which mount an attachment takes,
-# what it changes and the code that goes on the wire are [DotWeaponAttachments]'; this pack
-# only says which six exist and what they do to a gun. Each multiplier names a field of the
-# document or its tuning, so a typo fails `apply` instead of shipping a suppressor that is not
-# quiet.
+# Attachments: the rules are dot-weapon's ([DotWeaponAttachments]); each multiplier names a field of the document or its tuning, so a typo fails `apply` instead of shipping a suppressor that is not quiet.
 
 ## The assault carbine's height, measured on its model with the standard magazine in
 ## (art-src/hq/out/measure.json): the lift to its middle, as for the kitbashed guns.
@@ -935,13 +931,10 @@ static func attachments() -> DotWeaponAttachments:
 	return out
 
 
-## How each attachment is drawn: its model, and the nodes of the gun's model it replaces (a
-## scope stands where the rear sight is; an extended magazine is the magazine). The gun's
-## model carries a `socket_<mount>` node per mount, placed so the attachment's own origin goes
-## on it with no offset (art-src/hq/hq_attachments.py says where each one's origin is).
+## How each attachment is drawn ([ZeeAttachmentArt]): the model that goes on the gun's `socket_<mount>` with no offset (art-src/hq/hq_attachments.py), and the nodes it replaces.
 const ATTACHMENT_ART := {
-	ZedWeaponIds.RED_DOT: {"path": HQ_DIR + "red_dot.glb", "hides": []},
-	ZedWeaponIds.SCOPE_4X: {"path": HQ_DIR + "scope_4x.glb", "hides": [&"rear_sight"]},
+	ZedWeaponIds.RED_DOT: {"path": HQ_DIR + "red_dot.glb", "hides": [&"rear_sight"], "aim": &"glass"},
+	ZedWeaponIds.SCOPE_4X: {"path": HQ_DIR + "scope_4x.glb", "hides": [&"rear_sight"], "aim": &"scoped", "zoom": 0.4},
 	ZedWeaponIds.SUPPRESSOR: {"path": HQ_DIR + "suppressor.glb", "hides": []},
 	ZedWeaponIds.FOREGRIP: {"path": HQ_DIR + "foregrip.glb", "hides": []},
 	ZedWeaponIds.LASER_SIGHT: {"path": HQ_DIR + "laser.glb", "hides": []},
@@ -951,7 +944,12 @@ const ATTACHMENT_ART := {
 
 ## The node an attachment on [param mount] is parented to, in the gun's model.
 static func socket_name(mount: StringName) -> StringName:
-	return StringName("socket_" + String(mount))
+	return ZeeAttachmentArt.socket_name(mount)
+
+
+## Zee's hook ([ZeeAttachmentArt]): how [param id] is drawn, or empty.
+static func attachment_art(id: StringName) -> Dictionary:
+	return ATTACHMENT_ART.get(id, {})
 
 
 static func _attachment(id: StringName, name: String, mount: StringName, scale: Dictionary = {},
