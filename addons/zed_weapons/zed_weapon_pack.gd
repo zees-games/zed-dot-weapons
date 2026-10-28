@@ -618,14 +618,14 @@ static func art() -> Array[ZeeWeaponArt]:
 		_boxed(_fed(_gun_art(ZedWeaponIds.SILENCED_PISTOL, "silenced_pistol", ZeeWeaponArtTable.POSE_PISTOL, 0.156), MAG_BOX, Vector3(0.0, 0.03, -0.150))),
 		_boxed(_fed(_gun_art(ZedWeaponIds.UZI, "uzi", ZeeWeaponArtTable.POSE_PISTOL, 0.207), MAG_BOX, Vector3(0.0, 0.03, -0.04))),
 		_own_magazine(_gun_art(ZedWeaponIds.TACTICAL_SMG, "", ZeeWeaponArtTable.POSE_RIFLE, SMG_HEIGHT, HQ_DIR + "tactical_smg.glb"), "tactical_smg"),
-		_rounds(_hand_fed(_fed(_gun_art(ZedWeaponIds.PUMP_SHOTGUN, "", ZeeWeaponArtTable.POSE_RIFLE, PUMP_HEIGHT, HQ_DIR + "pump_shotgun.glb"), ROUND_SHELL, Vector3(0.0, 0.07, -0.07), true),
+		_rounds(_hand_fed(_fed(_pulled(_gun_art(ZedWeaponIds.PUMP_SHOTGUN, "", ZeeWeaponArtTable.POSE_RIFLE, PUMP_HEIGHT, HQ_DIR + "pump_shotgun.glb"), 0.15), ROUND_SHELL, Vector3(0.0, 0.07, -0.07), true),
 			Vector3(0.0, -0.10, 0.02), 1.6, Vector3.ZERO, &"RELOAD_KEYS_TUBE"), 3),
 		_fed(_gun_art(ZedWeaponIds.SAWED_OFF, "sawed_off", ZeeWeaponArtTable.POSE_RIFLE, 0.141), ROUND_SHELL, Vector3(0.0, 0.05, 0.0), true),
-		_rounds(_hand_fed(_fed(_low_fore(_scoped(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, DMR_HEIGHT, HQ_DIR + "hunting_rifle.glb"))), ROUND_RIFLE, Vector3(0.0, 0.14, -0.08), true),
+		_rounds(_hand_fed(_fed(_low_fore(_scoped(_pulled(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, DMR_HEIGHT, HQ_DIR + "hunting_rifle.glb"), 0.2))), ROUND_RIFLE, Vector3(0.0, 0.14, -0.08), true),
 			Vector3(0.03, 0.12, 0.0), 0.35, Vector3(90.0, 0.0, 0.0), &"RELOAD_KEYS_BOLT"), 2),
 		_own_magazine(_gun_art(ZedWeaponIds.AK_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, AK_HEIGHT, HQ_DIR + "ak_rifle.glb"), "ak_rifle"),
 		_hip(_own_magazine(_gun_art(ZedWeaponIds.ASSAULT_CARBINE, "", ZeeWeaponArtTable.POSE_RIFLE, CARBINE_HEIGHT, HQ_DIR + "m4_carbine.glb"), "m4_carbine"), 1.3, Vector3(-0.06, 0.02, 0.0)),
-		_box_fed(_heavy(_gun_art(ZedWeaponIds.MACHINE_GUN, "machine_gun", ZeeWeaponArtTable.POSE_HEAVY, 0.197), 1.9)),
+		_box_fed(_heavy(_pulled(_gun_art(ZedWeaponIds.MACHINE_GUN, "machine_gun", ZeeWeaponArtTable.POSE_HEAVY, 0.197), 0.12), 1.9)),
 		_hand_fed(_fed(_heavy(_gun_art(ZedWeaponIds.GRENADE_LAUNCHER, "grenade_launcher", ZeeWeaponArtTable.POSE_HEAVY, 0.271), 1.6), ROUND_GRENADE, Vector3(0.0, 0.20, -0.10), true),
 			Vector3(0.0, 0.14, -0.06), 2.2, Vector3.ZERO, &"RELOAD_KEYS_BREAK"),
 		_tamed(_hand_fed(_fed(_heavy(_gun_art(ZedWeaponIds.ROCKET_LAUNCHER, "rocket_launcher", ZeeWeaponArtTable.POSE_HEAVY, 0.193), 2.0), ROUND_ROCKET, Vector3(-0.046, 0.21, 0.30), true),
@@ -666,7 +666,7 @@ static func _gun_art(id: StringName, model: String, pose: StringName, height: fl
 	var lift := Vector3(0.0, -height * 0.5, 0.0)
 	art.view_offset += art.view_transform().basis * lift
 	art.aim_offset += art.aim_transform().basis * lift
-	art.world_offset = Vector3(0.0, -height * 0.5 * art.world_scale, 0.0)
+	art.world_offset = Vector3(0.0, -height * 0.5 * art.world_scale, float(OS.get_environment("ZW_Z_" + String(id)) if OS.get_environment("ZW_Z_" + String(id)) != "" else "0"))
 	return art
 
 
@@ -849,6 +849,13 @@ static func _low_fore(art: ZeeWeaponArt) -> ZeeWeaponArt:
 static func _hip(art: ZeeWeaponArt, scale: float, shift: Vector3) -> ZeeWeaponArt:
 	art.view_scale *= scale
 	art.view_offset += shift
+	return art
+
+
+## A long gun drawn [param back] metres nearer the body in the third-person hold: the arm's reach
+## ends short of the fore-end, so the support hand bunched against the firing hand at the stock.
+static func _pulled(art: ZeeWeaponArt, back: float) -> ZeeWeaponArt:
+	art.world_offset.z += back
 	return art
 
 
