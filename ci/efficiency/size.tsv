@@ -1,5 +1,4 @@
 # size
 # Baselines only shrink: scripts/<gate> --update lowers or drops entries and refuses to add.
-addons/zed_weapons/zed_weapon_pack.gd	929
-examples/zed_range.gd	808
+examples/zed_range.gd	806
 examples/zed_range.gd::_run_sheet	115

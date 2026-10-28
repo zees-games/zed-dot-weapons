@@ -17,16 +17,10 @@ extends Node
 ## click to bash, R to reload, 1-5 for the slots, Q for the last weapon, wheel to cycle,
 ## F1 to dump the rig's state, escape to release the mouse.
 ##
-## [b]This is the half of the test suite no assertion reaches.[/b] `zee_selftest.tscn`
-## proves every weapon loads, measures and simulates; not one of its 133 checks can tell
-## you whether the sniper is held at a sensible angle, whether the arms are in front of
-## the gun or through it, or whether a reload reads as a reload. Those are decided by
-## opening this and looking, which is what `tools/screenshot.sh` automates.
+## The half of the test suite no assertion reaches: whether a gun is held at a sensible angle, the arms are in front of
+## it, a reload reads as a reload. Open this and look, which `tools/screenshot.sh` automates.
 ##
-## [b]The controller is wired by nothing.[/b] `zee_range.tscn` sets no [DotNodeRef]s at
-## all: the view finds the camera by type, the controller finds the collider and the
-## view by type, and the rig finds the view model the same way. An inspector-configured
-## project overrides any of them; this is what the defaults cost.
+## `zee_range.tscn` sets no [DotNodeRef]s: view, controller and rig find each other by type, which is what the defaults cost.
 
 const CHANNEL := "zee.range"
 
