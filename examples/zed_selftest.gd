@@ -526,16 +526,11 @@ func _drawing() -> void:
 	var shift := world.muzzle_transform().origin.distance_to(plain)
 	_check("a suppressor moves the muzzle to its far end (%.3f m)" % shift, shift > 0.1 and shift < 0.4)
 
-	var code := cat.encode(base, dot)
 	world.set_fitting(null)
 	_check("an empty fitting shows the rear sight again and puts the muzzle back",
 		(gun.find_child("rear_sight", true, false) as Node3D).visible and world.muzzle_transform().origin.distance_to(plain) < 0.001)
-	world.attachments = cat
-	world.on_fitted(code)
-	_check("a replicated code draws the same fitting", not (gun.find_child("rear_sight", true, false) as Node3D).visible
-		and world.muzzle_transform().origin.distance_to(plain) > 0.1)
-	world.on_fitted(0)
-	_check("and code 0 takes it off", (gun.find_child("rear_sight", true, false) as Node3D).visible)
+
+	_drawing_replicated(id, cat.encode(base, dot), cat)
 
 	view.set_fitting(dot)
 	view.aim(true)
@@ -562,6 +557,39 @@ func _drawing() -> void:
 	world.free()
 	_end()
 
+
+## A watcher's world model, through the rig that owns it and the replicated code: nothing here assigns the catalogue.
+func _drawing_replicated(id: StringName, code: int, cat: DotWeaponAttachments) -> void:
+	var watched := ZeeWorldModel.new()
+	add_child(watched)
+	var rig := ZeeWeaponRig.new()
+	rig.role = ZeeWeaponRig.Role.LOCAL
+	rig.tick_rate = ZeeWeaponPack.TICK_RATE
+	rig.world_model_ref = DotNodeRef.of_path(watched.get_path())
+	add_child(rig)
+	rig.setup()
+	rig.arsenal.attachments = cat
+	rig.give(id)
+	rig.arsenal.select(rig.arsenal.catalogue.get_def(id).slot, 0)
+	var ctx := DotWeaponContext.make(1, 1, Vector3.ZERO, Vector3.FORWARD)
+	rig.simulate_tick(DotWeaponCommand.new(), 1, ctx)
+	var source := GDScript.new()
+	source.source_code = "extends Node\nvar net_fire_seq := 0\nvar net_fire_kind := 0\nvar net_switching := false\nvar net_fitted := 0\n"
+	source.reload()
+	var carrier: Node = source.new()
+	add_child(carrier)
+	var gun := watched.find_child("Weapon", true, false)
+	var plain := watched.muzzle_transform().origin
+	carrier.set(&"net_fitted", code)
+	ZeeWeaponNet.apply(carrier, watched, 0)
+	_check("a replicated code draws the same fitting", not (gun.find_child("rear_sight", true, false) as Node3D).visible
+		and watched.muzzle_transform().origin.distance_to(plain) > 0.1)
+	carrier.set(&"net_fitted", 0)
+	ZeeWeaponNet.apply(carrier, watched, 0)
+	_check("and code 0 takes it off", (gun.find_child("rear_sight", true, false) as Node3D).visible)
+	for node in [carrier, rig, watched]:
+		remove_child(node)
+		node.queue_free()
 
 func _uninstall() -> void:
 	_begin("uninstalling")
