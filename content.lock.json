@@ -1,0 +1,15 @@
+{
+	"format": 1,
+	"mirrors": [],
+	"origin": "https://dotgames.org/content",
+	"packs": [
+		{
+			"id": "gamemann/zed-dot-weapons-hq",
+			"into": "assets",
+			"kind": "store",
+			"manifest_sha256": "4010740bde57c9d1717e5313e70735bd15139085b1e6e78238e0dab43dff147d",
+			"optional": false,
+			"version": "0.1.0"
+		}
+	]
+}
