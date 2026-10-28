@@ -15,10 +15,8 @@ const HQ_DIR := "res://assets/hq/"
 const REAL_SCALE := 1.45
 
 ## Which way the Weapon Pack's barrels point: +Z, the opposite of zee's blasters (-Z).
-## Settled by a side render in Blender with a marker on +Z (docs/history.md): the marker is
-## on the muzzle of the pistol, uzi, shotgun, hunting rifle, machine gun and rocket launcher.
-## The rack had said the same, but the rack cannot tell (zee's blasters passed it reversed
-## for years), so the side render is the proof.
+## Settled by a side render with a marker on +Z (docs/history.md); the rack cannot tell, as
+## zee's blasters passed it reversed for years.
 const GUN_FORWARD := Vector3.BACK
 
 
@@ -48,15 +46,8 @@ static func art_entries() -> Array[ZeeWeaponArt]:
 
 
 ## A gun: lies along +Z, stands on its base, [param height] metres tall (measured).
-##
-## [b]On zee's hold[/b]: zee's pose offset and its cant and turn
-## ([method ZeeWeaponArtTable.pose_rotation]), zee's aim place, and (by leaving
-## [member ZeeWeaponArt.reload_keys] empty) the pose's reload keys. zee's rotations are written
-## for a model pointing -Z; these point +Z, and the 180-degree turn that [method
-## ZeeWeaponArt.orientation] puts in front of them flips the sign of a pitch and a roll (a
-## yaw is about the axis of the turn and keeps its sign), so they are handed over as
-## [method hold_rotation]. Written straight across, the cant tipped the left side up and
-## showed the camera the gun's underside.
+## On zee's hold, with its rotations handed over as [method hold_rotation]: the 180-degree turn
+## flips a pitch and a roll, and written straight across the cant showed the gun's underside.
 static func _gun_art(id: StringName, model: String, pose: StringName, height: float, path: String = "") -> ZeeWeaponArt:
 	var art := ZeeWeaponArt.make(id, path if path != "" else KIT_DIR + model + ".glb")
 	art.model_forward = GUN_FORWARD
@@ -69,10 +60,8 @@ static func _gun_art(id: StringName, model: String, pose: StringName, height: fl
 	# zee's blasters' aim place (ZeeWeaponArtTable._blaster): ZeeWeaponArt's default sits higher.
 	art.view_offset = ZeeWeaponArtTable.pose_offset(pose)
 	art.aim_offset = Vector3(0.0, -0.135, -0.46)
-	# Lifted by half its height, so the middle of the gun is where zee's centred blasters'
-	# is: along the model's own up through the hold's basis (which carries the scale and the
-	# cant), since once the hold is canted the camera's down is no longer the gun's. The aim
-	# place needs it too, or the gun at the sight sits half its height too high.
+	# Lifted by half its height along the model's own up through the hold's basis (it carries
+	# the cant), else the aim place sits half the height too high.
 	var lift := Vector3(0.0, -height * 0.5, 0.0)
 	art.view_offset += art.view_transform().basis * lift
 	art.aim_offset += art.aim_transform().basis * lift
@@ -106,13 +95,8 @@ const ROUND_ROCKET := WEAPONS_DIR + "ammo_rocketModern.glb"
 
 
 ## Gives a gun something to reload with: [param path] at [param offset] in the model's own
-## space (+Z forward, standing on its base), where zee's support hand takes it.
-##
-## [b]Without one, zee's reload is the gun rolling and nothing else[/b]: the support hand stays
-## on the fore-end (zee sends it to the magazine well only when there is a magazine) and nothing
-## leaves or enters the gun. The play test called that "no proper reload animations". A
-## [param loose] round is drawn only while it is carried in (`ZeeWeaponArt.magazine_loose`, set
-## by name so an older zee without it still loads the pack).
+## space, where zee's support hand takes it. Without one zee's reload is the gun rolling and
+## nothing else. A [param loose] round is drawn only while carried (`magazine_loose`, set by name).
 static func _fed(art: ZeeWeaponArt, path: String, offset: Vector3, loose: bool = false) -> ZeeWeaponArt:
 	var _with := art.with_magazine(path, offset)
 	if loose:
@@ -121,11 +105,8 @@ static func _fed(art: ZeeWeaponArt, path: String, offset: Vector3, loose: bool =
 
 
 ## A machine gun fed from a box: zee's ammunition box and belt, built in code (`magazine_part`),
-## on the gun's right side (-X: the model points +Z, so its right is zee's left), dropped and
-## swapped on a reload. Set by name, so an older zee without the fields still loads the pack.
-##
-## [b]A box, not a loose round.[/b] The belt round this gun carried in before was 9 cm, drawn at
-## the hold's scale inside a fist: the reload read as the gun tilting.
+## on the gun's right side (-X: the model points +Z), dropped and swapped on a reload. Set by
+## name; a 9 cm belt round inside a fist read as the gun tilting.
 static func _box_fed(art: ZeeWeaponArt) -> ZeeWeaponArt:
 	art.set(&"magazine_part", &"ammo_box")
 	art.magazine_offset = Vector3(-0.075, 0.0, -0.02)
@@ -133,10 +114,9 @@ static func _box_fed(art: ZeeWeaponArt) -> ZeeWeaponArt:
 	return art
 
 
-## A launcher fed a round by hand in sight (zee's `ZeeWeaponArt.load_from`): the push starts at
-## [param from] off the seat (model space), the round drawn at [param scale] and turned by
-## [param rotation] (the rocket's nose to the muzzle), with zee's [param keys] by name
-## (`ZeeWeaponPose.RELOAD_KEYS_BREAK`, `_MUZZLE`). An older zee without them keeps its old reload.
+## A launcher fed a round by hand (zee's `ZeeWeaponArt.load_from`): pushed from [param from]
+## (model space), drawn at [param scale], turned by [param rotation], with zee's [param keys]
+## by name (`ZeeWeaponPose.RELOAD_KEYS_*`). An older zee without them keeps its old reload.
 static func _hand_fed(art: ZeeWeaponArt, from: Vector3, scale: float, rotation: Vector3, keys: StringName) -> ZeeWeaponArt:
 	art.set(&"load_from", from)
 	art.set(&"magazine_scale", scale)
@@ -152,12 +132,9 @@ static func _hand_fed(art: ZeeWeaponArt, from: Vector3, scale: float, rotation: 
 	return art
 
 
-## A stick magazine for the pistols and the uzis: zee's `box_magazine`, built in code, drawn half
-## again as big, its foot below the grip's.
-##
-## [b]Not the Weapon Pack's `ammo_uzi`[/b], which is a 6.5 cm cartridge: inside the grip and the
-## glove it was nothing on screen, and the reload sheet showed the gun lifting with nothing
-## leaving it or going in. An older zee without the part keeps the cartridge.
+## A stick magazine for the pistols and the uzis: zee's `box_magazine`, half again as big, its
+## foot below the grip's. Not `ammo_uzi`, a 6.5 cm cartridge that vanished inside the grip and
+## glove. An older zee without the part keeps the cartridge.
 static func _boxed(art: ZeeWeaponArt) -> ZeeWeaponArt:
 	var parts: Variant = load(ZEE_RELOAD_PARTS) if ResourceLoader.exists(ZEE_RELOAD_PARTS) else null
 	if parts is Script and (parts as Script).get_script_constant_map().has("BOX_MAGAZINE"):
@@ -182,11 +159,9 @@ static func _raised(art: ZeeWeaponArt) -> ZeeWeaponArt:
 	return art
 
 
-## A high-detail gun reloaded with its own magazine: the model's `magazine` node split out into
-## `assets/hq/<gun>_mag.glb` (`art-src/hq/split_magazine.py`, origin at the gun's `socket_magazine`)
-## is what the hand carries in, and the gun's own node is hidden from the pull to the seat
-## (`ZeeWeaponArt.hide_during_reload`, set by name so an older zee still loads the pack). The
-## Weapon Pack's `ammo_uzi` this replaced was a yellow 6.5 cm cartridge, not a magazine.
+## A high-detail gun reloaded with its own magazine: `assets/hq/<gun>_mag.glb` (split by
+## `art-src/hq/split_magazine.py`) is carried in while the gun's own node is hidden from pull
+## to seat (`hide_during_reload`, set by name). `ammo_uzi` was a 6.5 cm cartridge, not a magazine.
 static func _own_magazine(art: ZeeWeaponArt, gun: String) -> ZeeWeaponArt:
 	var socket := {"service_pistol": Vector3(0.0, 0.107, -0.0559), "tactical_smg": Vector3(0.0, 0.155, 0.016), "ak_rifle": Vector3(0.0, 0.175, -0.014), "m4_carbine": Vector3(0.0, 0.175, -0.041)}
 	var _with := art.with_magazine(HQ_DIR + gun + "_mag.glb", socket.get(gun, Vector3.ZERO))
@@ -223,11 +198,9 @@ static func lifted(keys: Array, lift: Vector3) -> Array:
 const ZEE_RELOAD_PARTS := "res://addons/zee_weapons/view/zee_reload_parts.gd"
 
 
-## How many rounds a hand-fed gun takes, one push each (zee's `ZeeWeaponArt.load_count`, by name).
-##
-## [b]The pump gun and the hunting rifle are fed like zee's pump guns and bolt gun[/b]
-## (`RELOAD_KEYS_TUBE`, `_BOLT`): carried once from below the screen, the one round showed in one
-## frame of the reload sheet, and the rifle, long and lifted half out of frame, read as a tilt.
+## How many rounds a hand-fed gun takes, one push each (`ZeeWeaponArt.load_count`, by name).
+## The pump gun and hunting rifle are fed like zee's pump guns and bolt gun (`RELOAD_KEYS_TUBE`,
+## `_BOLT`): one carry showed the round in one frame, and the lifted rifle read as a tilt.
 static func _rounds(art: ZeeWeaponArt, count: int) -> ZeeWeaponArt:
 	art.set(&"load_count", count)
 	return art
@@ -278,12 +251,9 @@ static func _heavy(art: ZeeWeaponArt, weight: float) -> ZeeWeaponArt:
 	return art
 
 
-## A throwable: stands upright on its base, as zee's grenades do.
-##
-## [b]Held upright, not pointed away.[/b] zee turns its grenades' +Y onto the view's forward,
-## which for a round grenade is invisible; a bottle turned that way is drawn as its own
-## base, a dark hexagon behind the hand, and tilting the view rotation did not save it. So
-## the model is said to face forward already (its +Y stays up) and it is held standing.
+## A throwable: stands upright on its base, as zee's grenades do. Zee turns its grenades' +Y
+## onto the view's forward, which hides a round grenade and draws a bottle as its dark base,
+## so the model is said to face forward already and is held standing.
 static func _thrown_art(id: StringName, path: String, scale: float) -> ZeeWeaponArt:
 	var art := ZeeWeaponArt.make(id, path)
 	art.model_forward = Vector3.FORWARD
