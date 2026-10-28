@@ -15,7 +15,7 @@ extends Node
 
 ## Every check this suite makes; a script error aborts a section part-way, and only the
 ## total can see the checks that never ran.
-const CHECKS := 67
+const CHECKS := 68
 
 const ZEE_COUNT := 27
 
@@ -242,6 +242,16 @@ func _art() -> void:
 		muzzle_dir.is_equal_approx(zee_turn * Vector3.FORWARD))
 	_check("and canted the same way, top toward the crosshair (%s)" % (held * Vector3.UP),
 		(held * Vector3.UP).is_equal_approx(zee_turn * Vector3.UP) and (held * Vector3.UP).x < 0.0)
+
+	# In the view, camera looks down -Z: every gun's muzzle must lead away from it.
+	var backward: Array[String] = []
+	for art in ZedWeaponPack.art():
+		if art.model_forward == Vector3.ZERO or art.model_forward != ZedWeaponPack.GUN_FORWARD:
+			continue
+		var aim := art.view_transform().basis.orthonormalized() * art.model_forward
+		if aim.z > -0.3:
+			backward.append("%s (%s)" % [art.id, aim])
+	_check("every held gun's muzzle points away from the camera: %s" % ", ".join(backward), backward.is_empty())
 
 	# [b]Every heavy gun reloads with something carried into it in sight[/b]: a box and belt,
 	# or a round pushed in from where the hand can be seen. A 9 cm round inside a fist, or a
