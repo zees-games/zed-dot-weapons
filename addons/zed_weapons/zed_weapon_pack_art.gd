@@ -13,6 +13,8 @@ const HQ_DIR := "res://assets/hq/"
 
 ## How much larger than zee's blaster pose a real-sized gun is drawn.
 const REAL_SCALE := 1.45
+## Hip shift for the long-gun poses (view metres): REAL_SCALE made a 1 m gun land low and right with its grip out of frame.
+const LONG_GUN_HIP := Vector3(-0.09, 0.08, 0.0)
 
 ## Which way the Weapon Pack's barrels point: +Z, the opposite of zee's blasters (-Z).
 ## Settled by a side render with a marker on +Z (docs/history.md); the rack cannot tell, as
@@ -33,7 +35,7 @@ static func art_entries() -> Array[ZeeWeaponArt]:
 		_rounds(_hand_fed(_fed(_low_fore(_scoped(_pulled(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, DMR_HEIGHT, HQ_DIR + "hunting_rifle.glb"), 0.2))), ROUND_RIFLE, Vector3(0.0, 0.14, -0.08), true),
 			Vector3(0.03, 0.12, 0.0), 0.35, Vector3(90.0, 0.0, 0.0), &"RELOAD_KEYS_BOLT"), 2),
 		_own_magazine(_gun_art(ZedWeaponIds.AK_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, AK_HEIGHT, HQ_DIR + "ak_rifle.glb"), "ak_rifle"),
-		_hip(_own_magazine(_gun_art(ZedWeaponIds.ASSAULT_CARBINE, "", ZeeWeaponArtTable.POSE_RIFLE, CARBINE_HEIGHT, HQ_DIR + "m4_carbine.glb"), "m4_carbine"), 1.3, Vector3(-0.06, 0.02, 0.0)),
+		_hip(_own_magazine(_gun_art(ZedWeaponIds.ASSAULT_CARBINE, "", ZeeWeaponArtTable.POSE_RIFLE, CARBINE_HEIGHT, HQ_DIR + "m4_carbine.glb"), "m4_carbine"), 1.1, Vector3.ZERO),
 		_box_fed(_heavy(_pulled(_gun_art(ZedWeaponIds.MACHINE_GUN, "machine_gun", ZeeWeaponArtTable.POSE_HEAVY, 0.197), 0.12), 1.9)),
 		_hand_fed(_fed(_heavy(_gun_art(ZedWeaponIds.GRENADE_LAUNCHER, "grenade_launcher", ZeeWeaponArtTable.POSE_HEAVY, 0.271), 1.6), ROUND_GRENADE, Vector3(0.0, 0.20, -0.10), true),
 			Vector3(0.0, 0.14, -0.06), 2.2, Vector3.ZERO, &"RELOAD_KEYS_BREAK"),
@@ -65,6 +67,8 @@ static func _gun_art(id: StringName, model: String, pose: StringName, height: fl
 	# the cant), else the aim place sits half the height too high.
 	var lift := Vector3(0.0, -height * 0.5, 0.0)
 	art.view_offset += art.view_transform().basis * lift
+	if pose == ZeeWeaponArtTable.POSE_RIFLE or pose == ZeeWeaponArtTable.POSE_HEAVY:
+		art.view_offset += LONG_GUN_HIP
 	art.aim_offset += art.aim_transform().basis * lift
 	art.world_offset = Vector3(0.0, -height * 0.5 * art.world_scale, float(OS.get_environment("ZW_Z_" + String(id)) if OS.get_environment("ZW_Z_" + String(id)) != "" else "0"))
 	return art

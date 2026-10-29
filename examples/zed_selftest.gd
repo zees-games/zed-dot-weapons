@@ -15,7 +15,7 @@ extends Node
 
 ## Every check this suite makes; a script error aborts a section part-way, and only the
 ## total can see the checks that never ran.
-const CHECKS := 80
+const CHECKS := 81
 
 const ZEE_COUNT := 27
 
@@ -36,6 +36,7 @@ func _ready() -> void:
 	_profiles()
 	_art()
 	_sights()
+	_hip()
 	_firing()
 	_reloading()
 	_throwing()
@@ -308,6 +309,27 @@ func _sights() -> void:
 	_check("every unscoped gun has a measured iron sight (%d; none for %s)" % [sighted, ", ".join(unsighted)], sighted == 12)
 	_check("and its line runs through the screen's centre when aimed (worst %.4f m, %s)" % [worst, worst_id],
 		worst < 0.002)
+	view.queue_free()
+	_end()
+
+
+## At the hip every gun's grip is in the lower right of the frame, not off it.
+func _hip() -> void:
+	_begin("hip")
+	var view := ZeeViewModel.new()
+	view.show_arms = false
+	add_child(view)
+	var worst := ""
+	var out := 0
+	for art in ZedWeaponPack.art():
+		view.equip(art)
+		var g: Vector3 = view._grip_at
+		if art.pose in [ZeeWeaponArtTable.POSE_THROWN, ZeeWeaponArtTable.POSE_MELEE]:
+			continue
+		if g.x < 0.08 or g.x > 0.22 or g.y < -0.26 or g.y > -0.1 or g.z > -0.2 or g.z < -0.4:
+			out += 1
+			worst += " " + String(art.id)
+	_check("every gun's grip is inside the hip view box (outside:%s)" % worst, out == 0)
 	view.queue_free()
 	_end()
 

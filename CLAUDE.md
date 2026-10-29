@@ -67,7 +67,7 @@ godot --headless --path . --import
 find . -name '*.gd' -not -path './.godot/*' -not -path './addons/dot_*' -not -path './addons/zee_weapons/*' | while read f; do
     godot --headless --path . --check-only --script "res://${f#./}"
 done
-timeout 120 godot --headless --path . res://examples/zed_selftest.tscn   # 12 sections, 54 checks
+timeout 120 godot --headless --path . res://examples/zed_selftest.tscn   # 15 sections, 81 checks
 tools/screenshot.sh --rack                                                # and look at it
 tools/screenshot.sh molotov
 tools/screenshot.sh --sheet service_pistol pump_shotgun hunting_rifle molotov   # zee's 18-frame contact sheet, per weapon
