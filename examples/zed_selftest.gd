@@ -15,7 +15,7 @@ extends Node
 
 ## Every check this suite makes; a script error aborts a section part-way, and only the
 ## total can see the checks that never ran.
-const CHECKS := 81
+const CHECKS := 82
 
 const ZEE_COUNT := 27
 
@@ -723,6 +723,7 @@ func _profiles() -> void:
 
 	var tmp := "user://zed_profiles_cfg"
 	_profile_file(tmp, "uzi.yml", "magazine: 12\nextra:\n  tuning:\n    damage: 99\n")
+	# Deliberately bad fixture in user://, the only "magazine: -5" ERROR line a run may print; the shipped ak_rifle is 30.
 	_profile_file(tmp, "ak_rifle.yml", "magazine: -5\n")
 	ZedWeaponPack.base_roots = PackedStringArray([tmp])
 	var t2 := _by_id(ZedWeaponPack.weapons())
@@ -737,6 +738,8 @@ func _profiles() -> void:
 	ZedWeaponPack.pack_cfg_root = ""
 
 	ZedWeaponPack.base_roots = PackedStringArray(["res://cfg"])
+	var real := _by_id(ZedWeaponPack.weapons())
+	_check("the real roots load again with no error and a real magazine (ak_rifle %d)" % real["ak_rifle"].magazine, ZedWeaponPack.errors.is_empty() and real["ak_rifle"].magazine == 30)
 	var up := ZedWeaponPack.upgraded(&"ak_rifle", ["extended_mag"])
 	_check("an upgrade is applied to a copy", up.ok and up.value["def"].magazine == 40 and up.value["cost"] == 100 and vanilla["ak_rifle"].magazine == 30)
 	var choke := ZedWeaponPack.upgraded(&"pump_shotgun", ["choke"])
