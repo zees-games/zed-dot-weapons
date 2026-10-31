@@ -32,7 +32,7 @@ static func art_entries() -> Array[ZeeWeaponArt]:
 			Vector3(0.0, -0.10, 0.02), 1.6, Vector3.ZERO, &"RELOAD_KEYS_TUBE"), 3),
 		_hand_fed(_fed(_gun_art(ZedWeaponIds.SAWED_OFF, "sawed_off", ZeeWeaponArtTable.POSE_RIFLE, 0.141), ROUND_SHELL, Vector3(0.0, 0.05, 0.0), true),
 			Vector3(0.0, 0.10, -0.04), 1.6, Vector3.ZERO, &"RELOAD_KEYS_BREAK"),
-		_rounds(_hand_fed(_fed(_low_fore(_scoped(_pulled(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, DMR_HEIGHT, HQ_DIR + "hunting_rifle.glb"), 0.2))), ROUND_RIFLE, Vector3(0.0, 0.14, -0.08), true),
+		_rounds(_hand_fed(_fed(_low_fore(_scoped(_pulled(_hip(_gun_art(ZedWeaponIds.HUNTING_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, DMR_HEIGHT, HQ_DIR + "hunting_rifle.glb"), 1.0, Vector3(-0.03, 0.0, -0.05)), 0.2))), ROUND_RIFLE, Vector3(0.0, 0.14, -0.08), true),
 			Vector3(0.03, 0.12, 0.0), 0.35, Vector3(90.0, 0.0, 0.0), &"RELOAD_KEYS_BOLT"), 2),
 		_own_magazine(_gun_art(ZedWeaponIds.AK_RIFLE, "", ZeeWeaponArtTable.POSE_RIFLE, AK_HEIGHT, HQ_DIR + "ak_rifle.glb"), "ak_rifle"),
 		_hip(_own_magazine(_gun_art(ZedWeaponIds.ASSAULT_CARBINE, "", ZeeWeaponArtTable.POSE_RIFLE, CARBINE_HEIGHT, HQ_DIR + "m4_carbine.glb"), "m4_carbine"), 1.1, Vector3.ZERO),
