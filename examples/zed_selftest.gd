@@ -15,7 +15,7 @@ extends Node
 
 ## Every check this suite makes; a script error aborts a section part-way, and only the
 ## total can see the checks that never ran.
-const CHECKS := 82
+const CHECKS := 86
 
 const ZEE_COUNT := 27
 
@@ -42,6 +42,7 @@ func _ready() -> void:
 	_throwing()
 	_attachments()
 	_drawing()
+	await _suppressed_reach()
 	_uninstall()
 	_exiting()
 
@@ -581,6 +582,66 @@ func _drawing() -> void:
 	_check("and taking it off puts the gun back at its own", not view.is_scoped() and view.aim_fov_scale() > 0.7)
 	camera.free()
 	world.free()
+	_end()
+
+
+## A shipped gun's suppressor lengthens the measured muzzle, and the server's wall-barrel pulls the weapon back sooner with it.
+func _suppressed_reach() -> void:
+	_begin("a suppressor's reach")
+	var id := ZedWeaponIds.ASSAULT_CARBINE
+	var art := ZeeWeaponArtTable.get_art(id)
+	var fitted := DotWeaponFitting.make(id)
+	fitted.fit(DotWeaponAttachment.MOUNT_MUZZLE, ZedWeaponIds.SUPPRESSOR)
+	var dress := preload("res://addons/zee_weapons/view/zee_attachment_dress.gd")
+	var bare: float = dress.muzzle_reach(art, DotWeaponFitting.make(id))
+	var reach: float = dress.muzzle_reach(art, fitted)
+	_check("a suppressor has a reach, a bare gun none (%.3f vs %.3f)" % [reach, bare], reach > 0.0 and reach > bare)
+	var plain_len := art.hip_muzzle().length()
+	var fitted_len := art.hip_muzzle(fitted).length()
+	_check("the hip muzzle is further out with it (%.3f -> %.3f)" % [plain_len, fitted_len], fitted_len > plain_len)
+
+	var carrier := CharacterBody3D.new()
+	var body := CollisionShape3D.new()
+	body.shape = CapsuleShape3D.new()
+	carrier.add_child(body)
+	add_child(carrier)
+	var rig := ZeeWeaponRig.new()
+	rig.role = ZeeWeaponRig.Role.SERVER
+	rig.authority = true
+	rig.tick_rate = ZeeWeaponPack.TICK_RATE
+	rig.player_ref = DotNodeRef.of_path(^"..")
+	rig.ads_rules = ZeeAdsRules.new()
+	carrier.add_child(rig)
+	rig.setup()
+	rig.arsenal.attachments = ZedWeaponPack.attachments()
+	var _given := rig.give(id)
+	var slot := rig.arsenal.catalogue.get_def(id).slot
+	rig.arsenal.select(slot, 0)
+	var view_scale := rig.ads_rules.view_scale_for(id)
+	var share: float = rig.ads_rules.wall_for(id)["reach"]
+	var short := ZeeWallSlam.reach_of(plain_len, view_scale, share)
+	var long := ZeeWallSlam.reach_of(fitted_len, view_scale, share)
+	var wall := StaticBody3D.new()
+	var box := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = Vector3(20, 20, 1)
+	box.shape = shape
+	wall.add_child(box)
+	add_child(wall)
+	# Between the two reaches: a bare gun is clear of the wall, a suppressed one is not.
+	wall.position = Vector3(0, 1, -((short + long) * 0.5 + 0.5))
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	var origin := Vector3(0, 1, 0)
+	var clear := rig.wall_barrel(origin, Vector3.FORWARD, art, 0.0, 0.0)
+	var fit_res := rig.arsenal.fit(slot, fitted)
+	var pulled := rig.wall_barrel(origin, Vector3.FORWARD, art, 0.0, 0.0)
+	_check("a wall between the two reaches leaves the bare gun alone (%.3f < %.3f)" % [short, long], clear == Basis.IDENTITY)
+	_check("and pulls the suppressed one back", fit_res.ok and pulled != Basis.IDENTITY)
+	remove_child(wall)
+	wall.free()
+	remove_child(carrier)
+	carrier.free()
 	_end()
 
 
