@@ -1,0 +1,74 @@
+[
+ {
+  "paths": [
+   ""
+  ],
+  "licence": "MIT",
+  "author": "zees-games",
+  "url": "https://github.com/zees-games/zed-dot-weapons",
+  "title": "zed-dot-weapons code and original art"
+ },
+ {
+  "paths": [
+   "assets/blaster-kit"
+  ],
+  "licence": "CC0-1.0",
+  "author": "Kenney",
+  "url": "https://kenney.nl/assets/blaster-kit",
+  "title": "Blaster Kit"
+ },
+ {
+  "paths": [
+   "assets/weapon-pack"
+  ],
+  "licence": "CC0-1.0",
+  "author": "Kenney",
+  "url": "https://kenney.nl/assets/weapon-pack",
+  "title": "Weapon Pack"
+ },
+ {
+  "paths": [
+   "assets/food-kit"
+  ],
+  "licence": "CC0-1.0",
+  "author": "Kenney",
+  "url": "https://kenney.nl/assets/food-kit",
+  "title": "Food Kit"
+ },
+ {
+  "paths": [
+   "assets/kitbash"
+  ],
+  "licence": "CC0-1.0",
+  "author": "Kenney and Quaternius",
+  "url": "https://kenney.nl/assets",
+  "title": "Kitbash sources (Kenney, Quaternius; see licence texts in the folder)"
+ },
+ {
+  "paths": [
+   "assets/arms"
+  ],
+  "licence": "CC0-1.0",
+  "author": "Kenney and para",
+  "url": "https://kenney.nl/assets",
+  "title": "Arms (Kenney Blocky Characters; para fps arms, both CC0)"
+ },
+ {
+  "paths": [
+   "assets/melee"
+  ],
+  "licence": "CC0-1.0",
+  "author": "Kenney",
+  "url": "https://kenney.nl/assets",
+  "title": "Melee"
+ },
+ {
+  "paths": [
+   "assets/hq"
+  ],
+  "licence": "MIT",
+  "author": "zees-games",
+  "url": "https://github.com/zees-games/zed-dot-weapons",
+  "title": "zed-dot-weapons high-detail guns (modelled and procedurally textured in art-src/hq)"
+ }
+]
