@@ -182,6 +182,14 @@ func _equip_requested() -> void:
 	_rig.arsenal.give(def.id)
 	_rig.arsenal.select(def.slot, 0)
 
+	# `--fit red_dot,suppressor` fits attachments, for checking a sight line with them on.
+	if _argument("--fit") != "":
+		_rig.arsenal.attachments = ZedWeaponPack.attachments()
+		var fitting := DotWeaponFitting.make(def.id)
+		for id in _argument("--fit").split(",", false):
+			fitting.fit(_rig.arsenal.attachments.get_attachment(StringName(id)).mount, StringName(id))
+		_rig.arsenal.fit(def.slot, fitting)
+
 	for i in range(200):
 		_rig.simulate_tick(DotWeaponCommand.new(), i)
 
