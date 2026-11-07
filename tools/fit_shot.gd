@@ -1,7 +1,7 @@
 extends Node3D
 
 ## One frame of a carbine with attachments fitted, through the view model or the world model.
-## godot --path . res://tools/fit_shot.tscn -- --fit red_dot,suppressor [--aim] [--world] --out f.png
+## godot --path . res://tools/fit_shot.tscn -- --fit red_dot,suppressor [--aim] [--world [--rear]] --out f.png
 
 const SETTLE_FRAMES := 40
 
@@ -31,7 +31,9 @@ func _ready() -> void:
 		model.equip(art)
 		model.set_fitting(fitting)
 		model.global_position = Vector3(0.0, 0.0, 0.0)
-		camera.look_at_from_position(Vector3(0.9, 0.35, 0.9), Vector3(0.0, 0.15, 0.0))
+		# --rear looks along the sight line from behind the stock, where the glass faces the shooter.
+		var eye := Vector3(0.12, 0.3, 0.9) if args.has("--rear") else Vector3(0.9, 0.35, 0.9)
+		camera.look_at_from_position(eye, Vector3(0.0, 0.15, 0.0))
 	else:
 		var view := ZeeViewModel.new()
 		camera.add_child(view)
