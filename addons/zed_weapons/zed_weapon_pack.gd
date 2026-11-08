@@ -166,6 +166,7 @@ static func service_pistol(t: Dictionary = {}) -> DotWeaponDef:
 	def.holster_ticks = sec_ticks(0.18)
 
 	var b := _ballistics(t, 28.0)
+	flight(b, 380, 0.0009, 25, 0.6, 0.15, 0, 0.008)
 	b.spread = 0.6
 	b.spread_moving = 1.6
 	b.bloom = 0.5
@@ -201,6 +202,7 @@ static func uzi(t: Dictionary = {}) -> DotWeaponDef:
 	def.holster_ticks = sec_ticks(0.18)
 
 	var b := _ballistics(t, 14.0)
+	flight(b, 360, 0.0009, 15, 0.5, 0.1, 0, 0.006)
 	b.spread = 2.0
 	b.spread_moving = 2.8
 	b.bloom = 0.2
@@ -227,6 +229,7 @@ static func tactical_smg(t: Dictionary = {}) -> DotWeaponDef:
 	def.holster_ticks = sec_ticks(0.22)
 
 	var b := _ballistics(t, 19.0)
+	flight(b, 400, 0.0008, 20, 0.5, 0.15, 5, 0.006)
 	b.spread = 1.2
 	b.spread_moving = 2.2
 	b.bloom = 0.12
@@ -252,6 +255,7 @@ static func pump_shotgun(t: Dictionary = {}) -> DotWeaponDef:
 	def.holster_ticks = sec_ticks(0.28)
 
 	var b := _ballistics(t, 14.0)
+	flight(b, 400, 0.003, 8, 0.2, 0.05, 0, 0.004)
 	b.pellets = 10
 	b.fixed_pattern = true
 	b.spread = 4.6
@@ -277,6 +281,7 @@ static func sawed_off(t: Dictionary = {}) -> DotWeaponDef:
 	def.holster_ticks = sec_ticks(0.2)
 
 	var b := _ballistics(t, 12.0)
+	flight(b, 380, 0.003, 6, 0.15, 0.05, 0, 0.004)
 	b.pellets = 14
 	b.fixed_pattern = true
 	b.spread = 7.5
@@ -301,6 +306,7 @@ static func hunting_rifle(t: Dictionary = {}) -> DotWeaponDef:
 	def.holster_ticks = sec_ticks(0.35)
 
 	var b := _ballistics(t, 90.0)
+	flight(b, 880, 0.0003, 100, 0.75, 0.8, 0, 0.0095)
 	b.spread = 0.0
 	b.spread_moving = 6.0
 	b.spread_airborne = 12.0
@@ -331,6 +337,7 @@ static func assault_carbine(t: Dictionary = {}) -> DotWeaponDef:
 	]
 
 	var b := _ballistics(t, 26.0)
+	flight(b, 800, 0.0005, 40, 0.6, 0.35, 4, 0.004)
 	b.spread = 0.7
 	b.spread_moving = 2.0
 	b.bloom = 0.14
@@ -362,6 +369,7 @@ static func ak_rifle(t: Dictionary = {}) -> DotWeaponDef:
 	]
 
 	var b := _ballistics(t, 32.0)
+	flight(b, 715, 0.0005, 40, 0.6, 0.4, 4, 0.008)
 	b.spread = 0.9
 	b.spread_moving = 2.4
 	b.bloom = 0.2
@@ -389,6 +397,7 @@ static func machine_gun(t: Dictionary = {}) -> DotWeaponDef:
 	def.holster_ticks = sec_ticks(0.6)
 
 	var b := _ballistics(t, 22.0)
+	flight(b, 850, 0.0005, 30, 0.5, 0.3, 4, 0.01)
 	b.spread = 1.8
 	b.spread_moving = 4.0
 	b.spread_airborne = 6.0
@@ -525,6 +534,22 @@ static func _ballistics(t: Dictionary, damage: float, type: StringName = ZeeWeap
 	b.damage = damage
 	b.damage_type = ZeeWeaponDamage.from(t if not t.is_empty() else ZeeWeaponDamage.table(), type)
 	return b
+
+
+## Flight of a simulated bullet: muzzle velocity (m/s), drag, damage falloff start (m) and
+## floor, penetration (m of soft material), tracer interval and bullet mass (kg). A game that
+## leaves sv_ballistics off still sees hitscan; this only fills the profile fields.
+static func flight(
+	b: DotWeaponBallistics, velocity: float, drag: float, falloff_start: float,
+	falloff_min: float, penetration: float, tracer: int, mass: float
+) -> void:
+	b.muzzle_velocity = velocity
+	b.drag = drag
+	b.falloff_start = falloff_start
+	b.falloff_min = falloff_min
+	b.penetration = penetration
+	b.tracer_interval = tracer
+	b.bullet_mass = mass
 
 
 ## A shell that flies at [param speed] under [param gravity] and goes off on contact.

@@ -25,6 +25,12 @@ spread_airborne = 6.0
 bloom = 0.06
 bloom_max = 2.2
 recoil_yaw = 0.2
+muzzle_velocity = 850.0
+falloff_start = 30.0
+falloff_min = 0.5
+penetration = 0.3
+tracer_interval = 4
+bullet_mass = 0.01
 
 [resource]
 script = ExtResource("1_3bsup")

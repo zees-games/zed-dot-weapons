@@ -15,7 +15,7 @@ extends "res://examples/selftest/zed_harness.gd"
 
 ## Every check this suite makes; a script error aborts a section part-way, and only the
 ## total can see the checks that never ran.
-const CHECKS := 86
+const CHECKS := 97
 
 const ZEE_COUNT := 27
 
@@ -29,6 +29,7 @@ func _ready() -> void:
 	_documents()
 	_workshop()
 	_profiles()
+	_pack_ballistics()
 	_art()
 	_sights()
 	_hip()
@@ -745,4 +746,23 @@ func _profiles() -> void:
 	var wrote := ZeeDefExport.write_cfg("user://zed_profiles_export", "zed_weapons", ZedDefExport.TITLE, ZedDefExport.own_weapons())
 	_check("the export writes every profile and the upgrade folders", wrote.ok and FileAccess.file_exists("user://zed_profiles_export/cfg/addons/zed_weapons/weapon/ak_rifle/upgrades/extended_mag.yml") and FileAccess.file_exists("user://zed_profiles_export/cfg/addons/zed_weapons/weapon/uzi.yml"))
 	ZedWeaponPack.base_roots = saved_roots
+	_end()
+
+
+## Pack ballistics: guns carry a muzzle velocity and drop grows with range; the silenced
+## pistol keeps the service pistol's flight.
+func _pack_ballistics() -> void:
+	_begin("pack ballistics")
+	var by_id := _by_id(ZedWeaponPack.weapons({}, false))
+	for id in [&"hunting_rifle", &"ak_rifle", &"service_pistol"]:
+		var b := by_id[id].tuning as DotWeaponBallistics
+		_check("%s is simulated" % id, DotWeaponTrajectory.is_simulated(b))
+		var d100 := float(DotWeaponTrajectory.drop_at(b, 100.0)["drop"])
+		var d300 := float(DotWeaponTrajectory.drop_at(b, 300.0)["drop"])
+		_check("%s drops more at 300 m than 100 m" % id, d100 > 0.0 and d300 > d100 * 3.0)
+		_check("%s 100 m drop is under 2 m" % id, d100 < 2.0)
+	var sil := by_id[&"silenced_pistol"].tuning as DotWeaponBallistics
+	_check("silenced pistol flies like the service pistol", sil.muzzle_velocity == (by_id[&"service_pistol"].tuning as DotWeaponBallistics).muzzle_velocity)
+	var pump := by_id[&"pump_shotgun"].tuning as DotWeaponBallistics
+	_check("shotgun falls off fast", pump.falloff_start < 20.0 and pump.falloff_min < 0.3)
 	_end()

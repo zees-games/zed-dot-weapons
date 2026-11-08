@@ -24,6 +24,11 @@ fixed_pattern = true
 spread = 4.6
 spread_moving = 0.6
 recoil_pitch = 2.6
+muzzle_velocity = 400.0
+drag = 0.003
+falloff_start = 8.0
+falloff_min = 0.2
+penetration = 0.05
 
 [resource]
 script = ExtResource("1_psss1")

@@ -25,6 +25,12 @@ bloom = 0.2
 bloom_max = 3.4
 recoil_pitch = 0.62
 recoil_yaw = 0.3
+muzzle_velocity = 715.0
+falloff_start = 40.0
+falloff_min = 0.6
+penetration = 0.4
+tracer_interval = 4
+bullet_mass = 0.008
 
 [resource]
 script = ExtResource("1_qt0gs")

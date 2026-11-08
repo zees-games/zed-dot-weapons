@@ -24,6 +24,11 @@ fixed_pattern = true
 spread = 7.5
 spread_moving = 1.0
 recoil_pitch = 3.6
+muzzle_velocity = 380.0
+drag = 0.003
+falloff_start = 6.0
+falloff_min = 0.15
+penetration = 0.05
 
 [resource]
 script = ExtResource("1_kp1pl")

@@ -25,6 +25,13 @@ bloom = 0.12
 bloom_max = 2.5
 recoil_pitch = 0.3
 recoil_yaw = 0.18
+muzzle_velocity = 400.0
+drag = 0.0008
+falloff_start = 20.0
+falloff_min = 0.5
+penetration = 0.15
+tracer_interval = 5
+bullet_mass = 0.006
 
 [resource]
 script = ExtResource("1_xa2hk")

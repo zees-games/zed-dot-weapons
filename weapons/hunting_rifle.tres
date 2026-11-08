@@ -24,6 +24,12 @@ spread_moving = 6.0
 spread_airborne = 12.0
 spread_crouched = 0.0
 recoil_pitch = 3.2
+muzzle_velocity = 880.0
+drag = 0.0003
+falloff_start = 100.0
+falloff_min = 0.75
+penetration = 0.8
+bullet_mass = 0.0095
 
 [resource]
 script = ExtResource("1_4gyri")
