@@ -45,6 +45,7 @@ params = {
 &"bash_reach": 1.9
 }
 tuning = SubResource("Resource_yt5y0")
+mounts = Array[StringName]([&"optic", &"muzzle", &"underbarrel", &"side"])
 weight = 2.8
 authored_tick_rate = 64
 slot = 3

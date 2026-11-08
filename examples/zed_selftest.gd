@@ -15,7 +15,7 @@ extends "res://examples/selftest/zed_harness.gd"
 
 ## Every check this suite makes; a script error aborts a section part-way, and only the
 ## total can see the checks that never ran.
-const CHECKS := 97
+const CHECKS := 98
 
 const ZEE_COUNT := 27
 
@@ -515,6 +515,33 @@ func _attachments() -> void:
 	gun.free()
 	_check("the carbine's model has a socket per mount and every node an attachment hides: missing %s" % ", ".join(sockets),
 		sockets.is_empty())
+
+	# Every other high-detail gun with mounts: a socket per mount in its model, and every attachment
+	# the catalogue offers on a mount of it hides only nodes the model has.
+	var others: Array[String] = []
+	var offered := 0
+	var defs := {}
+	for d in ZedWeaponPack.weapons():
+		defs[d.id] = d
+	for id: StringName in [ZedWeaponIds.AK_RIFLE, ZedWeaponIds.SERVICE_PISTOL, ZedWeaponIds.TACTICAL_SMG,
+			ZedWeaponIds.PUMP_SHOTGUN, ZedWeaponIds.HUNTING_RIFLE]:
+		var def: DotWeaponDef = defs.get(id)
+		if def == null or def.mounts.is_empty():
+			others.append("%s has no mounts" % id)
+			continue
+		var model := (load(ZeeWeaponArtTable.get_art(id).model_path) as PackedScene).instantiate()
+		var choices_of := cat.choices_for(def)
+		for mount in def.mounts:
+			if model.find_child(String(ZedWeaponPack.socket_name(mount)), true, false) == null:
+				others.append("%s lacks socket %s" % [id, mount])
+			for a: StringName in choices_of[mount]:
+				offered += 1
+				for hide: StringName in ZedWeaponPack.ATTACHMENT_ART[a].hides:
+					if model.find_child(String(hide), true, false) == null:
+						others.append("%s: %s hides %s" % [id, a, hide])
+		model.free()
+	_check("the other five HQ guns have a socket per mount and every node an offered attachment hides: %s" % ", ".join(others),
+		others.is_empty() and offered > 0)
 	_end()
 
 

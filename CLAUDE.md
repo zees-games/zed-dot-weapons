@@ -54,6 +54,8 @@ The assault carbine (2026-10-20) was the first of a second tier, followed the sa
 - **The `.glb.import` files embed the textures as Basis Universal** (`gltf/embedded_image_handling=2`): the model stands alone in a delivered pack, and nothing is extracted next to it.
 - `art-src/hq/render_hq.py` renders Cycles frames of the exported files with attachments on their sockets, as the game fits them; the frames of record are in `reports/models/2026-10-20/`.
 
+**Mounts follow the model's sockets** (2026-11-08): the carbine and AK take all five; the SMG and pump shotgun optic, muzzle, underbarrel, side; the pistol optic, muzzle, underbarrel; the hunting rifle (scoped) muzzle, underbarrel, side. None but the two rifles takes the extended magazine (its model is rifle-sized); the silenced pistol and uzi are kitbashes with no sockets and keep none. The selftest checks each mount has its socket and every node an offered attachment hides. zee draws the fitted parts; how each sits on these guns is unrendered.
+
 **Attachments are data here, the rules are dot-weapon's** (`DotWeaponAttachment`, `DotWeaponAttachments`): `ZedWeaponPack.attachment_defs()` says what each one changes, `attachments()` is the catalogue an arsenal takes. **zee does not draw a fitted attachment yet**: `ATTACHMENT_ART` and the sockets are ready for it.
 
 ## Every model stands alone, because a game is delivered as a pack

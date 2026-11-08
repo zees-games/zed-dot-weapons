@@ -165,6 +165,8 @@ static func service_pistol(t: Dictionary = {}) -> DotWeaponDef:
 	def.deploy_ticks = sec_ticks(0.25)
 	def.holster_ticks = sec_ticks(0.18)
 
+	def.mounts = [DotWeaponAttachment.MOUNT_OPTIC, DotWeaponAttachment.MOUNT_MUZZLE, DotWeaponAttachment.MOUNT_UNDERBARREL]
+
 	var b := _ballistics(t, 28.0)
 	flight(b, 380, 0.0009, 25, 0.6, 0.15, 0, 0.008)
 	b.spread = 0.6
@@ -185,6 +187,7 @@ static func silenced_pistol(t: Dictionary = {}) -> DotWeaponDef:
 	def.tags = [ZeeWeaponIds.TAG_SIDEARM, ZeeWeaponIds.TAG_SILENCED]
 	def.magazine = 12
 	(def.tuning as DotWeaponBallistics).damage = 24.0
+	def.mounts.clear()  # its model is the kitbash, which has no sockets
 	return def
 
 
@@ -228,6 +231,8 @@ static func tactical_smg(t: Dictionary = {}) -> DotWeaponDef:
 	def.deploy_ticks = sec_ticks(0.32)
 	def.holster_ticks = sec_ticks(0.22)
 
+	def.mounts = [DotWeaponAttachment.MOUNT_OPTIC, DotWeaponAttachment.MOUNT_MUZZLE, DotWeaponAttachment.MOUNT_UNDERBARREL, DotWeaponAttachment.MOUNT_SIDE]
+
 	var b := _ballistics(t, 19.0)
 	flight(b, 400, 0.0008, 20, 0.5, 0.15, 5, 0.006)
 	b.spread = 1.2
@@ -253,6 +258,8 @@ static func pump_shotgun(t: Dictionary = {}) -> DotWeaponDef:
 	def.reload_ticks = sec_ticks(3.4)
 	def.deploy_ticks = sec_ticks(0.4)
 	def.holster_ticks = sec_ticks(0.28)
+
+	def.mounts = [DotWeaponAttachment.MOUNT_OPTIC, DotWeaponAttachment.MOUNT_MUZZLE, DotWeaponAttachment.MOUNT_UNDERBARREL, DotWeaponAttachment.MOUNT_SIDE]
 
 	var b := _ballistics(t, 14.0)
 	flight(b, 400, 0.003, 8, 0.2, 0.05, 0, 0.004)
@@ -304,6 +311,8 @@ static func hunting_rifle(t: Dictionary = {}) -> DotWeaponDef:
 	def.reload_ticks = sec_ticks(2.8)
 	def.deploy_ticks = sec_ticks(0.5)
 	def.holster_ticks = sec_ticks(0.35)
+
+	def.mounts = [DotWeaponAttachment.MOUNT_MUZZLE, DotWeaponAttachment.MOUNT_UNDERBARREL, DotWeaponAttachment.MOUNT_SIDE]
 
 	var b := _ballistics(t, 90.0)
 	flight(b, 880, 0.0003, 100, 0.75, 0.8, 0, 0.0095)
