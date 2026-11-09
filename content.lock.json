@@ -8,6 +8,9 @@
 			"into": "assets",
 			"kind": "store",
 			"manifest_sha256": "4010740bde57c9d1717e5313e70735bd15139085b1e6e78238e0dab43dff147d",
+			"manifest_sha256_by_origin": {
+				"https://dev.dotgames.org/content": "1d8d86e1c4f1ed9c9b5c135f2215d768860e38977f82ffb73b785401adb76d00"
+			},
 			"optional": false,
 			"version": "0.1.0"
 		}
