@@ -4,6 +4,9 @@
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 V=${1:?usage: tools/publish.sh VERSION [flags]}; shift
-exec "$HERE/../dot-cloud/tools/publish_pack.sh" publish --source "$HERE" --id zed-dot-weapons --version "$V" \
-    --exclude-dir addons --exclude-dir examples --exclude-dir tools --exclude-dir screenshots --exclude-dir docs --exclude-dir art-src --exclude-dir reports \
+# addons/zed_weapons is the code a host mounts from this pack as an overlay, so it goes in.
+# Every addon folder but addons/zed_weapons stays out, by folder name, so a copy with links resolved (heavy's staging box) packs the same.
+EX=(); for d in "$HERE"/addons/*/; do n="$(basename "$d")"; [ "$n" = zed_weapons ] || EX+=(--exclude-dir "$n"); done
+"$HERE/../dot-cloud/tools/publish_pack.sh" publish --source "$HERE" --id zed-dot-weapons --version "$V" \
+    "${EX[@]}" --exclude-dir examples --exclude-dir tools --exclude-dir screenshots --exclude-dir docs --exclude-dir art-src --exclude-dir reports \
     --lock "$HERE/content.lock.json" "$@"
