@@ -6,6 +6,9 @@ extends Node
 ## Where the target props come from.
 const TARGETS := "res://assets/blaster-kit/"
 
+@onready var _controller: DotFpsController = $Player/Controller
+@onready var _camera: Camera3D = $Player/Head/Camera
+
 
 ## `--dummy`: a character standing in the line of fire, so a capture shows a shot landing on a
 ## body (ZeeShotFx's red burst) rather than on the far wall.
@@ -32,11 +35,9 @@ func _add_dummy() -> void:
 	body.global_position = eye.origin + ahead.normalized() * 6.0 + Vector3(0.0, -0.75, 0.0)
 
 
-## A floor, a back wall and the kit's own targets, built in code.
-##
-## In code because this example is meant to be read top to bottom, and a scene file is
-## the one part of a Godot project that cannot be. A real level is a scene an artist
-## made; this is a page you can check.
+## A floor, a back wall and the kit's own targets, built in code: this example is meant to be read top to bottom,
+## and a scene file is the one part of a Godot project that cannot be. A real level is a scene an artist made;
+## this is a page you can check.
 func _build_world() -> void:
 	var world := $World
 
@@ -59,10 +60,8 @@ func _build_world() -> void:
 	_add_targets(world)
 
 
-## The kit's targets and crates, at the ranges the weapons are tuned for.
-##
-## Placed by distance on purpose: the shotgun stops at 26 m and the sniper reaches a
-## kilometre, so a range with everything at one distance tells you nothing about either.
+## The kit's targets and crates, at the ranges the weapons are tuned for: the shotgun stops at 26 m and the
+## sniper reaches a kilometre, so a range with everything at one distance tells you nothing about either.
 func _add_targets(world: Node3D) -> void:
 	var rows := [
 		{"z": -4.0, "model": "target-large.glb", "count": 3, "spacing": 4.0, "y": 1.4},
@@ -79,11 +78,8 @@ func _add_targets(world: Node3D) -> void:
 			if model == null:
 				continue
 
-			# [b]Turned a quarter and lifted off the floor.[/b] The target discs are
-			# modelled in the YZ plane — five centimetres thick along X — so dropped in
-			# untouched they face sideways and read as saucers lying on the ground. They
-			# are also 34 cm across, which is a dinner plate at thirty metres, so they
-			# are scaled up to something a sniper can be aimed at.
+			# Turned a quarter and lifted: the discs are modelled in the YZ plane (5 cm thick along X), so untouched they lie
+			# like saucers; and at 34 cm across (a dinner plate at thirty metres) they are scaled up to something a sniper can aim at.
 			model.rotation = Vector3(0.0, PI * 0.5, 0.0)
 			model.scale = Vector3.ONE * 3.0
 			model.position = Vector3(

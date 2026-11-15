@@ -27,8 +27,6 @@ const CHANNEL := "zee.range"
 ## Where the player stands, far enough back that a target is a shot rather than a poke.
 const SPAWN := Vector3(0.0, 0.2, 14.0)
 
-@onready var _controller: DotFpsController = $Player/Controller
-@onready var _camera: Camera3D = $Player/Head/Camera
 @onready var _readout: Label = $UI/Readout
 @onready var _crosshair: Label = $UI/Crosshair
 
