@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="zed-dot-weapons"
-config/description="A second weapons pack for the Dot ecosystem, on top of zee-dot-weapons: real-world sidearms, shotguns, a hunting rifle, a machine gun, launchers, a flamethrower, and the throwables a zombie game needs (a molotov, a pipe bomb, a bile jar). Art is Kenney's CC0 Weapon Pack and Food Kit."
+config/description="A second weapons pack for the Gamespice platform, on top of zee-dot-weapons: real-world sidearms, shotguns, a hunting rifle, a machine gun, launchers, a flamethrower, and the throwables a zombie game needs (a molotov, a pipe bomb, a bile jar). Art is Kenney's CC0 Weapon Pack and Food Kit."
 run/main_scene="res://examples/zed_range.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 
