@@ -33,7 +33,7 @@ The pack is also published as a Workshop weapon pack: `provides.json` and `weapo
 
 ## Requirements
 
-Godot 4.7, [zee-dot-weapons](https://github.com/zees-games/zee-dot-weapons) (with its `add_source` support), and what it needs: [dot-core](https://github.com/modcommunity/dot-core), [dot-combat](https://github.com/modcommunity/dot-combat) and [dot-weapon](https://github.com/modcommunity/dot-weapon). [dot-bootstrap](https://github.com/modcommunity/dot-bootstrap) fetches them.
+Godot 4.7, [zee-dot-weapons](https://github.com/zees-games/zee-dot-weapons) (with its `add_source` support), and what it needs: [dot-core](https://github.com/gamespice-platform/core), [dot-combat](https://github.com/gamespice-platform/combat) and [dot-weapon](https://github.com/gamespice-platform/weapon). [dot-bootstrap](https://github.com/gamespice-platform/bootstrap) fetches them.
 
 ## Running it
 
