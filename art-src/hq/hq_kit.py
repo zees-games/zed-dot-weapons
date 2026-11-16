@@ -330,7 +330,7 @@ def hi_material(kind):
     # Edge mask: how far the rounded (Bevel node) normal leans from the true one.
     bev = _n(nt, "ShaderNodeBevel", -1000, -300, samples=8)
     bev.inputs["Radius"].default_value = 0.0018
-    dot = _n(nt, "ShaderNodeVectorMath", -800, -300, operation="DOT_PRODUCT")
+    dot = _n(nt, "ShaderNodeVectorMath", -800, -300, operation="GS_PRODUCT")
     nt.links.new(bev.outputs["Normal"], dot.inputs[0])
     nt.links.new(geo.outputs["Normal"], dot.inputs[1])
     edge = _n(nt, "ShaderNodeMapRange", -600, -300)
