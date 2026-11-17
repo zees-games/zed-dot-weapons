@@ -50,7 +50,7 @@ static func install() -> void:
 	# zombiezone_client; `tools/exit_check.gd` and the suite's "exiting" section hold it.
 	ZeeWeaponPack.add_source(SOURCE, Callable(ZedWeaponPack, &"weapons"))
 	ZeeWeaponArtTable.add_source(SOURCE, Callable(ZedWeaponPack, &"art"))
-	ZeeAttachmentArt.add_source(SOURCE, Callable(ZedWeaponPack, &"attachment_art"))
+	ZeeAttachmentArt.add_source(SOURCE, Callable(ZedWeaponPack, &"attachment_art"), Callable(ZedWeaponPack, &"attachment_paths"))
 
 	for id: StringName in SOUNDS:
 		ZeeWeaponSound.set_class(id, SOUNDS[id])
@@ -667,6 +667,14 @@ const ATTACHMENT_ART := {
 	ZedWeaponIds.LASER_SIGHT: {"path": HQ_DIR + "laser.glb", "hides": []},
 	ZedWeaponIds.EXTENDED_MAG: {"path": HQ_DIR + "ext_mag.glb", "hides": [&"magazine"]},
 }
+
+
+## Every attachment model file, for a game's art sync (zee's ZeeAttachmentArt listing).
+static func attachment_paths() -> Array:
+	var out: Array = []
+	for id: StringName in ATTACHMENT_ART:
+		out.append(ATTACHMENT_ART[id]["path"])
+	return out
 
 
 ## The node an attachment on [param mount] is parented to, in the gun's model.
