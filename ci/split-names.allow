@@ -1,0 +1,3 @@
+# Paths check-split-names.py must not flag.
+# hq_m4.py is the M4 carbine's model script, not a fourth piece of hq.
+art-src/hq/hq_m4.py
