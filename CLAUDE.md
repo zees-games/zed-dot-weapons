@@ -78,3 +78,7 @@ tools/screenshot.sh --sheet service_pistol pump_shotgun hunting_rifle molotov   
 Review every change to a gun's hold on the contact sheet (`--sheet`, the same frames as zee's, so the two packs' sheets can be laid side by side). `examples/zed_range.gd` is zee's range with `ZedWeaponPack.install()` added; keep it a copy, so a sheet change in zee comes across by copying the file.
 
 `tools/measure.gd` prints every vendored model's bounds (`godot --headless --path . --script tools/measure.gd`), which is where the heights in `ZedWeaponPack.art()` came from.
+
+## Visual quality
+
+A visual change (a weapon model, its animation, arms or effects) is done only when a fresh judge says so: follow dot-game's brief, `../dot-game/docs/visual-judge-brief.md` (GPU capture, never llvmpipe; three consecutive zero-defect passes; `--audit` before you report). Your own reading of the sheets never counts.
