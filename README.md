@@ -2,11 +2,11 @@ Sixteen real-world weapons and zombie-game throwables for GameSpice games: pisto
 
 ### In GameSpice and Fatal Contact
 
-- **GameSpice:** the pack is published to the Workshop as `gamemann/zed-dot-weapons`, beside `gamemann/zee-dot-weapons`, which it needs. A server lists both in its pack overlay, so players get them with the server and there is nothing to install. The weapons appear in the spawn menu under Sidearms, Primary, Heavy and Thrown.
+- GameSpice:** the pack is published to the Workshop as `gamemann/zed-dot-weapons`, beside `gamemann/zee-dot-weapons`, which it needs. A server lists both in its pack overlay, so players get them with the server and there is nothing to install. The weapons appear in the spawn menu under Sidearms, Primary, Heavy and Thrown.
 - **Fatal Contact:** FC's own weapons are [fc-weapons](https://github.com/zees-games/fc-weapons). An FC server can add this pack and zee-dot-weapons to its overlay for extra weapons.
 - **Your own Godot game:** link `addons/zed_weapons` beside `addons/zee_weapons` and call `ZedWeaponPack.install()`, as in [Using it](#using-it). Server owners retune any weapon in `cfg/addons/zed_weapons/weapon/<id>.yml`.
 
-The weapons extend [zee-dot-weapons](https://github.com/zees-games/zee-dot-weapons) with a real-world look. Made for [game-zombie-zone](https://github.com/zees-games/game-zombie-zone). Any game that uses zee-dot-weapons can carry both packs at once. It is part of the [GameSpice collection](https://gamespice.net) for Godot 4.
+The weapons extend [zee-dot-weapons](https://github.com/zees-games/zee-dot-weapons) with a real-world look. Made for [game-zombie-zone](https://github.com/zees-games/game-zombie-zone). Any game that uses zee-dot-weapons can carry both packs at once. It is part of the [**GameSpice collection**](https://gamespice.net) for Godot 4.
 
 The pack has its own test suite, but little of it has been in front of real players. Please report anything you run into.
 
