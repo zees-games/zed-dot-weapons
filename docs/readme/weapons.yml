@@ -1,0 +1,57 @@
+# Words for the generated parts of README.md (tools/gen_readme.py). Numbers never go here: every stat in the
+# README is read from weapons/<id>.tres and cfg/addons/zed_weapons/weapon/**/<id>.yml (ticks at 64 Hz).
+# order: the README order, by slot (missing ids are appended alphabetically). class: the summary's Class column.
+id_prefix: ""
+summary_before: "## Using it"
+weapons_before: "## Credits"
+order: [service_pistol, silenced_pistol, uzi, assault_carbine, ak_rifle, tactical_smg, pump_shotgun, sawed_off,
+  hunting_rifle, machine_gun, grenade_launcher, rocket_launcher, flamethrower, molotov, pipe_bomb, bile_jar]
+weapons:
+  service_pistol:
+    class: Pistol
+    blurb: A high-detail service pistol with a fifteen-round magazine. Hits harder than zee's dart pistol and reloads quickly.
+  silenced_pistol:
+    class: Pistol
+    blurb: A suppressed pistol with a small sight. A little less damage and a smaller magazine than the service pistol.
+  uzi:
+    class: SMG
+    blurb: A sidearm-slot bullet hose. Very fast and loose, best held close to the horde.
+  assault_carbine:
+    class: Assault rifle
+    blurb: The high-detail carbine, about 13k triangles, with sockets for a red dot, 4x scope, suppressor, foregrip, laser and extended magazine. Accurate with a three-round burst.
+  ak_rifle:
+    class: Assault rifle
+    blurb: Heavier rounds than the carbine with more kick. Hard-hitting in full auto if you can hold it on target.
+  tactical_smg:
+    class: SMG
+    blurb: A fifty-round SMG for clearing crowds. Fast, light and long-lasting between reloads.
+  pump_shotgun:
+    class: Shotgun
+    blurb: Ten pellets a shot and eight shells in the tube. The dependable crowd-stopper at close range.
+  sawed_off:
+    class: Shotgun
+    blurb: Two barrels and fourteen pellets each. Devastating at arm's length, useless past fifteen metres.
+  hunting_rifle:
+    class: Rifle
+    blurb: A scoped bolt-action that drops almost anything in one shot. Pinpoint standing still, wild on the move.
+  machine_gun:
+    class: Heavy
+    blurb: A belt-fed machine gun with a hundred-round box. Slow to bring up and slow to reload, it holds a doorway on its own.
+  grenade_launcher:
+    class: Launcher
+    blurb: A single-shot launcher with a big splash. Lob it into a group and reload.
+  rocket_launcher:
+    class: Launcher
+    blurb: One rocket, the biggest blast in the pack and a long reload. Save it for the big ones.
+  flamethrower:
+    class: Heavy
+    blurb: A short cone of fire from its own fuel tank, with no reload. Tagged incendiary, so a game can set what it hits alight.
+  molotov:
+    class: Thrown
+    blurb: A bottle that breaks where it lands. In game-zombie-zone it starts a fire; elsewhere the game decides.
+  pipe_bomb:
+    class: Thrown
+    blurb: The biggest splash of any weapon in the pack. In game-zombie-zone it beeps, draws the horde and goes off.
+  bile_jar:
+    class: Thrown
+    blurb: A jar that breaks where it lands. In game-zombie-zone it pulls nearby zombies to the spot.
