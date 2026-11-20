@@ -1,5 +1,3 @@
-# Zed Weapons
-
 Sixteen real-world weapons and zombie-game throwables for GameSpice games: pistols, an Uzi, assault rifles, shotguns, a hunting rifle, a machine gun, two launchers, a flamethrower, a molotov, a pipe bomb and a bile jar. It adds to zee-dot-weapons rather than replacing it, and every number below is a default read straight from the pack's data that a game or server can change without touching the pack.
 
 ### In GameSpice and Fatal Contact
