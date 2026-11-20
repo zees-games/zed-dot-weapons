@@ -383,6 +383,12 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Weight | 0.4 kg |
 <!-- /gen_readme:weapons -->
 
+<!-- gen_readme:quality -->
+## Quality and ongoing improvement
+
+The models, textures, sounds and animations in this pack are being improved over time, and some of them are low quality today. Improvement is driven by the Nightly queue, a work queue where agents pick up items, and by a visual judge loop that views rendered frames and files defects until each asset passes repeated clean reviews. Known defects are filed there and fixed in later releases, and the screenshots in this README are regenerated as the assets improve.
+<!-- /gen_readme:quality -->
+
 ## Credits
 
 The eleven real-world guns (`assets/kitbash/`) are rebuilt by `blender -b --python art-src/guns/build.py` (one recipe per gun in `zed_guns.py`). Parts are cut, reshaped and joined with modelled barrels, sights, rails and magazines, so no gun is any one source model. Each kit's licence is next to its files.
