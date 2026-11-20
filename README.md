@@ -26,24 +26,26 @@ The assault carbine is a high-detail gun (`assets/hq/`, about 13k triangles). It
 What a throwable does when it lands is up to the game, because dot-weapon spawns nothing itself. Each one carries a tag (`molotov`, `pipe_bomb`, `bile`), and the flamethrower is tagged `incendiary`. In game-zombie-zone a molotov starts a fire, a pipe bomb beeps, draws the horde and goes off, and a bile jar pulls nearby zombies to where it broke.
 
 <!-- gen_readme:summary -->
-| | Weapon | Class | Damage | Rate |
+| | Weapon | Class | Damage | Fire rate |
 | --- | --- | --- | --- | --- |
-| <a href="#service-pistol"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/service_pistol_thumb.webp" width="160" alt="Service Pistol"></a> | [Service Pistol](#service-pistol) | Pistol | 28 | 384 rpm |
-| <a href="#silenced-pistol"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/silenced_pistol_thumb.webp" width="160" alt="Silenced Pistol"></a> | [Silenced Pistol](#silenced-pistol) | Pistol | 24 | 384 rpm |
+| <a href="#service-pistol"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/service_pistol_thumb.webp" width="160" alt="Service Pistol"></a> | [Service Pistol](#service-pistol) | Pistol | 28 | one shot every 0.16 s |
+| <a href="#silenced-pistol"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/silenced_pistol_thumb.webp" width="160" alt="Silenced Pistol"></a> | [Silenced Pistol](#silenced-pistol) | Pistol | 24 | one shot every 0.16 s |
 | <a href="#uzi"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/uzi_thumb.webp" width="160" alt="Uzi"></a> | [Uzi](#uzi) | SMG | 14 | 960 rpm |
 | <a href="#assault-carbine"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/assault_carbine_thumb.webp" width="160" alt="Assault Carbine"></a> | [Assault Carbine](#assault-carbine) | Assault rifle | 26 | 768 rpm |
 | <a href="#ak-rifle"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/ak_rifle_thumb.webp" width="160" alt="AK Rifle"></a> | [AK Rifle](#ak-rifle) | Assault rifle | 32 | 640 rpm |
 | <a href="#tactical-smg"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/tactical_smg_thumb.webp" width="160" alt="Tactical SMG"></a> | [Tactical SMG](#tactical-smg) | SMG | 19 | 768 rpm |
-| <a href="#pump-shotgun"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/pump_shotgun_thumb.webp" width="160" alt="Pump Shotgun"></a> | [Pump Shotgun](#pump-shotgun) | Shotgun | 14 x 10 | 70 rpm |
-| <a href="#sawed-off"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/sawed_off_thumb.webp" width="160" alt="Sawed-Off"></a> | [Sawed-Off](#sawed-off) | Shotgun | 12 x 14 | 240 rpm |
-| <a href="#hunting-rifle"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/hunting_rifle_thumb.webp" width="160" alt="Hunting Rifle"></a> | [Hunting Rifle](#hunting-rifle) | Rifle | 90 | 60 rpm |
+| <a href="#pump-shotgun"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/pump_shotgun_thumb.webp" width="160" alt="Pump Shotgun"></a> | [Pump Shotgun](#pump-shotgun) | Shotgun | 14 x 10 | one shot every 0.86 s |
+| <a href="#sawed-off"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/sawed_off_thumb.webp" width="160" alt="Sawed-Off"></a> | [Sawed-Off](#sawed-off) | Shotgun | 12 x 14 | one shot every 0.25 s |
+| <a href="#hunting-rifle"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/hunting_rifle_thumb.webp" width="160" alt="Hunting Rifle"></a> | [Hunting Rifle](#hunting-rifle) | Rifle | 90 | one shot every 1 s |
 | <a href="#machine-gun"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/machine_gun_thumb.webp" width="160" alt="Machine Gun"></a> | [Machine Gun](#machine-gun) | Heavy | 22 | 768 rpm |
-| <a href="#grenade-launcher"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/grenade_launcher_thumb.webp" width="160" alt="Grenade Launcher"></a> | [Grenade Launcher](#grenade-launcher) | Launcher | 30 | 60 rpm |
-| <a href="#rocket-launcher"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/rocket_launcher_thumb.webp" width="160" alt="Rocket Launcher"></a> | [Rocket Launcher](#rocket-launcher) | Launcher | 60 | 40 rpm |
+| <a href="#grenade-launcher"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/grenade_launcher_thumb.webp" width="160" alt="Grenade Launcher"></a> | [Grenade Launcher](#grenade-launcher) | Launcher | 30 | one shot every 1 s |
+| <a href="#rocket-launcher"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/rocket_launcher_thumb.webp" width="160" alt="Rocket Launcher"></a> | [Rocket Launcher](#rocket-launcher) | Launcher | 60 | one shot every 1.5 s |
 | <a href="#flamethrower"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/flamethrower_thumb.webp" width="160" alt="Flamethrower"></a> | [Flamethrower](#flamethrower) | Heavy | 5 x 4 | 640 rpm |
-| <a href="#molotov"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/molotov_thumb.webp" width="160" alt="Molotov"></a> | [Molotov](#molotov) | Thrown | - | 60 rpm |
-| <a href="#pipe-bomb"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/pipe_bomb_thumb.webp" width="160" alt="Pipe Bomb"></a> | [Pipe Bomb](#pipe-bomb) | Thrown | 300 splash | 60 rpm |
-| <a href="#bile-jar"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/bile_jar_thumb.webp" width="160" alt="Bile Jar"></a> | [Bile Jar](#bile-jar) | Thrown | - | 60 rpm |
+| <a href="#molotov"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/molotov_thumb.webp" width="160" alt="Molotov"></a> | [Molotov](#molotov) | Thrown | - | one throw every 1 s |
+| <a href="#pipe-bomb"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/pipe_bomb_thumb.webp" width="160" alt="Pipe Bomb"></a> | [Pipe Bomb](#pipe-bomb) | Thrown | 300 splash | one throw every 1 s |
+| <a href="#bile-jar"><img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/bile_jar_thumb.webp" width="160" alt="Bile Jar"></a> | [Bile Jar](#bile-jar) | Thrown | - | one throw every 1 s |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 <!-- /gen_readme:summary -->
 
 ## Using it
@@ -87,7 +89,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Default | |
 | --- | --- |
 | Damage | 28 (dart) |
-| Fire rate | 384 rpm |
+| Fire rate | one shot every 0.16 s |
 | Fire modes | semi |
 | Magazine | 15 + 90 reserve |
 | Reload | 1.5 s |
@@ -98,6 +100,8 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Draw time | 0.25 s |
 | Weight | 1 kg |
 
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
+
 ### Silenced Pistol
 
 <img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/silenced_pistol.webp" width="1280" alt="Silenced Pistol, studio render">
@@ -107,7 +111,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Default | |
 | --- | --- |
 | Damage | 24 (dart) |
-| Fire rate | 384 rpm |
+| Fire rate | one shot every 0.16 s |
 | Fire modes | semi |
 | Magazine | 12 + 90 reserve |
 | Reload | 1.5 s |
@@ -117,6 +121,8 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Range | 120 m (falloff 30-70 m to 60 %) |
 | Draw time | 0.25 s |
 | Weight | 1 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Uzi
 
@@ -137,6 +143,8 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Range | 80 m (falloff 30-70 m to 60 %) |
 | Draw time | 0.25 s |
 | Weight | 1 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Assault Carbine
 
@@ -159,6 +167,8 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Draw time | 0.41 s |
 | Weight | 4 kg |
 
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
+
 ### AK Rifle
 
 <img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/ak_rifle.webp" width="1280" alt="AK Rifle, studio render">
@@ -177,6 +187,8 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Recoil | 0.62 deg up, 0.3 deg side |
 | Range | 170 m (falloff 30-70 m to 60 %) |
 | Draw time | 0.45 s |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Tactical SMG
 
@@ -199,6 +211,8 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Draw time | 0.31 s |
 | Weight | 2.8 kg |
 
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
+
 ### Pump Shotgun
 
 <img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/pump_shotgun.webp" width="1280" alt="Pump Shotgun, studio render">
@@ -208,7 +222,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Default | |
 | --- | --- |
 | Damage | 14 x 10 pellets (dart) |
-| Fire rate | 70 rpm |
+| Fire rate | one shot every 0.86 s |
 | Fire modes | semi |
 | Magazine | 8 + 56 reserve |
 | Reload | 3.41 s |
@@ -216,6 +230,8 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Recoil | 2.6 deg up, 0.15 deg side |
 | Range | 24 m |
 | Draw time | 0.41 s |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Sawed-Off
 
@@ -226,7 +242,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Default | |
 | --- | --- |
 | Damage | 12 x 14 pellets (dart) |
-| Fire rate | 240 rpm |
+| Fire rate | one shot every 0.25 s |
 | Fire modes | semi |
 | Magazine | 2 + 40 reserve |
 | Reload | 2 s |
@@ -235,6 +251,8 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Range | 15 m |
 | Draw time | 0.3 s |
 | Weight | 4 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Hunting Rifle
 
@@ -245,7 +263,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Default | |
 | --- | --- |
 | Damage | 90 (dart) |
-| Fire rate | 60 rpm |
+| Fire rate | one shot every 1 s |
 | Fire modes | semi |
 | Magazine | 5 + 40 reserve |
 | Reload | 2.8 s |
@@ -254,6 +272,8 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Range | 600 m (falloff 30-70 m to 60 %) |
 | Draw time | 0.5 s |
 | Weight | 5 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Machine Gun
 
@@ -275,6 +295,8 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Draw time | 0.91 s |
 | Weight | 6 kg |
 
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
+
 ### Grenade Launcher
 
 <img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/grenade_launcher.webp" width="1280" alt="Grenade Launcher, studio render">
@@ -285,7 +307,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | --- | --- |
 | Damage | 30 (blast) |
 | Splash | 130 within 5 m |
-| Fire rate | 60 rpm |
+| Fire rate | one shot every 1 s |
 | Fire modes | semi |
 | Magazine | 1 + 15 reserve |
 | Reload | 2.41 s |
@@ -293,6 +315,8 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Projectile speed | 32 m/s |
 | Draw time | 0.5 s |
 | Weight | 6 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Rocket Launcher
 
@@ -304,7 +328,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | --- | --- |
 | Damage | 60 (blast) |
 | Splash | 240 within 6.5 m |
-| Fire rate | 40 rpm |
+| Fire rate | one shot every 1.5 s |
 | Fire modes | semi |
 | Magazine | 1 + 6 reserve |
 | Reload | 3.5 s |
@@ -312,6 +336,8 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Projectile speed | 36 m/s |
 | Draw time | 0.8 s |
 | Weight | 6 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Flamethrower
 
@@ -330,6 +356,8 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Draw time | 0.8 s |
 | Weight | 6 kg |
 
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
+
 ### Molotov
 
 <img src="https://raw.githubusercontent.com/zees-games/zed-dot-weapons/main/docs/img/molotov.webp" width="1280" alt="Molotov, studio render">
@@ -338,7 +366,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 
 | Default | |
 | --- | --- |
-| Throw rate | 60 rpm |
+| Fire rate | one throw every 1 s |
 | Fire modes | charge |
 | Carried | 1 (max 1) |
 | Recoil | 0.4 deg up, 0.15 deg side |
@@ -346,6 +374,8 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Fuse | 10 s |
 | Draw time | 0.34 s |
 | Weight | 0.4 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Pipe Bomb
 
@@ -356,7 +386,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Default | |
 | --- | --- |
 | Splash | 300 within 6 m |
-| Throw rate | 60 rpm |
+| Fire rate | one throw every 1 s |
 | Fire modes | charge |
 | Carried | 1 (max 1) |
 | Recoil | 0.4 deg up, 0.15 deg side |
@@ -364,6 +394,8 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Fuse | 10 s |
 | Draw time | 0.34 s |
 | Weight | 0.4 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Bile Jar
 
@@ -373,7 +405,7 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 
 | Default | |
 | --- | --- |
-| Throw rate | 60 rpm |
+| Fire rate | one throw every 1 s |
 | Fire modes | charge |
 | Carried | 1 (max 1) |
 | Recoil | 0.4 deg up, 0.15 deg side |
@@ -381,6 +413,8 @@ The range and the rack draw zee's arms, so link `assets/arms`, `assets/blaster-k
 | Fuse | 10 s |
 | Draw time | 0.34 s |
 | Weight | 0.4 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 <!-- /gen_readme:weapons -->
 
 <!-- gen_readme:quality -->
